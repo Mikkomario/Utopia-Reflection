@@ -7,6 +7,14 @@ import utopia.genesis.shape.Y
 
 object StackSize
 {
+    // ATTRIBUTES    --------------------
+    
+    /**
+     * A stacksize that allows any value while preferring a zero size
+     */
+    val any: StackSize = any(Size.zero)
+    
+    
     // CONSTRUCTOR    -------------------
     
     def apply(min: Size, optimal: Size, maxWidth: Option[Int], maxHeight: Option[Int]) = 
@@ -17,6 +25,12 @@ object StackSize
             max.map(_.width.toInt), max.map(_.height.toInt));
     
     def apply(min: Size, optimal: Size, max: Size): StackSize = apply(min, optimal, Some(max))
+    
+    def apply(length: StackLength, breadth: StackLength, axis: Axis2D): StackSize = axis match 
+    {
+        case X => StackSize(length, breadth)
+        case Y => StackSize(breadth, length)
+    }
     
     def any(optimal: Size) = StackSize(Size.zero, optimal, None)
     

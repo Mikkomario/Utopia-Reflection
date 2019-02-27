@@ -72,5 +72,17 @@ class Panel extends JWrapper
 	/**
 	 * Removes multiple components from this panel
 	 */
-	def --=(components: TraversableOnce[Wrapper]) = components foreach -=
+	def --=(components: TraversableOnce[Wrapper]) = components foreach -=;
+	
+	
+	// OTHERS    ------------------------
+	
+	/**
+	 * Removes all components from this panel
+	 */
+	def clear() = 
+	{
+	    _components = Vector()
+	    panel.removeAll()
+	}
 }

@@ -109,7 +109,9 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None,
 	
 	def withMax(newMax: Int): StackLength = withMax(Some(newMax))
 	
-	def withLowPriority = StackLength(min, optimal, max, false)
+	def withPriority(isLowPriority: Boolean) = StackLength(min, optimal, max, isLowPriority)
+	
+	def withLowPriority = withPriority(false)
 	
 	def withNoLimits = StackLength(0, optimal, None, lowPriority)
 	

@@ -8,6 +8,9 @@ import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
 import utopia.flow.datastructure.mutable.Lazy
 import utopia.reflection.component.Area
+import utopia.reflection.shape.StackSize
+import utopia.reflection.container.StackLayout.Fit
+import utopia.reflection.component.Wrapper
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically
@@ -20,18 +23,94 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
 	// ATTRIBUTES    --------------------
     
     private val panel = new Panel()
-    private var _components = Vector[Stackable]()
+    private var _components = Vector[CacheStackable]()
     
-    def components = _components
+    def components = _components map { _.source }
+    
+    
+    // COMPUTED    ----------------------
+    
+    private def numberOfMargins = _components.size - 1
+    private def totalMarginsLength = margin * numberOfMargins
+    
+    def count = _components.size
     
     
     // IMPLEMENTED    -------------------
     
     def component = panel.component
     
-    def stackSize = ???
+    def stackSize = 
+    {
+        if (_components.isEmpty)
+            StackSize.any.withLowPriorityFor(direction)
+        else
+        {
+            // Checks component sizes
+            val sizes = _components map { _.stackSize }
+            val lengths = sizes map { _ along direction }
+            val breadths = sizes map { _ perpendicularTo direction }
+            
+            // Determines total length & breadth
+            val componentsLength = lengths reduce { _ + _ }
+            // Length has low priority if any of the items has one
+            val length = componentsLength + totalMarginsLength + (cap * 2)
+            
+            // Non-fit stacks don't have max breadth while fit versions do
+            // Breadth is considered low priority only if all items are low priority
+            val breadth = 
+            {
+                if (layout == Fit)
+                {
+                    val min = breadths.map { _.min }.max
+                    val optimal = breadths.map { _.optimal }.max
+                    val max = breadths.flatMap { _.max }.reduceOption { _ min _ }
+                    
+                    StackLength(min, optimal, max)
+                }
+                else
+                    breadths.reduce { StackLength.max }.withMax(None)
+            
+            }.withPriority(breadths forall { _.lowPriority })
+            
+            // Returns the final size
+            StackSize(length, breadth, direction)
+        }
+    }
     
-    // TODO: Continue
+    
+    // OPERATORS    ---------------------
+    
+    def +=(component: Stackable) = 
+    {
+        _components :+= new CacheStackable(component)
+        panel += component
+    }
+    
+    def ++=(components: TraversableOnce[Stackable]) = components foreach { += }
+    
+    def -=(component: Wrapper) = 
+    {
+        _components = _components filterNot { component.equals }
+        panel -= component
+    }
+    
+    def --=(components: TraversableOnce[Wrapper]) = components foreach { -= }
+    
+    
+    // OTHERS    -----------------------
+    
+    def clear() = 
+    {
+        _components = Vector()
+        panel.clear()
+    }
+    
+    def dropLast(amount: Int) = _components dropRight(amount) map { _.source } foreach { -= }
+    
+    def resetCachedSize() = _components foreach { _.resetStackSize() }
+    
+    def refreshContent() = ???
 }
 
 private class CacheStackable(val source: Stackable) extends Area
