@@ -3,6 +3,9 @@ package utopia.reflection.component
 import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
 import utopia.genesis.shape.shape2D.Bounds
+import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.X
+import utopia.genesis.shape.Y
 
 /**
 * This trait is extended by classes that occupy a certain 2D space (position + size)
@@ -39,5 +42,48 @@ trait Area
     {
         position = b.position
         size = b.size
+    }
+    
+    
+    // OTHER    ------------------------
+    
+    /**
+     * Changes either x- or y-coordinate of this area
+     * @param position the target coordinate
+     * @param axis the target axis (X or Y)
+     */
+    def setCoordinate(position: Double, axis: Axis2D) = axis match 
+    {
+        case X => x = position
+        case Y => y = position
+    }
+    
+    /**
+     * Adjusts either x- or y-coordinate of this area
+     */
+    def adjustCoordinate(adjustment: Double, axis: Axis2D) = axis match 
+    {
+        case X => x += adjustment
+        case Y => y += adjustment
+    }
+    
+    /**
+     * Changes either the width or height of this area
+     * @length the new side length
+     * @param axis the target axis (X for width, Y for height)
+     */
+    def setLength(length: Double, axis: Axis2D) = axis match 
+    {
+        case X => width = length
+        case Y => height = length
+    }
+    
+    /**
+     * Adjusts either the width (for X-axis) or height (for Y-axis) of this component
+     */
+    def adjustLength(adjustment: Double, axis: Axis2D) = axis match 
+    {
+        case X => width += adjustment
+        case Y => height += adjustment
     }
 }

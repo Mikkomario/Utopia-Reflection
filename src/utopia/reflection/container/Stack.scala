@@ -25,6 +25,9 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     private val panel = new Panel()
     private var _components = Vector[CacheStackable]()
     
+    /**
+     * The components in this stack
+     */
     def components = _components map { _.source }
     
     
@@ -33,7 +36,15 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     private def numberOfMargins = _components.size - 1
     private def totalMarginsLength = margin * numberOfMargins
     
+    /**
+     * The number of components in this stack
+     */
     def count = _components.size
+    
+    /**
+     * Whether this stack has no components in it
+     */
+    def isEmpty = _components.isEmpty
     
     
     // IMPLEMENTED    -------------------
@@ -111,6 +122,62 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     def resetCachedSize() = _components foreach { _.resetStackSize() }
     
     def refreshContent() = ???
+    
+    // TODO: You also need to handle the varying margins and caps (redesign)
+    private def adjustLength(targets: Traversable[CacheStackable], adjustment: Double): Unit = 
+    {
+        // First finds the items that can be adjusted (and how much)
+        val adjustable = targets.map { c => c -> c.maxAdjustment(direction, adjustment) }.filterNot 
+        { _._2.exists { _.abs < 1 } };
+        
+        // Prefers items with low priority
+        val topPriority = adjustable.filter { _._1.stackSize.isLowPriorityFor(direction) }
+        val finalTargets = if (topPriority.isEmpty) adjustable else topPriority
+        
+        // Tries to adjust each target the same amount (limited by max adjust)
+        val adjustmentPerTarget = adjustment / finalTargets.size
+        
+        // Will not care for < 1 pixel changes (the system is not accurate enough)
+        // TODO: Handle these cases more carefully (combine size changes to a single component)
+        if (adjustmentPerTarget.abs >= 1)
+        {
+            // Finds out which targets will be maxed out and which won't
+            val groupedTargets = finalTargets groupBy { 
+                    case (c, max) => max.exists { adjustmentPerTarget.abs < _.abs } }
+            val maxed = groupedTargets.getOrElse(true, Vector()).map { case (c, max) => c -> max.get }
+            val nonMaxed = groupedTargets.getOrElse(false, Vector()).map { _._1 }
+            
+            // Performs the actual length adjustment
+            maxed foreach { case (c, max) => c.adjustLength(max, direction) }
+            nonMaxed foreach { _.adjustLength(adjustmentPerTarget, direction) }
+            
+            // Finds out if more targets need to be adjusted, uses recursion if necessary
+            if (!maxed.isEmpty)
+            {
+                // Finds the targets for the next iteration
+                // Either a) remaining high priority items (if present) + other adjustable items (adjustable)
+                // or b) lower priority items (after all high priority items are maxed)
+                // or c) remaining non-maxed items (if there were no high priority items)
+                val nextTargets = 
+                {
+                    if (topPriority.isEmpty)
+                        nonMaxed
+                    else
+                        nonMaxed ++ (adjustable.map { _._1 }.filterNot { _.stackSize.isLowPriorityFor(direction) })
+                }
+                
+                if (!nextTargets.isEmpty)
+                {
+                    // Calculates remaining adjustment
+                    val remainingAdjustment = maxed.map { _._2 }.foldLeft(0.0) { 
+                            case (total, max) => total + (adjustmentPerTarget - max) }
+                    
+                    // Performs the next iteration
+                    adjustLength(nextTargets, remainingAdjustment)
+                }
+            }
+        }
+    }
 }
 
 private class CacheStackable(val source: Stackable) extends Area
@@ -151,4 +218,29 @@ private class CacheStackable(val source: Stackable) extends Area
     }
     
     def resetStackSize() = sizes.reset()
+    
+    /**
+     * How much this component may still be enlarged before reaching maximum size (None if no maximum)
+     */
+    def maxIncrease(direction: Axis2D) = stackSize.along(direction).max.map { 
+            max => max - size.lengthAlong(direction) }
+    
+    /**
+     * How much this component may still be shrinked before reaching minimum size
+     */
+    def maxShrink(direction: Axis2D) = size.lengthAlong(direction) - stackSize.along(direction).min
+    
+    /**
+     * The maximum size adjustment, depending on the targetAdjustment type (shrink or increase)
+     * @direction adjustment direction
+     * @targetAdjustment an example adjustment
+     * @return a positive (increase) or negative (shrink) number for maximum adjustment (None if no maximum)
+     */
+    def maxAdjustment(direction: Axis2D, targetAdjustment: Double) = 
+    {
+        if (targetAdjustment > 0)
+            maxIncrease(direction)
+        else
+            Some(-maxShrink(direction))
+    }
 }
