@@ -13,6 +13,8 @@ import utopia.reflection.container.StackLayout.Fit
 import utopia.reflection.component.Wrapper
 import utopia.flow.datastructure.mutable.Pointer
 import scala.collection.immutable.VectorBuilder
+import utopia.reflection.container.StackLayout.Leading
+import utopia.reflection.container.StackLayout.Trailing
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically
@@ -133,54 +135,112 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     def resetCachedSize() = _components foreach { _.resetStackSize() }
     
-    def refreshContent() = ???
-    
-    private def adjustComponentLengths(adjustment: Double) = 
+    def refreshContent() = 
     {
-        // TODO: Calculate necessary adjustment
-        
-        // Arranges the mutable items in a vector first. Treats margins and caps as separate items
-        val caps = Vector.fill(2)(Pointer(0.0))
-        val margins = Vector.fill(count - 1)(Pointer(0.0))
-        val targets = 
+        if (!_components.isEmpty)
         {
-            val builder = new VectorBuilder[LengthAdjust]()
+            // Calculates the necessary length adjustment
+            val stackSize = this.stackSize
+            val lengthAdjustment = lengthAlong(direction) - stackSize.along(direction).optimal
             
-            // Starts with a cap
-            builder += new GapLengthAdjust(caps.head, cap)
-            
-            // Next adds items with margins
-            _components.zip(margins).foreach
+            // Arranges the mutable items in a vector first. Treats margins and caps as separate items
+            val caps = Vector.fill(2)(Pointer(0.0))
+            val margins = Vector.fill(count - 1)(Pointer(0.0))
+            val targets = 
             {
-                case (component, margin) =>
-                    builder += new StackableLengthAdjust(component, direction)
-                    builder += new GapLengthAdjust(margin, this.margin)
+                val builder = new VectorBuilder[LengthAdjust]()
+                
+                // Starts with a cap
+                builder += new GapLengthAdjust(caps.head, cap)
+                
+                // Next adds items with margins
+                _components.zip(margins).foreach
+                {
+                    case (component, margin) =>
+                        builder += new StackableLengthAdjust(component, direction)
+                        builder += new GapLengthAdjust(margin, this.margin)
+                }
+                
+                // Adds final component and final cap
+                builder += new StackableLengthAdjust(_components.last, direction)
+                builder += new GapLengthAdjust(caps.last, cap)
+                
+                builder.result()
             }
             
-            // Adds final component and final cap
-            builder += new StackableLengthAdjust(_components.last, direction)
-            builder += new GapLengthAdjust(caps.last, cap)
+            // First adjusts the length of low priority items, then of all remaining items (if necessary)
+            val groupedTargets = targets.groupBy { _.isLowPriority }
+            val lowPrioTargets = groupedTargets.getOrElse(true, Vector())
             
-            builder.result()
+            val remainingAdjustment = 
+            {
+                if (lowPrioTargets.isEmpty)
+                    lengthAdjustment
+                else
+                    adjustLength(lowPrioTargets, lengthAdjustment)
+            }
+            
+            if (remainingAdjustment != 0.0)
+                groupedTargets.get(false).foreach { adjustLength(_, remainingAdjustment) }
+            
+            // Applies the length adjustments
+            targets.foreach { _() }
+            
+            // Positions the components length-wise (first components with margin and then the final component)
+            var cursor = caps.head.get
+            _components.zip(margins).foreach 
+            {
+                case (component, margin) =>  
+                    component.setCoordinate(cursor, direction)
+                    cursor += component.lengthAlong(direction) + margin.get
+            }
+            _components.last.setCoordinate(cursor, direction)
+            
+            // Handles the breadth of the components too, as well as their perpendicular positioning
+            val breadthAxis = direction.perpendicular
+            val newBreadth = lengthAlong(breadthAxis)
+            _components.foreach
+            {
+                component =>
+                    val breadth = component.stackSize.along(breadthAxis)
+                    
+                    // Component breadth may be affected by minimum and maximum
+                    val newComponentBreadth = 
+                    {
+                        if (breadth.min > newBreadth)
+                            breadth.min
+                        else if (breadth.max.exists { newBreadth < _ })
+                            breadth.max.get
+                        else
+                        {
+                            // In fit-style stacks, stack breadth is used over component optimal 
+                            // whereas in other styles optimal is prioritized
+                            if (layout == Fit)
+                                newBreadth
+                            else
+                                newBreadth min breadth.optimal
+                        }
+                    }
+                    
+                    component.setLength(newComponentBreadth, breadthAxis)
+                    
+                    // Component positioning depends on the layout
+                    val newComponentPosition = 
+                    {
+                        if (layout == Leading)
+                            0
+                        else if (layout == Trailing)
+                            newBreadth - newComponentBreadth
+                        else
+                            (newBreadth - newComponentBreadth) / 2
+                    }
+                    
+                    component.setCoordinate(newComponentPosition, breadthAxis)
+            }
         }
-        
-        // First adjusts the length of low priority items, then of all remaining items (if necessary)
-        val groupedTargets = targets.groupBy { _.isLowPriority }
-        val lowPrioTargets = groupedTargets.getOrElse(true, Vector())
-        
-        val remainingAdjustment = if (lowPrioTargets.isEmpty) adjustment else adjustLength2(lowPrioTargets, adjustment)
-        if (remainingAdjustment != 0.0)
-            groupedTargets.get(false).foreach { adjustLength2(_, remainingAdjustment) }
-        
-        // Applies the length adjustments
-        targets.foreach { _() }
-        
-        // TODO: Handle breadth
-        
-        // TODO: Position components too
     }
     
-    private def adjustLength2(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
+    private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
     {
         // Finds out how much each item should be adjusted
         val adjustmentPerComponent = adjustment / targets.size
@@ -198,10 +258,10 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
         else if (remainingAdjustment == 0.0)
             0.0
         else
-            adjustLength2(availableTargets, remainingAdjustment)
+            adjustLength(availableTargets, remainingAdjustment)
     }
     
-    // TODO: You also need to handle the varying margins and caps (redesign)
+    /*
     private def adjustLength(targets: Traversable[CacheStackable], adjustment: Double): Unit = 
     {
         // First finds the items that can be adjusted (and how much)
@@ -216,7 +276,6 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
         val adjustmentPerTarget = adjustment / finalTargets.size
         
         // Will not care for < 1 pixel changes (the system is not accurate enough)
-        // TODO: Handle these cases more carefully (combine size changes to a single component)
         if (adjustmentPerTarget.abs >= 1)
         {
             // Finds out which targets will be maxed out and which won't
@@ -255,7 +314,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                 }
             }
         }
-    }
+    }*/
 }
 
 private class CacheStackable(val source: Stackable) extends Area

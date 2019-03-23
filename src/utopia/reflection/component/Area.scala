@@ -48,6 +48,15 @@ trait Area
     // OTHER    ------------------------
     
     /**
+     * The x or y coordinate of this component
+     */
+    def coordinateAlong(axis: Axis2D) = axis match 
+    {
+        case X => x
+        case Y => y
+    }
+    
+    /**
      * Changes either x- or y-coordinate of this area
      * @param position the target coordinate
      * @param axis the target axis (X or Y)
@@ -65,6 +74,15 @@ trait Area
     {
         case X => x += adjustment
         case Y => y += adjustment
+    }
+    
+    /**
+     * The length of this component along the specified axis
+     */
+    def lengthAlong(axis: Axis2D) = axis match 
+    {
+        case X => width
+        case Y => height
     }
     
     /**
