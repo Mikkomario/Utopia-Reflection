@@ -11,6 +11,8 @@ import utopia.reflection.component.Area
 import utopia.reflection.shape.StackSize
 import utopia.reflection.container.StackLayout.Fit
 import utopia.reflection.component.Wrapper
+import utopia.flow.datastructure.mutable.Pointer
+import scala.collection.immutable.VectorBuilder
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically
@@ -45,6 +47,16 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
      * Whether this stack has no components in it
      */
     def isEmpty = _components.isEmpty
+    
+    /**
+     * The length (min, optimal, max) of this stack
+     */
+    def stackLength = stackSize.along(direction)
+    
+    /**
+     * The breadth (min, optimal, max) of this stack
+     */
+    def stackBreadth = stackSize.perpendicularTo(direction)
     
     
     // IMPLEMENTED    -------------------
@@ -122,6 +134,72 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     def resetCachedSize() = _components foreach { _.resetStackSize() }
     
     def refreshContent() = ???
+    
+    private def adjustComponentLengths(adjustment: Double) = 
+    {
+        // TODO: Calculate necessary adjustment
+        
+        // Arranges the mutable items in a vector first. Treats margins and caps as separate items
+        val caps = Vector.fill(2)(Pointer(0.0))
+        val margins = Vector.fill(count - 1)(Pointer(0.0))
+        val targets = 
+        {
+            val builder = new VectorBuilder[LengthAdjust]()
+            
+            // Starts with a cap
+            builder += new GapLengthAdjust(caps.head, cap)
+            
+            // Next adds items with margins
+            _components.zip(margins).foreach
+            {
+                case (component, margin) =>
+                    builder += new StackableLengthAdjust(component, direction)
+                    builder += new GapLengthAdjust(margin, this.margin)
+            }
+            
+            // Adds final component and final cap
+            builder += new StackableLengthAdjust(_components.last, direction)
+            builder += new GapLengthAdjust(caps.last, cap)
+            
+            builder.result()
+        }
+        
+        // First adjusts the length of low priority items, then of all remaining items (if necessary)
+        val groupedTargets = targets.groupBy { _.isLowPriority }
+        val lowPrioTargets = groupedTargets.getOrElse(true, Vector())
+        
+        val remainingAdjustment = if (lowPrioTargets.isEmpty) adjustment else adjustLength2(lowPrioTargets, adjustment)
+        if (remainingAdjustment != 0.0)
+            groupedTargets.get(false).foreach { adjustLength2(_, remainingAdjustment) }
+        
+        // Applies the length adjustments
+        targets.foreach { _() }
+        
+        // TODO: Handle breadth
+        
+        // TODO: Position components too
+    }
+    
+    private def adjustLength2(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
+    {
+        // Finds out how much each item should be adjusted
+        val adjustmentPerComponent = adjustment / targets.size
+        
+        // Adjusts the items (some may be maxed) and caches results
+        val results = targets map { target => target -> (target += adjustment) }
+        
+        // Finds out the remaining adjustment and available targets
+        val remainingAdjustment = results.foldLeft(0.0) { case (total, next) => total + next._2 }
+        val availableTargets = results.filter { _._2 != 0.0 }.map { _._1 }
+        
+        // If necessary and possible, goes for the second round. Returns remaining adjustment
+        if (availableTargets.isEmpty)
+            remainingAdjustment
+        else if (remainingAdjustment == 0.0)
+            0.0
+        else
+            adjustLength2(availableTargets, remainingAdjustment)
+    }
     
     // TODO: You also need to handle the varying margins and caps (redesign)
     private def adjustLength(targets: Traversable[CacheStackable], adjustment: Double): Unit = 
@@ -222,12 +300,14 @@ private class CacheStackable(val source: Stackable) extends Area
     /**
      * How much this component may still be enlarged before reaching maximum size (None if no maximum)
      */
+    @deprecated("Use LengthAdjust", "v0.1")
     def maxIncrease(direction: Axis2D) = stackSize.along(direction).max.map { 
             max => max - size.lengthAlong(direction) }
     
     /**
      * How much this component may still be shrinked before reaching minimum size
      */
+    @deprecated("Use LengthAdjust", "v0.1")
     def maxShrink(direction: Axis2D) = size.lengthAlong(direction) - stackSize.along(direction).min
     
     /**
@@ -236,6 +316,7 @@ private class CacheStackable(val source: Stackable) extends Area
      * @targetAdjustment an example adjustment
      * @return a positive (increase) or negative (shrink) number for maximum adjustment (None if no maximum)
      */
+    @deprecated("Use LengthAdjust", "v0.1")
     def maxAdjustment(direction: Axis2D, targetAdjustment: Double) = 
     {
         if (targetAdjustment > 0)
@@ -243,4 +324,83 @@ private class CacheStackable(val source: Stackable) extends Area
         else
             Some(-maxShrink(direction))
     }
+}
+
+private trait LengthAdjust
+{
+    // ATTRIBUTES    -----------------
+    
+    private var currentAdjust = 0.0
+    
+    
+    // ABSTRACT    -------------------
+    
+    def length: StackLength
+    
+    protected def setLength(length: Double): Unit
+    
+    
+    // COMPUTED    -------------------
+    
+    def isLowPriority = length.lowPriority
+    
+    private def max = length.max map { _ - length.optimal }
+    
+    private def min = length.min - length.optimal
+    
+    
+    // OPERATORS    ------------------
+    
+    def +=(amount: Double) = 
+    {
+        val target = currentAdjust + amount
+        
+        if (amount < 0)
+        {
+            if (target > min)
+            {
+                currentAdjust = target
+                0.0
+            }
+            else
+            {
+                currentAdjust = min
+                min - target
+            }
+        }
+        else if (amount > 0)
+        {
+            if (max exists { target > _ })
+            {
+                currentAdjust = max.get
+                max.get - target
+            }
+            else
+            {
+                currentAdjust = target
+                0.0
+            }
+        }
+        else
+            0.0
+    }
+    
+    
+    // OTHER    ---------------------
+    
+    def apply() = setLength(length.optimal + currentAdjust)
+}
+
+private class StackableLengthAdjust(private val target: CacheStackable, 
+        private val direction: Axis2D) extends LengthAdjust
+{
+    def length = target.stackSize.along(direction)
+    
+    def setLength(length: Double) = target.setLength(length, direction)
+}
+
+private class GapLengthAdjust(private val target: Pointer[Double], 
+        val length: StackLength) extends LengthAdjust
+{
+    def setLength(length: Double) = target.set(length)
 }
