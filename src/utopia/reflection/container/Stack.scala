@@ -22,33 +22,18 @@ import utopia.reflection.container.StackLayout.Trailing
 * @since 25.2.2019
 **/
 class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLength, 
-        val cap: StackLength) extends Stackable with JWrapper
+        val cap: StackLength) extends Container[Stackable] with Stackable with JWrapper
 {
 	// ATTRIBUTES    --------------------
     
     private val panel = new Panel()
     private var _components = Vector[CacheStackable]()
     
-    /**
-     * The components in this stack
-     */
-    def components = _components map { _.source }
-    
     
     // COMPUTED    ----------------------
     
     private def numberOfMargins = _components.size - 1
     private def totalMarginsLength = margin * numberOfMargins
-    
-    /**
-     * The number of components in this stack
-     */
-    def count = _components.size
-    
-    /**
-     * Whether this stack has no components in it
-     */
-    def isEmpty = _components.isEmpty
     
     /**
      * The length (min, optimal, max) of this stack
@@ -64,6 +49,20 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     // IMPLEMENTED    -------------------
     
     def component = panel.component
+    
+    def components = _components map { _.source }
+    
+    def +=(component: Stackable) = 
+    {
+        _components :+= new CacheStackable(component)
+        panel += component
+    }
+    
+    def -=(component: Stackable) = 
+    {
+        _components = _components filterNot { component.equals }
+        panel -= component
+    }
     
     def stackSize = 
     {
@@ -104,32 +103,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     }
     
     
-    // OPERATORS    ---------------------
-    
-    def +=(component: Stackable) = 
-    {
-        _components :+= new CacheStackable(component)
-        panel += component
-    }
-    
-    def ++=(components: TraversableOnce[Stackable]) = components foreach { += }
-    
-    def -=(component: Wrapper) = 
-    {
-        _components = _components filterNot { component.equals }
-        panel -= component
-    }
-    
-    def --=(components: TraversableOnce[Wrapper]) = components foreach { -= }
-    
-    
     // OTHERS    -----------------------
-    
-    def clear() = 
-    {
-        _components = Vector()
-        panel.clear()
-    }
     
     def dropLast(amount: Int) = _components dropRight(amount) map { _.source } foreach { -= }
     

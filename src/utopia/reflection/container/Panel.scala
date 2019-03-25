@@ -10,17 +10,12 @@ import utopia.reflection.component.Wrapper
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-class Panel extends JWrapper
+class Panel extends Container[Wrapper] with JWrapper
 {
     // ATTRIBUTES    -------------------
     
 	private val panel = new JPanel()
 	private var _components = Vector[Wrapper]()
-	
-	/**
-	 * The currently stored components inside this panel
-	 */
-	def components = _components
 	
 	
 	// INITIAL CODE    -----------------
@@ -34,55 +29,17 @@ class Panel extends JWrapper
 	
 	def component: JComponent = panel
 	
+	def components = _components
 	
-	// OPERATORS    --------------------
-	
-	/**
-	 * Adds a new component to this panel
-	 */
 	def +=(component: Wrapper) = 
 	{
 	    _components :+= component
 	    panel.add(component.component)
 	}
 	
-	/**
-	 * Adds multiple components to this panel
-	 */
-	def ++=(components: Traversable[Wrapper]) = 
-	{
-	    _components ++= components
-	    components foreach { c => panel.add(c.component) }
-	}
-	
-	/**
-	 * Adds multiple components to this panel
-	 */
-	def ++=(first: Wrapper, second: Wrapper, more: Wrapper*): Unit = ++=(Vector(first, second) ++ more)
-	
-	/**
-	 * Removes a component from this panel
-	 */
 	def -=(component: Wrapper) = 
 	{
 	    _components = components filterNot { _.equals(component) }
 	    panel.remove(component.component)
-	}
-	
-	/**
-	 * Removes multiple components from this panel
-	 */
-	def --=(components: TraversableOnce[Wrapper]) = components foreach -=;
-	
-	
-	// OTHERS    ------------------------
-	
-	/**
-	 * Removes all components from this panel
-	 */
-	def clear() = 
-	{
-	    _components = Vector()
-	    panel.removeAll()
 	}
 }
