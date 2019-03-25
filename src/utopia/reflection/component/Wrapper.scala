@@ -61,7 +61,7 @@ trait Wrapper extends Area
     
     def fontMetrics = font.map(component.getFontMetrics(_))
     def textWidth(text: String) = 
-    {
+    {   
         if (text.isEmpty())
             Some(0)
         else

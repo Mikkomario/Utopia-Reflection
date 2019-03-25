@@ -70,6 +70,14 @@ case class StackSize(val width: StackLength, val height: StackLength)
     
     def optimal = Size(width.optimal, height.optimal)
     
+    def max = 
+    {
+        if (width.max.isDefined && height.max.isDefined)
+            Some(Size(width.max.get, height.max.get))
+        else
+            None
+    }
+    
     
     // IMPLEMENTED    ----------------
     
