@@ -139,17 +139,23 @@ case class StackSize(val width: StackLength, val height: StackLength)
     
     def withMaxHeight(maxH: Int) = withMaxSide(maxH, Y)
     
+    def withMax(max: Size) = withMaxSide(max.width.toInt, X).withMaxSide(max.height.toInt, Y)
+    
     def withOptimalSide(optimalLength: Int, axis: Axis2D) = mapSide(axis, _.withOptimal(optimalLength))
     
     def withOptimalWidth(optimalW: Int) = withOptimalSide(optimalW, X)
     
     def withOptimalHeight(optimalH: Int) = withOptimalSide(optimalH, Y)
     
+    def withOptimal(optimal: Size) = withOptimalSide(optimal.width.toInt, X).withOptimalSide(optimal.height.toInt, Y)
+    
     def withMinSide(minLength: Int, axis: Axis2D) = mapSide(axis, _.withMin(minLength))
     
     def withMinWidth(minW: Int) = withMinSide(minW, X)
     
     def withMinHeight(minH: Int) = withMinSide(minH, Y)
+    
+    def withMin(min: Size) = withMinSide(min.width.toInt, X).withMinSide(min.height.toInt, Y)
     
     def limitedTo(size: Size) = StackSize.min(this, StackSize.fixed(size))
     

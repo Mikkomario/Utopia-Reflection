@@ -28,6 +28,11 @@ trait Window[C <: Stackable] extends Stackable
      */
     def showsToolBar: Boolean
     
+    /**
+     * Whether this window is currently set to full screen mode
+     */
+    def fullScreen: Boolean
+    
     
     // COMPUTED    ----------------
     
@@ -48,7 +53,13 @@ trait Window[C <: Stackable] extends Stackable
             else 
                 Screen.size
         }
-        (content.stackSize + insets.total).limitedTo(maxSize)
+        val normal = (content.stackSize + insets.total).limitedTo(maxSize)
+        
+        // If on full screen mode, tries to maximize screen size
+        if (fullScreen)
+            normal.withOptimal(normal.max getOrElse normal.optimal)
+        else
+            normal
     }
     
     
@@ -57,19 +68,23 @@ trait Window[C <: Stackable] extends Stackable
     /**
      * Centers this window on the screen
      */
-    def centerOnScreen() = component.setLocationRelativeTo(null)
+    def centerOnScreen() = centerOn(null)
     
     /**
      * Centers this window on the screen or on the parent component
      */
-    def center() = component.setLocationRelativeTo(component.getParent)
+    def center() = centerOn(component.getParent)
     
-    /**
-     * Makes this window fill the whole screen
-     */
-    def goFullScreen() = 
+    private def centerOn(component: java.awt.Component) = 
     {
-        position = if (showsToolBar) insets.toPoint else Point.origin
-        stackSize.max.foreach { size = _ }
+        if (fullScreen)
+        {
+            if (showsToolBar)
+                position = Screen.insetsAt(component.getGraphicsConfiguration).toPoint
+            else
+                position = Point.origin
+        }
+        else
+            this.component.setLocationRelativeTo(component)
     }
 }
