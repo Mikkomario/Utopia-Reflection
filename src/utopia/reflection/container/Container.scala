@@ -11,6 +11,8 @@ trait Container[C] extends Wrapper
 {
     // ABSTRACT    ----------------
     
+    def component: java.awt.Container
+    
     /**
      * The current components in this container
      */
