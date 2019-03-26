@@ -15,6 +15,7 @@ import utopia.flow.datastructure.mutable.Pointer
 import scala.collection.immutable.VectorBuilder
 import utopia.reflection.container.StackLayout.Leading
 import utopia.reflection.container.StackLayout.Trailing
+import utopia.reflection.event.ResizeListener
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically
@@ -28,6 +29,13 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     private val panel = new Panel()
     private var _components = Vector[CacheStackable]()
+    
+    
+    // INITIAL CODE    ------------------
+    
+    // TODO: Remove this feature if another style of resize is implemented
+    // Each time size changes, also updates content (doesn't reset stack sizes at this time)
+    resizeListeners :+= ResizeListener(e => refreshContent())
     
     
     // COMPUTED    ----------------------
