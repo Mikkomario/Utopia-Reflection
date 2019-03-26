@@ -28,6 +28,8 @@ trait Wrapper extends Area
 {
     // ABSTRACT    ------------------------
     
+    // TODO: Add support for size listeners
+    
     /**
      * The wrapped component
      */

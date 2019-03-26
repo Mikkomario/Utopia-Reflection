@@ -3,6 +3,8 @@ package utopia.reflection.container
 import utopia.reflection.component.Stackable
 import utopia.reflection.component.JWrapper
 import javax.swing.JFrame
+import utopia.reflection.util.Screen
+import utopia.genesis.shape.shape2D.Point
 
 /**
 * A frame operates as the / a main window in an app
@@ -15,7 +17,7 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
 {
     // ATTRIBUTES    -------------------
     
-    private val _component = new MyFrame(title, borderless, content.component)
+    private val _component = new MyFrame(title, borderless, content.component, () => updateContentBounds())
     
     private var _fullScreen = startFullScreen
     private var _showsToolBar = startWithToolBar
@@ -23,7 +25,13 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
     
     // INITIAL CODE    -----------------
     
-    // TODO: Set size & position
+    // Sets position and size
+    updateBounds()
+    
+    if (!fullScreen)
+        position = ((Screen.size - size) / 2).toVector.toPoint;
+    
+    updateContentBounds()
     
     
 	// IMPLEMENTED    ------------------
@@ -35,9 +43,36 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
      
     def showsToolBar: Boolean = _showsToolBar
     def showsToolBar_=(newStatus: Boolean) = _showsToolBar = newStatus // TODO: Resize if necessary
+    
+    
+    // OTHER    ------------------------
+    
+    private def updateBounds() = 
+    {
+        if (fullScreen)
+        {
+            if (showsToolBar)
+                position = Screen.insetsAt(component.getGraphicsConfiguration).toPoint
+            else
+                position = Point.origin
+                
+            size = stackSize.optimal
+        }
+        else
+        {
+            val oldSize = size
+            size = stackSize.optimal
+            
+            val increase = size - oldSize
+            position = (position - (increase / 2).toVector).positive
+        }
+    }
+    
+    private def updateContentBounds() = content.size = size - insets.total
 }
 
-private class MyFrame(title: String, borderless: Boolean, contentPanel: java.awt.Container) extends JFrame(title)
+private class MyFrame(title: String, borderless: Boolean, contentPanel: java.awt.Container, 
+        val updateContentSize: () => Unit) extends JFrame(title)
 {
     // INITIAL CODE    -----------------
     
@@ -45,5 +80,13 @@ private class MyFrame(title: String, borderless: Boolean, contentPanel: java.awt
     setUndecorated(borderless)
     pack()
     
-    // TODO: Handle content validation
+    
+    // IMPLEMENTED    ------------------
+    
+    // Updates content bounds whenever this frame is revalidated
+    override def validate() = 
+    {
+        updateContentSize()
+        super.validate()
+    }
 }

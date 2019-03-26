@@ -6,6 +6,7 @@ import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.X
 import utopia.genesis.shape.Y
+import utopia.genesis.shape.Vector3D
 
 /**
 * This trait is extended by classes that occupy a certain 2D space (position + size)
@@ -25,17 +26,31 @@ trait Area
     
     // COMPUTED    -----------------------
     
+    def position_+=(adjustment: Vector3D) = position = position + adjustment
+    def position_-=(adjustment: Vector3D) = position += (-adjustment)
+    
+    def size_+=(adjustment: Size) = size = size + adjustment
+    def size_-=(adjustment: Size) = size += (-adjustment)
+    
 	def x = position.x
     def x_=(newX: Double) = position = position.withX(newX)
+    def x_+=(adjustment: Double) = position = position + X(adjustment)
+    def x_-=(adjustment: Double) = x += (-adjustment)
     
     def y = position.y
     def y_=(newY: Double) = position = position.withY(newY)
+    def y_+=(adjustment: Double) = position = position + Y(adjustment)
+    def y_-=(adjustment: Double) = y += (-adjustment)
     
     def width = size.width
     def width_=(w: Double) = size = size.withWidth(w)
+    def width_+=(adjustment: Double) = size = size + X(adjustment)
+    def width_-=(adjustment: Double) = width += (-adjustment)
     
     def height = size.height
     def height_=(h: Double) = size = size.withHeight(h)
+    def height_+=(adjustment: Double) = size = size + Y(adjustment)
+    def height_-=(adjustment: Double) = height += (-adjustment)
     
     def bounds = Bounds(position, size)
     def bounds_=(b: Bounds) = 

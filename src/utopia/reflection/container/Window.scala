@@ -73,6 +73,7 @@ trait Window[C <: Stackable] extends Stackable
     /**
      * Centers this window on the screen or on the parent component
      */
+    // TODO: This method is redundant in Frame, which has no parent
     def center() = centerOn(component.getParent)
     
     private def centerOn(component: java.awt.Component) = 
