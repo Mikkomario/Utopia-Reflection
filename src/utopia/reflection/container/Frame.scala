@@ -5,6 +5,8 @@ import utopia.reflection.component.JWrapper
 import javax.swing.JFrame
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.Point
+import utopia.reflection.event.ResizeListener
+import utopia.genesis.shape.shape2D.Size
 
 /**
 * A frame operates as the / a main window in an app
@@ -17,7 +19,8 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
 {
     // ATTRIBUTES    -------------------
     
-    private val _component = new MyFrame(title, borderless, content.component, () => updateContentBounds())
+    private val _component = new MyFrame(title, borderless, content.component, 
+            () => updateContentBounds(size));
     
     private var _fullScreen = startFullScreen
     private var _showsToolBar = startWithToolBar
@@ -31,7 +34,10 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
     if (!fullScreen)
         position = ((Screen.size - size) / 2).toVector.toPoint;
     
-    updateContentBounds()
+    updateContentBounds(size)
+    
+    // Registers a listener to update content bounds on frame size changes
+    resizeListeners :+= ResizeListener(e => updateContentBounds(e.newSize))
     
     
 	// IMPLEMENTED    ------------------
@@ -68,7 +74,7 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
         }
     }
     
-    private def updateContentBounds() = content.size = size - insets.total
+    private def updateContentBounds(newSize: Size) = content.size = newSize - insets.total
 }
 
 private class MyFrame(title: String, borderless: Boolean, contentPanel: java.awt.Container, 

@@ -10,6 +10,8 @@ import java.awt.Component
 import java.awt.Font
 import java.awt.Color
 import utopia.reflection.shape.StackSize
+import utopia.reflection.event.ResizeListener
+import utopia.reflection.event.ResizeEvent
 
 object Wrapper
 {
@@ -26,9 +28,21 @@ object Wrapper
 **/
 trait Wrapper extends Area
 {
-    // ABSTRACT    ------------------------
+    // ATTRIBUTES    ----------------------
     
-    // TODO: Add support for size listeners
+    /**
+     * The currently active resize listeners for this wrapper. Please note that the listeners 
+     * will by default only be informed on size changes made through this wrapper. Size changes 
+     * that happen directly in the component are ignored by default
+     */
+    var resizeListeners = Vector[ResizeListener]()
+    /**
+     * Removes a resize listener from the informed listeners
+     */
+    def resizeListeners_-=(listener: Any) = resizeListeners = resizeListeners.filterNot { _ == listener }
+    
+    
+    // ABSTRACT    ------------------------
     
     /**
      * The wrapped component
@@ -42,7 +56,24 @@ trait Wrapper extends Area
     def position_=(p: Point) = component.setLocation(p.toAwtPoint)
     
     def size = Size(component.getWidth, component.getHeight)
-    def size_=(s: Size) = component.setSize(s.toDimension)
+    def size_=(s: Size) = 
+    {
+        // Informs resize listeners, if there are any
+        if (resizeListeners.isEmpty)
+            component.setSize(s.toDimension)
+        else
+        {
+            val oldSize = size
+            component.setSize(s.toDimension)
+            
+            val newSize = size
+            if (oldSize !~== newSize)
+            {
+                val newEvent = ResizeEvent(oldSize, newSize)
+                resizeListeners.foreach { _.onResizeEvent(newEvent) }
+            }
+        }
+    }
     
     
 	// COMPUTED PROPERTIES    -------------
@@ -74,6 +105,11 @@ trait Wrapper extends Area
     
     
     // OTHER    -------------------------
+    
+    /**
+     * Removes all resize listeners from this wrapper
+     */
+    def clearResizeListeners() = resizeListeners = Vector()
     
     /**
      * Transforms this wrapper into a Stackable
