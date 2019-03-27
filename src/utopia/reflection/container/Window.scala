@@ -6,13 +6,14 @@ import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.Point
+import javax.swing.JComponent
 
 /**
 * This is a common wrapper for all window implementations
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-trait Window[C <: Stackable] extends Stackable
+trait Window[Content <: Stackable] extends Stackable
 {
 	// ABSTRACT    -----------------
     
@@ -21,7 +22,7 @@ trait Window[C <: Stackable] extends Stackable
     /**
      * The content displayed in this window
      */
-    def content: C
+    def content: Content
     
     /**
      * Whether the OS toolbar should be shown

@@ -5,6 +5,7 @@ import java.awt.Color
 import javax.swing.AbstractAction
 import java.awt.event.ActionEvent
 import javax.swing.KeyStroke
+import utopia.reflection.shape.StackSize
 
 object JWrapper
 {
@@ -47,6 +48,19 @@ trait JWrapper extends Wrapper
         component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(key, 0), actionName)
         component.getActionMap.put(actionName, new RunAction(action))
     }
+    
+    
+    // OTHER    --------------------------
+    
+    /**
+     * Transforms this wrapper into a Stackable
+     */
+    override def withStackSize(getSize: () => StackSize) = JStackable(component, getSize)
+    
+    /**
+     * Transforms this wrapper into a Stackable
+     */
+    override def withStackSize(size: StackSize) = JStackable(component, size)
     
     
     // NESTED CLASSES    -----------------

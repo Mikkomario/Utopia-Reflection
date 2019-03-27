@@ -12,6 +12,7 @@ import java.awt.Color
 import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.event.ResizeEvent
+import utopia.flow.datastructure.mutable.Lazy
 
 object Wrapper
 {
@@ -29,6 +30,10 @@ object Wrapper
 trait Wrapper extends Area
 {
     // ATTRIBUTES    ----------------------
+    
+    // Temporarily cached position and size
+    private val cachedPosition = new Lazy(() => Point(component.getX, component.getY))
+    private val cachedSize = new Lazy(() => Size(component.getWidth, component.getHeight))
     
     /**
      * The currently active resize listeners for this wrapper. Please note that the listeners 
@@ -52,24 +57,27 @@ trait Wrapper extends Area
     
     // IMPLEMENTED    ---------------------
     
-    def position = Point(component.getX, component.getY)
-    def position_=(p: Point) = component.setLocation(p.toAwtPoint)
+    def position = cachedPosition.get
+    def position_=(p: Point) = cachedPosition.set(p)// component.setLocation(p.toAwtPoint)
     
-    def size = Size(component.getWidth, component.getHeight)
+    def size = cachedSize.get
     def size_=(s: Size) = 
     {
+        println(s"Setting size to $s. Will inform ${resizeListeners.size} listeners")
+        
         // Informs resize listeners, if there are any
         if (resizeListeners.isEmpty)
-            component.setSize(s.toDimension)
+            cachedSize.set(s)// component.setSize(s.toDimension)
         else
         {
             val oldSize = size
-            component.setSize(s.toDimension)
+            cachedSize.set(s)// component.setSize(s.toDimension)
             
-            val newSize = size
-            if (oldSize !~== newSize)
+            println(s"$oldSize -> $s")
+            
+            if (oldSize !~== s)
             {
-                val newEvent = ResizeEvent(oldSize, newSize)
+                val newEvent = ResizeEvent(oldSize, s)
                 resizeListeners.foreach { _.onResizeEvent(newEvent) }
             }
         }
@@ -105,6 +113,12 @@ trait Wrapper extends Area
     
     
     // OTHER    -------------------------
+    
+    def updateBounds() = 
+    {
+        cachedPosition.current.foreach { p => component.setLocation(p.toAwtPoint) }
+        cachedSize.current.foreach { s => component.setSize(s.toDimension) }
+    }
     
     /**
      * Removes all resize listeners from this wrapper

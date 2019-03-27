@@ -16,6 +16,8 @@ import scala.collection.immutable.VectorBuilder
 import utopia.reflection.container.StackLayout.Leading
 import utopia.reflection.container.StackLayout.Trailing
 import utopia.reflection.event.ResizeListener
+import utopia.flow.util.WaitUtils
+import java.time.Duration
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically
@@ -219,20 +221,29 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                     
                     component.setCoordinate(newComponentPosition, breadthAxis)
             }
+            
+            // Finally applies the changes
+            _components.foreach { _.updateBounds() }
         }
     }
     
     private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
     {
+        // println(s"Adjusting length for ${targets.size} targets. Remaining adjustment: $adjustment")
+        
         // Finds out how much each item should be adjusted
         val adjustmentPerComponent = adjustment / targets.size
         
         // Adjusts the items (some may be maxed) and caches results
-        val results = targets map { target => target -> (target += adjustment) }
+        val results = targets map { target => target -> (target += adjustmentPerComponent) }
+        
+        // println(s"Remaining: (${results.map { _._2 }.fold(""){ _ + ", " + _ }})")
         
         // Finds out the remaining adjustment and available targets
         val remainingAdjustment = results.foldLeft(0.0) { case (total, next) => total + next._2 }
-        val availableTargets = results.filter { _._2 != 0.0 }.map { _._1 }
+        val availableTargets = results.filter { _._2 == 0.0 }.map { _._1 }
+        
+        // println(s"Remaining total: $remainingAdjustment. Available targets: ${availableTargets.size}")
         
         // If necessary and possible, goes for the second round. Returns remaining adjustment
         if (availableTargets.isEmpty)

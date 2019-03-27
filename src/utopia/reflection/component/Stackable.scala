@@ -2,6 +2,7 @@ package utopia.reflection.component
 
 import utopia.reflection.shape.StackSize
 import java.awt.Component
+import javax.swing.JComponent
 
 object Stackable
 {
