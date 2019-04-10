@@ -28,7 +28,7 @@ object Insets
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-case class Insets(val left: Int, val right: Int, val top: Int, val bottom: Int)
+case class Insets(left: Int, right: Int, top: Int, bottom: Int)
 {
 	// COMPUTED    ---------------
     

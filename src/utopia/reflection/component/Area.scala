@@ -102,7 +102,7 @@ trait Area
     
     /**
      * Changes either the width or height of this area
-     * @length the new side length
+     * @param length the new side length
      * @param axis the target axis (X for width, Y for height)
      */
     def setLength(length: Double, axis: Axis2D) = axis match 

@@ -2,10 +2,8 @@ package utopia.reflection.component
 
 import utopia.flow.util.NullSafe._
 
-import javax.swing.JComponent
 import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
-import utopia.genesis.shape.shape2D.Bounds
 import java.awt.Component
 import java.awt.Font
 import java.awt.Color
@@ -89,13 +87,13 @@ trait Wrapper extends Area
     def parent: Option[Wrapper] =  component.getParent.toOption.map(new SimpleWrapper(_))
     def parents: Iterator[Wrapper] = new ParentsIterator()
     
-    def visible = component.isVisible()
+    def visible = component.isVisible
     def visible_=(isVisible: Boolean) = component.setVisible(isVisible)
     
     def background = component.getBackground
     def background_=(color: Color) = component.setBackground(color)
     
-    def transparent = !component.isOpaque()
+    def transparent = !component.isOpaque
     
     def font = component.getFont.toOption
     def font_=(f: Font) = component.setFont(f)
@@ -103,7 +101,7 @@ trait Wrapper extends Area
     def fontMetrics = font.map(component.getFontMetrics(_))
     def textWidth(text: String) = 
     {   
-        if (text.isEmpty())
+        if (text.isEmpty)
             Some(0)
         else
             fontMetrics.map(_.stringWidth(text))

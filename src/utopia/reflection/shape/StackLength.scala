@@ -12,7 +12,7 @@ object StackLength
     // CONSTRUCTORS    -------------
     
     def apply(min: Int, optimal: Int, max: Option[Int] = None, 
-            lowPriority: Boolean = false) = new StackLength(min, optimal, max, lowPriority);
+            lowPriority: Boolean = false) = new StackLength(min, optimal, max, lowPriority)
     
     def apply(min: Int, optimal: Int, max: Int) = new StackLength(min, optimal, Some(max))
     
@@ -32,7 +32,7 @@ object StackLength
     // OTHER    --------------------
     
     def min(a: StackLength, b: StackLength) = StackLength(a.min min b.min, a.optimal min b.optimal, 
-            Vector(a.max, b.max).flatten.reduceOption(_ min _), a.lowPriority || b.lowPriority);
+            Vector(a.max, b.max).flatten.reduceOption(_ min _), a.lowPriority || b.lowPriority)
     
     def max(a: StackLength, b: StackLength) = 
     {
@@ -65,7 +65,7 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None,
 	
 	def properties = Vector(min, optimal, max, lowPriority)
 	
-	override def toString() = 
+	override def toString =
 	{
 	    val s = new StringBuilder()
 	    s append min
@@ -75,7 +75,7 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None,
 	    max foreach {m => s append s" < $m"}
 	    
 	    if (lowPriority)
-	        s append " (low prio)";
+	        s append " (low prio)"
 	    
 	    s.toString()
 	}
@@ -94,7 +94,7 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None,
 	def -(length: Int) = +(-length)
 	
 	def *(multi: Double) = StackLength((min * multi).toInt, (optimal * multi).toInt, 
-	        max.map(m => (m * multi).toInt), lowPriority);
+	        max.map(m => (m * multi).toInt), lowPriority)
 	
 	def /(div: Double) = *(1/div)
 	

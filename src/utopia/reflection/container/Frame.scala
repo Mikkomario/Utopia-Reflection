@@ -1,7 +1,6 @@
 package utopia.reflection.container
 
 import utopia.reflection.component.Stackable
-import utopia.reflection.component.JWrapper
 import javax.swing.JFrame
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.Point
@@ -12,10 +11,10 @@ import javax.swing.WindowConstants
 object Frame
 {
     def windowed[C <: Stackable with Container[_]](content: C, title: String) = new Frame(
-            content, title, false, false, false);
+            content, title, false, false, false)
     
     def fullScreen[C <: Stackable with Container[_]](content: C, title: String, 
-            showToolBar: Boolean) = new Frame(content, title, true, true, showToolBar);
+            showToolBar: Boolean) = new Frame(content, title, true, true, showToolBar)
 }
 
 /**
@@ -29,7 +28,7 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
 {
     // ATTRIBUTES    -------------------
     
-    private val _component = new MyFrame(title, borderless, content.component);
+    private val _component = new MyFrame(title, borderless, content.component)
     
     private var _fullScreen = startFullScreen
     private var _showsToolBar = startWithToolBar
@@ -41,7 +40,7 @@ class Frame[C <: Stackable with Container[_]](val content: C, val title: String,
     updateFrameBounds()
     
     if (!fullScreen)
-        position = ((Screen.size - size) / 2).toVector.toPoint;
+        position = ((Screen.size - size) / 2).toVector.toPoint
     
     updateContentBounds(size)
     

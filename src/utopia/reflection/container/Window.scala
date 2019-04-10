@@ -1,12 +1,9 @@
 package utopia.reflection.container
 
-import utopia.reflection.component.Wrapper
 import utopia.reflection.component.Stackable
-import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.Point
-import javax.swing.JComponent
 
 /**
 * This is a common wrapper for all window implementations

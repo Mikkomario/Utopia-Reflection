@@ -10,14 +10,11 @@ import utopia.flow.datastructure.mutable.Lazy
 import utopia.reflection.component.Area
 import utopia.reflection.shape.StackSize
 import utopia.reflection.container.StackLayout.Fit
-import utopia.reflection.component.Wrapper
 import utopia.flow.datastructure.mutable.Pointer
 import scala.collection.immutable.VectorBuilder
 import utopia.reflection.container.StackLayout.Leading
 import utopia.reflection.container.StackLayout.Trailing
 import utopia.reflection.event.ResizeListener
-import utopia.flow.util.WaitUtils
-import java.time.Duration
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically
@@ -115,13 +112,13 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     // OTHERS    -----------------------
     
-    def dropLast(amount: Int) = _components dropRight(amount) map { _.source } foreach { -= }
+    def dropLast(amount: Int) = _components dropRight amount map { _.source } foreach { -= }
     
     def resetCachedSize() = _components foreach { _.resetStackSize() }
     
     def refreshContent() = 
     {
-        if (!_components.isEmpty)
+        if (_components.nonEmpty)
         {
             // Calculates the necessary length adjustment
             val stackSize = this.stackSize
@@ -140,9 +137,9 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                 // Next adds items with margins
                 _components.zip(margins).foreach
                 {
-                    case (component, margin) =>
+                    case (component, marginPointer) =>
                         builder += new StackableLengthAdjust(component, direction)
-                        builder += new GapLengthAdjust(margin, this.margin)
+                        builder += new GapLengthAdjust(marginPointer, margin)
                 }
                 
                 // Adds final component and final cap
@@ -174,9 +171,9 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
             var cursor = caps.head.get
             _components.zip(margins).foreach 
             {
-                case (component, margin) =>  
+                case (component, marginPointer) =>
                     component.setCoordinate(cursor, direction)
-                    cursor += component.lengthAlong(direction) + margin.get
+                    cursor += component.lengthAlong(direction) + marginPointer.get
             }
             _components.last.setCoordinate(cursor, direction)
             
@@ -348,34 +345,6 @@ private class CacheStackable(val source: Stackable) extends Area
     }
     
     def resetStackSize() = sizes.reset()
-    
-    /**
-     * How much this component may still be enlarged before reaching maximum size (None if no maximum)
-     */
-    @deprecated("Use LengthAdjust", "v0.1")
-    def maxIncrease(direction: Axis2D) = stackSize.along(direction).max.map { 
-            max => max - size.lengthAlong(direction) }
-    
-    /**
-     * How much this component may still be shrinked before reaching minimum size
-     */
-    @deprecated("Use LengthAdjust", "v0.1")
-    def maxShrink(direction: Axis2D) = size.lengthAlong(direction) - stackSize.along(direction).min
-    
-    /**
-     * The maximum size adjustment, depending on the targetAdjustment type (shrink or increase)
-     * @direction adjustment direction
-     * @targetAdjustment an example adjustment
-     * @return a positive (increase) or negative (shrink) number for maximum adjustment (None if no maximum)
-     */
-    @deprecated("Use LengthAdjust", "v0.1")
-    def maxAdjustment(direction: Axis2D, targetAdjustment: Double) = 
-    {
-        if (targetAdjustment > 0)
-            maxIncrease(direction)
-        else
-            Some(-maxShrink(direction))
-    }
 }
 
 private trait LengthAdjust

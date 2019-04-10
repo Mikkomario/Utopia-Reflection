@@ -19,10 +19,10 @@ object StackSize
     
     def apply(min: Size, optimal: Size, maxWidth: Option[Int], maxHeight: Option[Int]) = 
             new StackSize(StackLength(min.width.toInt, optimal.width.toInt, maxWidth), 
-            StackLength(min.height.toInt, optimal.height.toInt, maxHeight));
+            StackLength(min.height.toInt, optimal.height.toInt, maxHeight))
     
     def apply(min: Size, optimal: Size, max: Option[Size]): StackSize = apply(min, optimal, 
-            max.map(_.width.toInt), max.map(_.height.toInt));
+            max.map(_.width.toInt), max.map(_.height.toInt))
     
     def apply(min: Size, optimal: Size, max: Size): StackSize = apply(min, optimal, Some(max))
     
@@ -41,7 +41,7 @@ object StackSize
     def upscaling(optimal: Size): StackSize = upscaling(optimal, optimal)
     
     def downscaling(optimal: Size, maxWidth: Int, maxHeight: Int) = StackSize(Size.zero, optimal, 
-            Some(maxWidth), Some(maxHeight));
+            Some(maxWidth), Some(maxHeight))
     
     def downscaling(optimal: Size, max: Size): StackSize = StackSize(Size.zero, optimal, max)
     
@@ -51,7 +51,7 @@ object StackSize
     // OTHER    ---------------------
     
     def min(a: StackSize, b: StackSize) = StackSize(StackLength.min(a.width, b.width), 
-            StackLength.min(a.height, b.height));
+            StackLength.min(a.height, b.height))
     
     def max(a: StackSize, b: StackSize) = StackSize(StackLength.max(a.width, b.width), 
             StackLength.max(a.height, b.height))
@@ -62,7 +62,7 @@ object StackSize
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-case class StackSize(val width: StackLength, val height: StackLength)
+case class StackSize(width: StackLength, height: StackLength)
 {
     // COMPUTED PROPERTIES    --------
     
@@ -81,7 +81,7 @@ case class StackSize(val width: StackLength, val height: StackLength)
     
     // IMPLEMENTED    ----------------
     
-    override def toString() = s"[$width, $height]"
+    override def toString = s"[$width, $height]"
     
     
     // OPERATORS    ------------------

@@ -7,7 +7,7 @@ import utopia.genesis.shape.shape2D.Size
 * @author Mikko Hilpinen
 * @since 26.3.2019
 **/
-case class ResizeEvent(val oldSize: Size, val newSize: Size)
+case class ResizeEvent(oldSize: Size, newSize: Size)
 {
 	// COMPUTED    ---------------
     
