@@ -1,6 +1,5 @@
 package utopia.reflection.container
 
-import utopia.reflection.component.Stackable
 import javax.swing.JFrame
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.Point
@@ -10,11 +9,24 @@ import javax.swing.WindowConstants
 
 object Frame
 {
-    def windowed[C <: Stackable with Container[_]](content: C, title: String) = new Frame(
-            content, title, false, false, false)
+    /**
+      * Creates a new windowed frame
+      * @param content The frame contents
+      * @param title The frame title
+      * @return A new windowed frame
+      */
+    def windowed(content: StackContainer[_], title: String) = new Frame(content, title, false,
+        false, false)
     
-    def fullScreen[C <: Stackable with Container[_]](content: C, title: String, 
-            showToolBar: Boolean) = new Frame(content, title, true, true, showToolBar)
+    /**
+      * Creates a new full screen frame
+      * @param content The frame contents
+      * @param title The frame title
+      * @param showToolBar Whether tool bar (bottom) should be displayed
+      * @return A new full screen frame
+      */
+    def fullScreen(content: StackContainer[_], title: String, showToolBar: Boolean) = new Frame(content, title,
+        true, true, showToolBar)
 }
 
 /**
@@ -23,8 +35,8 @@ object Frame
 * @since 26.3.2019
 **/
 // TODO: Maybe add title to the window trait
-class Frame[C <: Stackable with Container[_]](val content: C, val title: String, 
-        val borderless: Boolean, startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[C]
+class Frame(val content: StackContainer[_], val title: String,
+        val borderless: Boolean, startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[StackContainer[_]]
 {
     // ATTRIBUTES    -------------------
     

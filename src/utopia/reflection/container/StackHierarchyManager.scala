@@ -8,7 +8,7 @@ import utopia.reflection.component.Stackable
 
 import scala.collection.mutable
 
-class StackHierarchyManager
+object StackHierarchyManager
 {
 	// TYPES	-------------------------
 	

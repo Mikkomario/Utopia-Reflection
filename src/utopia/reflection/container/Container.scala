@@ -21,12 +21,12 @@ trait Container[C] extends Wrapper
 	/**
 	 * Adds a new item to this container
 	 */
-	protected def +=(component: C): Unit
+	protected def add(component: C): Unit
 	
 	/**
 	 * Removes an item from this container
 	 */
-	protected def -=(component: C): Unit
+	protected def remove(component: C): Unit
 	
 	
 	// COMPUTED    ----------------
@@ -43,6 +43,16 @@ trait Container[C] extends Wrapper
 	
 	
 	// OPERATORS    ---------------
+	
+	/**
+	  * Adds a new item to this container
+	  */
+	def +=(component: C) = add(component)
+	
+	/**
+	  * Removes an item from this container
+	  */
+	def -=(component: C) = remove(component)
 	
 	/**
 	 * Adds multiple items to this container

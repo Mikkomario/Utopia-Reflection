@@ -28,10 +28,15 @@ object Stackable
 **/
 trait Stackable extends Wrapper
 {
+	// ABSTRACT	---------------------
+	
     /**
      * The current sizes of this wrapper
      */
 	def stackSize: StackSize
+	
+	
+	// OTHER	---------------------
 	
 	/**
 	 * Sets the size of this component to optimal (by stack size)

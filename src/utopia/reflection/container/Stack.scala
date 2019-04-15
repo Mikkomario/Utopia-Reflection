@@ -22,7 +22,7 @@ import utopia.reflection.event.ResizeListener
 * @since 25.2.2019
 **/
 class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLength, 
-        val cap: StackLength) extends Container[Stackable] with Stackable with JWrapper
+        val cap: StackLength) extends StackContainer[Stackable] with JWrapper
 {
 	// ATTRIBUTES    --------------------
     
@@ -34,7 +34,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     // TODO: Remove this feature if another style of resize is implemented
     // Each time size changes, also updates content (doesn't reset stack sizes at this time)
-    resizeListeners :+= ResizeListener(e => refreshContent())
+    resizeListeners :+= ResizeListener(_ => refreshContent())
     
     
     // COMPUTED    ----------------------
@@ -59,13 +59,13 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     def components = _components map { _.source }
     
-    def +=(component: Stackable) = 
+    protected def add(component: Stackable) =
     {
         _components :+= new CacheStackable(component)
         panel += component
     }
     
-    def -=(component: Stackable) = 
+    protected def remove(component: Stackable) =
     {
         _components = _components filterNot { component.equals }
         panel -= component

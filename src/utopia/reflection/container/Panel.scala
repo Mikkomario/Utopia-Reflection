@@ -31,13 +31,13 @@ class Panel extends Container[Wrapper] with JWrapper
 	
 	def components = _components
 	
-	def +=(component: Wrapper) = 
+	protected def add(component: Wrapper) =
 	{
 	    _components :+= component
 	    panel.add(component.component)
 	}
 	
-	def -=(component: Wrapper) = 
+	protected def remove(component: Wrapper) =
 	{
 	    _components = components filterNot { _.equals(component) }
 	    panel.remove(component.component)
