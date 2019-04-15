@@ -1,12 +1,19 @@
 package utopia.reflection.container
 
+import java.time.Duration
+
+import javax.swing.SwingUtilities
+import utopia.flow.async.Loop
 import utopia.flow.collection.VolatileList
 import utopia.flow.datastructure.immutable.GraphEdge
 import utopia.flow.datastructure.mutable.GraphNode
-import utopia.flow.util.Counter
+import utopia.flow.util.{Counter, WaitUtils}
+import utopia.flow.util.WaitTarget.WaitDuration
+import utopia.genesis.util.FPS
 import utopia.reflection.component.Stackable
 
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext
 
 /**
   * Stack hierarchy manager tracks stack component hierarchies and updates the components when necessary
@@ -31,6 +38,16 @@ object StackHierarchyManager
 	
 	private val validationQueue = VolatileList[Stackable]()
 	
+	private var validationLoop: Option[RevalidateLoop] = None
+	
+	
+	// COMPUTED	-------------------------
+	
+	/**
+	  * @return Whether this hierarchy manager expects to be revalidated in the near future
+	  */
+	def waitsRevalidation = validationQueue.nonEmpty
+	
 	
 	// OTHER	-------------------------
 	
@@ -38,23 +55,64 @@ object StackHierarchyManager
 	  * Requests validation for the specified item
 	  * @param item An item
 	  */
-	def requestValidationFor(item: Stackable) = validationQueue :+= item
+	def requestValidationFor(item: Stackable) =
+	{
+		// Queues the item
+		validationQueue :+= item
+		
+		// Informs validation loop
+		validationLoop.foreach { l => WaitUtils.notify(l.waitLock) }
+	}
 	
+	/**
+	  * Starts automatic revalidation in a background thread
+	  * @param vps The maximum validations per second value (default = 30)
+	  * @param context The asynchronous execution context
+	  */
+	def startRevalidationLoop(vps: FPS = FPS(30))(implicit context: ExecutionContext) =
+	{
+		if (validationLoop.isEmpty)
+		{
+			val loop = new RevalidateLoop(vps.interval)
+			validationLoop = Some(loop)
+			loop.startAsync()
+			loop.registerToStopOnceJVMCloses()
+		}
+	}
+	
+	/**
+	  * Performs a single revalidation on this stack hierarchy manager. This method needn't be called if automatic
+	  * revalidation is used
+	  */
 	def revalidate(): Unit =
 	{
-		val items = validationQueue.getAndSet(Vector()).toSet
-		val itemIds = items.flatMap(ids.get)
-		
-		// First resets stack sizes for all revalidating hierarchies
-		resetStackSizesFor(itemIds)
-		
-		// Validates the necessary master items
-		val masterNodes = itemIds.map { _.masterId }.flatMap { index => graph.get(index) }
-		masterNodes.foreach { _.content.updateLayout() }
-		
-		// Validates the deeper levels
-		val nextIds = itemIds.flatMap { _.tail }
-		revalidate(nextIds, masterNodes)
+		// Only revalidates if necessary
+		if (waitsRevalidation)
+		{
+			val items = validationQueue.getAndSet(Vector()).toSet
+			val itemIds = items.flatMap(ids.get)
+			
+			// First resets stack sizes for all revalidating hierarchies
+			resetStackSizesFor(itemIds)
+			
+			// Validates the necessary master items
+			val masterNodes = itemIds.map
+			{
+				_.masterId
+			}.flatMap
+			{ index => graph.get(index) }
+			masterNodes.foreach
+			{
+				_.content.updateLayout()
+			}
+			
+			// Validates the deeper levels
+			val nextIds = itemIds.flatMap
+			{
+				_.tail
+			}
+			revalidate(nextIds, masterNodes)
+		}
 	}
 	
 	private def revalidate(remainingIds: Set[StackId], nodes: Set[Node]): Unit =
@@ -238,4 +296,19 @@ private case class StackId(parts: Vector[Int])
 	}
 	
 	def dropUntil(index: Int) = StackId(parts.dropWhile { _ != index })
+}
+
+private class RevalidateLoop(val validationInterval: Duration) extends Loop
+{
+	override protected def runOnce() =
+	{
+		// Performs the validation in Swing graphics thread
+		SwingUtilities.invokeAndWait(() => StackHierarchyManager.revalidate())
+		
+		// May wait until next item needs validation
+		if (!StackHierarchyManager.waitsRevalidation)
+			WaitUtils.waitUntilNotified(waitLock)
+	}
+	
+	override protected def nextWaitTarget = WaitDuration(validationInterval)
 }
