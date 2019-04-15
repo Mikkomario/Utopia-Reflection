@@ -8,6 +8,11 @@ import utopia.reflection.component.Stackable
 
 import scala.collection.mutable
 
+/**
+  * Stack hierarchy manager tracks stack component hierarchies and updates the components when necessary
+  * @author Mikko Hilpinen
+  * @since 15.4.2019, v0.1+
+  */
 object StackHierarchyManager
 {
 	// TYPES	-------------------------
@@ -40,9 +45,12 @@ object StackHierarchyManager
 		val items = validationQueue.getAndSet(Vector()).toSet
 		val itemIds = items.flatMap(ids.get)
 		
+		// First resets stack sizes for all revalidating hierarchies
+		resetStackSizesFor(itemIds)
+		
 		// Validates the necessary master items
 		val masterNodes = itemIds.map { _.masterId }.flatMap { index => graph.get(index) }
-		// TODO: Perform validation once a function is available. masterNodes.foreach { _.content.revalidate() }
+		masterNodes.foreach { _.content.updateLayout() }
 		
 		// Validates the deeper levels
 		val nextIds = itemIds.flatMap { _.tail }
@@ -58,12 +66,29 @@ object StackHierarchyManager
 		if (nextNodes.nonEmpty)
 		{
 			// Validates the items
-			// TODO: Add validation function to stackable and then call it here
+			nextNodes.foreach { _.content.updateLayout() }
 			
 			// Traverses to the next level, if necessary
 			val nextIds = remainingIds.flatMap { _.tail }
 			if (nextIds.nonEmpty)
 				revalidate(nextIds, nextNodes)
+		}
+	}
+	
+	private def resetStackSizesFor(remainingIds: Set[StackId]): Unit =
+	{
+		if (remainingIds.nonEmpty)
+		{
+			// Handles the items from bottom to the top (longest ids are treated first and shortened)
+			val maxIdLenght = remainingIds.map { _.length }.max
+			val groups = remainingIds.groupBy { _.length == maxIdLenght }
+			
+			val longest = groups.getOrElse(true, Set())
+			longest.foreach { nodeOptionForId(_).foreach { _.content.resetCachedSize() } }
+			
+			// Shortened ids are treated on another recursive round
+			val nextIds = longest.flatMap { _.parentId } ++ groups.getOrElse(false, Set())
+			resetStackSizesFor(nextIds)
 		}
 	}
 	
@@ -146,14 +171,18 @@ object StackHierarchyManager
 		}
 	}
 	
-	private def graphForId(id: StackId) = graph(id.masterId)
+	private def graphForId(id: StackId) = graphOptionForId(id).get
 	
-	private def nodeForId(id: StackId) =
+	private def graphOptionForId(id: StackId) = graph.get(id.masterId)
+	
+	private def nodeForId(id: StackId) = nodeOptionForId(id).get
+	
+	private def nodeOptionForId(id: StackId) =
 	{
 		if (id.isMasterId)
-			graphForId(id)
+			graphOptionForId(id)
 		else
-			(graphForId(id) / id.parts.drop(1)).head
+			graphOptionForId(id).flatMap { n => (n / id.parts.drop(1)).headOption }
 	}
 	
 	private def parentId(item: Stackable) =
@@ -180,6 +209,8 @@ private object StackId
 
 private case class StackId(parts: Vector[Int])
 {
+	def length = parts.size
+	
 	def head = parts.head
 	
 	def last = parts.last
