@@ -6,7 +6,6 @@ import utopia.genesis.shape.Axis2D
 import utopia.reflection.shape.StackLength
 import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
-import utopia.flow.datastructure.mutable.Lazy
 import utopia.reflection.component.Area
 import utopia.reflection.shape.StackSize
 import utopia.reflection.container.StackLayout.Fit
@@ -32,9 +31,8 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     // INITIAL CODE    ------------------
     
-    // TODO: Remove this feature if another style of resize is implemented
     // Each time size changes, also updates content (doesn't reset stack sizes at this time)
-    resizeListeners :+= ResizeListener(_ => refreshContent())
+    resizeListeners :+= ResizeListener(_ => updateLayout())
     
     
     // COMPUTED    ----------------------
@@ -71,7 +69,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
         panel -= component
     }
     
-    def stackSize = 
+    protected def calculatedStackSize =
     {
         if (_components.isEmpty)
             StackSize.any.withLowPriorityFor(direction)
@@ -109,14 +107,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
         }
     }
     
-    
-    // OTHERS    -----------------------
-    
-    def dropLast(amount: Int) = _components dropRight amount map { _.source } foreach { -= }
-    
-    def resetCachedSize() = _components foreach { _.resetStackSize() }
-    
-    def refreshContent() = 
+    def updateLayout() =
     {
         if (_components.nonEmpty)
         {
@@ -127,7 +118,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
             // Arranges the mutable items in a vector first. Treats margins and caps as separate items
             val caps = Vector.fill(2)(Pointer(0.0))
             val margins = Vector.fill(count - 1)(Pointer(0.0))
-            val targets = 
+            val targets =
             {
                 val builder = new VectorBuilder[LengthAdjust]()
                 
@@ -153,7 +144,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
             val groupedTargets = targets.groupBy { _.isLowPriority }
             val lowPrioTargets = groupedTargets.getOrElse(true, Vector())
             
-            val remainingAdjustment = 
+            val remainingAdjustment =
             {
                 if (lowPrioTargets.isEmpty)
                     lengthAdjustment
@@ -169,7 +160,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
             
             // Positions the components length-wise (first components with margin and then the final component)
             var cursor = caps.head.get
-            _components.zip(margins).foreach 
+            _components.zip(margins).foreach
             {
                 case (component, marginPointer) =>
                     component.setCoordinate(cursor, direction)
@@ -186,7 +177,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                     val breadth = component.stackSize.along(breadthAxis)
                     
                     // Component breadth may be affected by minimum and maximum
-                    val newComponentBreadth = 
+                    val newComponentBreadth =
                     {
                         if (breadth.min > newBreadth)
                             breadth.min
@@ -194,7 +185,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                             breadth.max.get
                         else
                         {
-                            // In fit-style stacks, stack breadth is used over component optimal 
+                            // In fit-style stacks, stack breadth is used over component optimal
                             // whereas in other styles optimal is prioritized
                             if (layout == Fit)
                                 newBreadth
@@ -206,7 +197,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                     component.setLength(newComponentBreadth, breadthAxis)
                     
                     // Component positioning depends on the layout
-                    val newComponentPosition = 
+                    val newComponentPosition =
                     {
                         if (layout == Leading)
                             0
@@ -223,6 +214,11 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
             _components.foreach { _.updateBounds() }
         }
     }
+    
+    
+    // OTHERS    -----------------------
+    
+    def dropLast(amount: Int) = _components dropRight amount map { _.source } foreach { -= }
     
     private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
     {
@@ -250,61 +246,6 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
         else
             adjustLength(availableTargets, remainingAdjustment)
     }
-    
-    /*
-    private def adjustLength(targets: Traversable[CacheStackable], adjustment: Double): Unit = 
-    {
-        // First finds the items that can be adjusted (and how much)
-        val adjustable = targets.map { c => c -> c.maxAdjustment(direction, adjustment) }.filterNot 
-        { _._2.exists { _.abs < 1 } };
-        
-        // Prefers items with low priority
-        val topPriority = adjustable.filter { _._1.stackSize.isLowPriorityFor(direction) }
-        val finalTargets = if (topPriority.isEmpty) adjustable else topPriority
-        
-        // Tries to adjust each target the same amount (limited by max adjust)
-        val adjustmentPerTarget = adjustment / finalTargets.size
-        
-        // Will not care for < 1 pixel changes (the system is not accurate enough)
-        if (adjustmentPerTarget.abs >= 1)
-        {
-            // Finds out which targets will be maxed out and which won't
-            val groupedTargets = finalTargets groupBy { 
-                    case (c, max) => max.exists { adjustmentPerTarget.abs < _.abs } }
-            val maxed = groupedTargets.getOrElse(true, Vector()).map { case (c, max) => c -> max.get }
-            val nonMaxed = groupedTargets.getOrElse(false, Vector()).map { _._1 }
-            
-            // Performs the actual length adjustment
-            maxed foreach { case (c, max) => c.adjustLength(max, direction) }
-            nonMaxed foreach { _.adjustLength(adjustmentPerTarget, direction) }
-            
-            // Finds out if more targets need to be adjusted, uses recursion if necessary
-            if (!maxed.isEmpty)
-            {
-                // Finds the targets for the next iteration
-                // Either a) remaining high priority items (if present) + other adjustable items (adjustable)
-                // or b) lower priority items (after all high priority items are maxed)
-                // or c) remaining non-maxed items (if there were no high priority items)
-                val nextTargets = 
-                {
-                    if (topPriority.isEmpty)
-                        nonMaxed
-                    else
-                        nonMaxed ++ (adjustable.map { _._1 }.filterNot { _.stackSize.isLowPriorityFor(direction) })
-                }
-                
-                if (!nextTargets.isEmpty)
-                {
-                    // Calculates remaining adjustment
-                    val remainingAdjustment = maxed.map { _._2 }.foldLeft(0.0) { 
-                            case (total, max) => total + (adjustmentPerTarget - max) }
-                    
-                    // Performs the next iteration
-                    adjustLength(nextTargets, remainingAdjustment)
-                }
-            }
-        }
-    }*/
 }
 
 private class CacheStackable(val source: Stackable) extends Area
@@ -313,8 +254,6 @@ private class CacheStackable(val source: Stackable) extends Area
     
     private var nextPosition: Option[Point] = None
     private var nextSize: Option[Size] = None
-    
-    private val sizes = new Lazy(() => source.stackSize)
     
     
     // IMPLEMENTED    -----------------
@@ -330,7 +269,7 @@ private class CacheStackable(val source: Stackable) extends Area
     
     def component = source.component
     
-    def stackSize = sizes.get
+    def stackSize = source.stackSize
     
     
     // OTHER    -----------------------
@@ -343,8 +282,6 @@ private class CacheStackable(val source: Stackable) extends Area
         nextSize filterNot { _ ~== source.size } foreach { source.size = _ }
         nextSize = None
     }
-    
-    def resetStackSize() = sizes.reset()
 }
 
 private trait LengthAdjust

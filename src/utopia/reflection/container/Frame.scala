@@ -66,7 +66,10 @@ class Frame(val content: StackContainer[_], val title: String,
 	// IMPLEMENTED    ------------------
     
     def component: JFrame = _component
-     
+    
+    // Each time (content) layout is updated, may resize this frame
+    override def updateLayout() = updateFrameBounds()
+    
     def fullScreen: Boolean = _fullScreen
     def fullScreen_=(newStatus: Boolean) = _fullScreen = newStatus // TODO: Resize and reposition
      

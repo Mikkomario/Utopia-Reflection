@@ -2,7 +2,9 @@ package utopia.reflection.component
 
 import utopia.reflection.shape.StackSize
 import java.awt.Component
-import javax.swing.JComponent
+
+import utopia.flow.datastructure.mutable.Lazy
+import utopia.reflection.container.StackHierarchyManager
 
 object Stackable
 {
@@ -11,7 +13,8 @@ object Stackable
      * @param component wrapped component
      * @param getSize a function for retrieving component size
      */
-    def apply(component: Component, getSize: () => StackSize): Stackable = new StackWrapper(component, getSize)    
+    def apply(component: Component, getSize: () => StackSize, update: () => Unit = () => Unit): Stackable =
+		new StackWrapper(component, getSize, update)
     
     /**
      * Wraps a component as stackable
@@ -28,15 +31,46 @@ object Stackable
 **/
 trait Stackable extends Wrapper
 {
+	// ATTRIBUTES	-----------------
+	
+	private val cachedStackSize = new Lazy[StackSize](() => calculatedStackSize)
+	
+	
 	// ABSTRACT	---------------------
+	
+	/**
+	  * Updates the layout (and other contents) of this stackable instance. This method will be called if the component,
+	  * or its child is revalidated. The stack sizes of this component, as well as those of revalidating children
+	  * should be reset at this point.
+	  */
+	def updateLayout(): Unit
+	
+	/**
+	  * Calculates an up-to-date stack size for this component
+	  * @return An up-to-date stack size for this component
+	  */
+	protected def calculatedStackSize: StackSize
+	
+	
+	// COMPUTED	---------------------
 	
     /**
      * The current sizes of this wrapper
      */
-	def stackSize: StackSize
+	def stackSize = cachedStackSize.get
 	
 	
 	// OTHER	---------------------
+	
+	/**
+	  * Resets cached stackSize, if there is one, so that it will be recalculated when requested next time
+	  */
+	def resetCachedSize() = cachedStackSize.reset()
+	
+	/**
+	  * Requests a revalidation for this item
+	  */
+	def revalidate() = StackHierarchyManager.requestValidationFor(this)
 	
 	/**
 	 * Sets the size of this component to optimal (by stack size)
@@ -49,7 +83,9 @@ trait Stackable extends Wrapper
 	def setToMinSize() = size = stackSize.min
 }
 
-private class StackWrapper(val component: Component, val getSize: () => StackSize) extends Stackable
+private class StackWrapper(val component: Component, val getSize: () => StackSize, val update: () => Unit) extends Stackable
 {
-    def stackSize = getSize()
+	override def updateLayout() = update()
+	
+	override protected def calculatedStackSize = getSize()
 }

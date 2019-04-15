@@ -42,7 +42,7 @@ trait Window[Content <: Stackable] extends Stackable
     
     // IMPLEMENTED    ------------
     
-    def stackSize = 
+    override protected def calculatedStackSize =
     {
         val maxSize = 
         {
