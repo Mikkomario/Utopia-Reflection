@@ -8,6 +8,7 @@ import java.awt.Font
 import java.awt.Color
 
 import javax.swing.SwingUtilities
+import utopia.flow.async.VolatileFlag
 import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.event.ResizeEvent
@@ -34,6 +35,8 @@ trait Wrapper extends Area
     private val cachedPosition = new Lazy(() => Point(component.getX, component.getY))
     private val cachedSize = new Lazy(() => Size(component.getWidth, component.getHeight))
     
+    private val updateDisabled = new VolatileFlag()
+    
     /**
      * The currently active resize listeners for this wrapper. Please note that the listeners 
      * will by default only be informed on size changes made through this wrapper. Size changes 
@@ -53,12 +56,6 @@ trait Wrapper extends Area
      */
     def component: Component
     
-    // TODO: Remove
-    /**
-      * @return The children of this component
-      */
-    def children: Set[Wrapper]
-    
     
     // IMPLEMENTED    ---------------------
     
@@ -69,7 +66,7 @@ trait Wrapper extends Area
     def position_=(p: Point) =
     {
         cachedPosition.set(p)
-        SwingUtilities.invokeLater(() => updateBounds())
+        updateBounds()
     }
     
     /**
@@ -93,7 +90,7 @@ trait Wrapper extends Area
             }
         }
         
-        SwingUtilities.invokeLater(() => updateBounds())
+        updateBounds()
     }
     
     
@@ -153,15 +150,24 @@ trait Wrapper extends Area
     
     // OTHER    -------------------------
     
-    def updateBounds(): Unit =
+    /**
+      * Performs a (longer) operation on the GUI thread and updates the component size & position only after the update
+      * has been done
+      * @param operation The operation that will be run
+      * @tparam U Arbitary result type
+      */
+    def doThenUpdate[U](operation: => U) =
     {
-        // Updates own position and size
-        cachedPosition.current.foreach { p => component.setLocation(p.toAwtPoint) }
-        cachedSize.current.foreach { s => component.setSize(s.toDimension) }
-        
-        // TODO: Remove
-        // Also updates child bounds
-        // children.foreach { _.updateBounds() }
+        SwingUtilities.invokeLater(() =>
+        {
+            // Disables update during operation
+            updateDisabled.set()
+            operation
+            
+            // Enables updates and performs them
+            updateDisabled.reset()
+            updateBounds()
+        })
     }
     
     /**
@@ -178,6 +184,18 @@ trait Wrapper extends Area
      * Transforms this wrapper into a Stackable
      */
     def withStackSize(size: StackSize) = Stackable(component, size)
+    
+    private def updateBounds(): Unit =
+    {
+        updateDisabled.doIfNotSet
+        {
+            // Updates own position and size
+            cachedPosition.current.foreach
+            { p => component.setLocation(p.toAwtPoint) }
+            cachedSize.current.foreach
+            { s => component.setSize(s.toDimension) }
+        }
+    }
     
     
     // NESTED CLASSES    ----------------

@@ -1,9 +1,10 @@
 package utopia.reflection.container
 
+import java.awt.event.{ComponentAdapter, ComponentEvent}
+
 import javax.swing.JFrame
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.Point
-import utopia.reflection.event.ResizeListener
 import utopia.genesis.shape.shape2D.Size
 import javax.swing.WindowConstants
 
@@ -40,7 +41,7 @@ class Frame(val content: StackContainer[_], val title: String,
 {
     // ATTRIBUTES    -------------------
     
-    private val _component = new MyFrame(title, borderless, content.component)
+    private val _component = new JFrame(title)
     
     private var _fullScreen = startFullScreen
     private var _showsToolBar = startWithToolBar
@@ -48,21 +49,27 @@ class Frame(val content: StackContainer[_], val title: String,
     
     // INITIAL CODE    -----------------
     
-    // Sets position and size
-    updateFrameBounds()
+    {
+        // Makes sure content size has been cached (so that events will be fired correctly)
+        content.size
+        
+        // Sets up the underlying frame
+        _component.setContentPane(content.component)
+        _component.setUndecorated(borderless)
+        _component.pack()
     
-    if (!fullScreen)
-        position = ((Screen.size - size) / 2).toVector.toPoint
+        // Sets position and size
+        updateFrameBounds()
     
-    // TODO: Won't fire resize events on first time because cached size matches component size
-    updateContentBounds(size)
+        if (!fullScreen)
+            position = ((Screen.size - size) / 2).toVector.toPoint
     
-    // Registers to update bounds on each validation
-    _component.validationListeners :+= (() => frameRevalidated())
+        // TODO: Won't fire resize events on first time because cached size matches component size
+        updateContentBounds(size)
     
-    // Registers a listener to update content bounds on frame size changes
-    resizeListeners :+= ResizeListener(e => updateContentBounds(e.newSize))
-    
+        // Registers to update bounds on each size change
+        _component.addComponentListener(new FrameListener())
+    }
     
 	// IMPLEMENTED    ------------------
     
@@ -76,6 +83,9 @@ class Frame(val content: StackContainer[_], val title: String,
      
     def showsToolBar: Boolean = _showsToolBar
     def showsToolBar_=(newStatus: Boolean) = _showsToolBar = newStatus // TODO: Resize if necessary
+    
+    override def size = Size(component.getWidth, component.getHeight)
+    override def size_=(newSize: Size) = component.setSize(newSize.toDimension)
     
     
     // OTHER    ------------------------
@@ -106,19 +116,9 @@ class Frame(val content: StackContainer[_], val title: String,
         }
     }
     
-    private def frameRevalidated() =
-    {
-        println("Revalidating")
-        // Each time frame is validated, updates cached size, which then fires content bounds update too
-        size = Size(_component.getWidth, _component.getHeight)
-        println("Validation completed")
-    }
-    
     private def updateContentBounds(newSize: Size) = 
     {
-        val newContentSize = newSize - insets.total
-        println(s"Setting frame content size to: $newContentSize")
-        content.size = newContentSize
+        content.size = newSize - insets.total
         
         // Fires resize events for container (since they won't be fired from the container itself)
         /*
@@ -126,28 +126,13 @@ class Frame(val content: StackContainer[_], val title: String,
         lastContentSize = newContentSize
         content.resizeListeners.foreach { _.onResizeEvent(event) }*/
     }
-}
-
-private class MyFrame(title: String, borderless: Boolean, contentPanel: java.awt.Container) extends JFrame(title)
-{
-    // ATTRIBUTES    -------------------
-    
-    var validationListeners = Vector[() => Unit]()
     
     
-    // INITIAL CODE    -----------------
+    // NESTED CLASSES   -------------------
     
-    setContentPane(contentPanel)
-    setUndecorated(borderless)
-    pack()
-    
-    
-    // IMPLEMENTED    ------------------
-    
-    // Updates content bounds whenever this frame is revalidated
-    override def validate() = 
+    private class FrameListener extends ComponentAdapter
     {
-        validationListeners.foreach { _() }
-        super.validate()
+        // When frame is resized, also updates content size
+        override def componentResized(e: ComponentEvent) = updateContentBounds(size)
     }
 }

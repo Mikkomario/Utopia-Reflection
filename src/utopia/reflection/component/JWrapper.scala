@@ -12,7 +12,7 @@ object JWrapper
     /**
      * Wraps a JComponent
      */
-    def apply(component: JComponent, children: Set[Wrapper] = Set()): JWrapper = new SimpleJWrapper(component, children)
+    def apply(component: JComponent): JWrapper = new SimpleJWrapper(component)
 }
 
 /**
@@ -71,4 +71,4 @@ trait JWrapper extends Wrapper
     }
 }
 
-private class SimpleJWrapper(val component: JComponent, val children: Set[Wrapper]) extends JWrapper
+private class SimpleJWrapper(val component: JComponent) extends JWrapper

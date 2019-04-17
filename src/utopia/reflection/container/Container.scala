@@ -42,11 +42,6 @@ trait Container[C <: Wrapper] extends Wrapper
 	def isEmpty = components.isEmpty
 	
 	
-	// IMPLEMENTED	---------------
-	
-	override def children = components.toSet
-	
-	
 	// OPERATORS    ---------------
 	
 	/**

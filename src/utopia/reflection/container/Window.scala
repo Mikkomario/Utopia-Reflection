@@ -42,8 +42,6 @@ trait Window[Content <: Stackable] extends Stackable
     
     // IMPLEMENTED    ------------
     
-    override def children = Set(content)
-    
     override protected def calculatedStackSize =
     {
         val maxSize = 
