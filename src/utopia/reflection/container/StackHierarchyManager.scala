@@ -89,14 +89,8 @@ object StackHierarchyManager
 		// Only revalidates if necessary
 		if (waitsRevalidation)
 		{
-			println("Revalidating stack hierarchy")
-			
-			println(s"All item ids: ${ids.values.mkString(", ")}")
-			
 			val items = validationQueue.getAndSet(Vector()).toSet
 			val itemIds = items.flatMap(ids.get)
-			
-			println(s"Invalid item ids: ${itemIds.mkString(", ")}")
 			
 			// First resets stack sizes for all revalidating hierarchies
 			resetStackSizesFor(itemIds)

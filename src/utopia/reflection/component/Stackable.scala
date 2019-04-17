@@ -59,6 +59,16 @@ trait Stackable extends Wrapper
      */
 	def stackSize = cachedStackSize.get
 	
+	/**
+	  * @return Whether this component is now larger than its maximum size
+	  */
+	def isOverSized = stackSize.maxWidth.exists { _ < width } || stackSize.maxHeight.exists { _ < height }
+	
+	/**
+	  * @return Whether this component is now smaller than its minimum size
+	  */
+	def isUnderSized = width < stackSize.minWidth || height < stackSize.minHeight
+	
 	
 	// OTHER	---------------------
 	

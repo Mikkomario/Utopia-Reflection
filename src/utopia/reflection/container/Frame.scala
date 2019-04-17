@@ -14,10 +14,12 @@ object Frame
       * Creates a new windowed frame
       * @param content The frame contents
       * @param title The frame title
+      * @param resizePolicy The policy used about Frame resizing. By default, only the user may resize the Frame
       * @return A new windowed frame
       */
-    def windowed(content: StackContainer[_], title: String) = new Frame(content, title, false,
-        false, false)
+    def windowed(content: StackContainer[_], title: String,
+                 resizePolicy: WindowResizePolicy = WindowResizePolicy.User) =
+        new Frame(content, title, resizePolicy, false, false, false)
     
     /**
       * Creates a new full screen frame
@@ -27,7 +29,7 @@ object Frame
       * @return A new full screen frame
       */
     def fullScreen(content: StackContainer[_], title: String, showToolBar: Boolean) = new Frame(content, title,
-        true, true, showToolBar)
+        WindowResizePolicy.Program, true, true, showToolBar)
 }
 
 /**
@@ -36,7 +38,7 @@ object Frame
 * @since 26.3.2019
 **/
 // TODO: Maybe add title to the window trait
-class Frame(val content: StackContainer[_], val title: String,
+class Frame(val content: StackContainer[_], val title: String, startResizePolicy: WindowResizePolicy,
         val borderless: Boolean, startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[StackContainer[_]]
 {
     // ATTRIBUTES    -------------------
@@ -45,6 +47,7 @@ class Frame(val content: StackContainer[_], val title: String,
     
     private var _fullScreen = startFullScreen
     private var _showsToolBar = startWithToolBar
+    private var _resizePolicy = startResizePolicy
     
     
     // INITIAL CODE    -----------------
@@ -56,10 +59,11 @@ class Frame(val content: StackContainer[_], val title: String,
         // Sets up the underlying frame
         _component.setContentPane(content.component)
         _component.setUndecorated(borderless)
+        _component.setResizable(startResizePolicy.allowsUserResize)
         _component.pack()
     
         // Sets position and size
-        updateFrameBounds()
+        updateFrameBounds(true)
     
         if (!fullScreen)
             position = ((Screen.size - size) / 2).toVector.toPoint
@@ -70,7 +74,7 @@ class Frame(val content: StackContainer[_], val title: String,
         _component.addComponentListener(new FrameListener())
         
         // Registers self (and content) into stack hierarchy management
-        // StackHierarchyManager.registerConnection(this, content)
+        StackHierarchyManager.registerConnection(this, content)
     }
     
 	// IMPLEMENTED    ------------------
@@ -78,7 +82,7 @@ class Frame(val content: StackContainer[_], val title: String,
     def component: JFrame = _component
     
     // Each time (content) layout is updated, may resize this frame
-    override def updateLayout() = updateFrameBounds()
+    override def updateLayout() = updateFrameBounds(resizePolicy.allowsProgramResize)
     
     def fullScreen: Boolean = _fullScreen
     def fullScreen_=(newStatus: Boolean) = _fullScreen = newStatus // TODO: Resize and reposition
@@ -86,8 +90,19 @@ class Frame(val content: StackContainer[_], val title: String,
     def showsToolBar: Boolean = _showsToolBar
     def showsToolBar_=(newStatus: Boolean) = _showsToolBar = newStatus // TODO: Resize if necessary
     
+    def resizePolicy = _resizePolicy
+    def resizePolicy_=(newPolicy: WindowResizePolicy) =
+    {
+        _resizePolicy = newPolicy
+        _component.setResizable(newPolicy.allowsUserResize)
+    }
+    
+    // Overrides size and position because user may resize and move this frame at will, breaking the cached size / position logic
     override def size = Size(component.getWidth, component.getHeight)
     override def size_=(newSize: Size) = component.setSize(newSize.toDimension)
+    
+    override def position = Point(component.getX, component.getY)
+    override def position_=(newPosition: Point) = component.setLocation(newPosition.toAwtPoint)
     
     
     // OTHER    ------------------------
@@ -97,10 +112,8 @@ class Frame(val content: StackContainer[_], val title: String,
      */
     def setToExitOnClose() = _component.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
     
-    private def updateFrameBounds() = 
+    private def updateFrameBounds(dictateSize: Boolean) =
     {
-        println("Updating frame bounds")
-        
         if (fullScreen)
         {
             if (showsToolBar)
@@ -112,12 +125,28 @@ class Frame(val content: StackContainer[_], val title: String,
         }
         else
         {
-            val oldSize = size
-            size = stackSize.optimal
-            
-            val increase = size - oldSize
-            position = (position - (increase / 2).toVector).positive
+            // In windowed mode, either dictates the new size or just makes sure its within limits
+            if (dictateSize)
+            {
+                val oldSize = size
+                size = stackSize.optimal
+    
+                val increase = size - oldSize
+                position = (position - (increase / 2).toVector).positive
+            }
+            else
+                checkFrameBounds()
         }
+    }
+    
+    private def checkFrameBounds() =
+    {
+        // Checks current bounds against allowed limits
+        stackSize.maxWidth.filter { _ < width }.foreach { width = _ }
+        stackSize.maxHeight.filter { _ < height }.foreach { height = _ }
+        
+        if (isUnderSized)
+            size = size max stackSize.min
     }
     
     private def updateContentBounds(newSize: Size) = 

@@ -11,6 +11,7 @@ import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.{JStackable, JWrapper}
 import utopia.reflection.container.{Frame, Stack, StackHierarchyManager}
 import utopia.reflection.container.StackLayout.Fit
+import utopia.reflection.container.WindowResizePolicy.Program
 import utopia.reflection.shape.{StackLength, StackSize}
 
 import scala.concurrent.ExecutionContext
@@ -82,7 +83,7 @@ object StackHierarchyTest extends App
     stack.background = Color.ORANGE
     
     // Creates the frame
-    val frame = Frame.windowed(stack, "Test")
+    val frame = Frame.windowed(stack, "Test", Program)
     frame.setToExitOnClose()
     
     // The last item will pulse every second

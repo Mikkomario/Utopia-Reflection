@@ -136,6 +136,36 @@ case class StackSize(width: StackLength, height: StackLength)
     }
     
     /**
+      * @return The minimum width of this stack size
+      */
+    def minWidth = width.min
+    
+    /**
+      * @return The minimum height of this stack size
+      */
+    def minHeight = height.min
+    
+    /**
+      * @return The optimal width of this stack size
+      */
+    def optimalWidth = width.optimal
+    
+    /**
+      * @return The optimal height of this stack size
+      */
+    def optimalHeight = height.optimal
+    
+    /**
+      * @return The maximum width of this size. None if not specified.
+      */
+    def maxWidth = width.max
+    
+    /**
+      * @return The maximum heigth of this size. None if not specified.
+      */
+    def maxHeight = height.max
+    
+    /**
       * @return A copy of this size with no width limits
       */
     def withAnyWidth = mapWidth { _.noLimits }

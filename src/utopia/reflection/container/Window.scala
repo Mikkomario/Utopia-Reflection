@@ -44,8 +44,6 @@ trait Window[Content <: Stackable] extends Stackable
     
     override protected def calculatedStackSize =
     {
-        println("Calculating window stack size")
-        
         val maxSize = 
         {
             if (showsToolBar)
