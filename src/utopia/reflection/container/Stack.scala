@@ -98,9 +98,9 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                     StackLength(min, optimal, max)
                 }
                 else
-                    breadths.reduce { StackLength.max }.withMax(None)
+                    breadths.reduce { _ max _ }.withMax(None)
             
-            }.withPriority(breadths forall { _.lowPriority })
+            }.withPriority(breadths forall { _.isLowPriority })
             
             // Returns the final size
             StackSize(length, breadth, direction)
@@ -300,7 +300,7 @@ private trait LengthAdjust
     
     // COMPUTED    -------------------
     
-    def isLowPriority = length.lowPriority
+    def isLowPriority = length.isLowPriority
     
     private def max = length.max map { _ - length.optimal }
     

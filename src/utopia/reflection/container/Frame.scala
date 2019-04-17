@@ -64,7 +64,6 @@ class Frame(val content: StackContainer[_], val title: String,
         if (!fullScreen)
             position = ((Screen.size - size) / 2).toVector.toPoint
     
-        // TODO: Won't fire resize events on first time because cached size matches component size
         updateContentBounds(size)
     
         // Registers to update bounds on each size change
