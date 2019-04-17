@@ -68,6 +68,9 @@ class Frame(val content: StackContainer[_], val title: String,
     
         // Registers to update bounds on each size change
         _component.addComponentListener(new FrameListener())
+        
+        // Registers self (and content) into stack hierarchy management
+        // StackHierarchyManager.registerConnection(this, content)
     }
     
 	// IMPLEMENTED    ------------------
@@ -96,6 +99,8 @@ class Frame(val content: StackContainer[_], val title: String,
     
     private def updateFrameBounds() = 
     {
+        println("Updating frame bounds")
+        
         if (fullScreen)
         {
             if (showsToolBar)

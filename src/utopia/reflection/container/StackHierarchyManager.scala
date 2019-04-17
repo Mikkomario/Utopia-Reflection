@@ -89,8 +89,14 @@ object StackHierarchyManager
 		// Only revalidates if necessary
 		if (waitsRevalidation)
 		{
+			println("Revalidating stack hierarchy")
+			
+			println(s"All item ids: ${ids.values.mkString(", ")}")
+			
 			val items = validationQueue.getAndSet(Vector()).toSet
 			val itemIds = items.flatMap(ids.get)
+			
+			println(s"Invalid item ids: ${itemIds.mkString(", ")}")
 			
 			// First resets stack sizes for all revalidating hierarchies
 			resetStackSizesFor(itemIds)
@@ -296,6 +302,8 @@ private case class StackId(parts: Vector[Int])
 	}
 	
 	def dropUntil(index: Int) = StackId(parts.dropWhile { _ != index })
+	
+	override def toString = parts.mkString(":")
 }
 
 private class RevalidateLoop(val validationInterval: Duration) extends Loop
