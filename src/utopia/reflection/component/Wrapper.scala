@@ -1,12 +1,13 @@
 package utopia.reflection.component
 
 import utopia.flow.util.NullSafe._
-
 import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
 import java.awt.Component
 import java.awt.Font
 import java.awt.Color
+
+import javax.swing.SwingUtilities
 import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.event.ResizeEvent
@@ -17,7 +18,7 @@ object Wrapper
     /**
      * Wraps a component
      */
-    def apply(component: Component): Wrapper = new SimpleWrapper(component)    
+    def apply(component: Component, children: Set[Wrapper] = Set()): Wrapper = new SimpleWrapper(component, children)
 }
 
 /**
@@ -48,30 +49,42 @@ trait Wrapper extends Area
     // ABSTRACT    ------------------------
     
     /**
-     * The wrapped component
+     * @return The wrapped component
      */
     def component: Component
+    
+    // TODO: Remove
+    /**
+      * @return The children of this component
+      */
+    def children: Set[Wrapper]
     
     
     // IMPLEMENTED    ---------------------
     
+    /**
+      * @return This component's current position
+      */
     def position = cachedPosition.get
-    def position_=(p: Point) = cachedPosition.set(p)// component.setLocation(p.toAwtPoint)
+    def position_=(p: Point) =
+    {
+        cachedPosition.set(p)
+        SwingUtilities.invokeLater(() => updateBounds())
+    }
     
+    /**
+      * @return This component's current size
+      */
     def size = cachedSize.get
     def size_=(s: Size) = 
     {
-        println(s"Setting size to $s. Will inform ${resizeListeners.size} listeners")
-        
         // Informs resize listeners, if there are any
         if (resizeListeners.isEmpty)
-            cachedSize.set(s)// component.setSize(s.toDimension)
+            cachedSize.set(s)
         else
         {
             val oldSize = size
-            cachedSize.set(s)// component.setSize(s.toDimension)
-            
-            println(s"$oldSize -> $s")
+            cachedSize.set(s)
             
             if (oldSize !~== s)
             {
@@ -79,26 +92,54 @@ trait Wrapper extends Area
                 resizeListeners.foreach { _.onResizeEvent(newEvent) }
             }
         }
+        
+        SwingUtilities.invokeLater(() => updateBounds())
     }
     
     
 	// COMPUTED PROPERTIES    -------------
     
-    def parent: Option[Wrapper] =  component.getParent.toOption.map(new SimpleWrapper(_))
+    /**
+      * @return The parent component of this component (wrapped)
+      */
+    def parent: Option[Wrapper] =  component.getParent.toOption.map { new SimpleWrapper(_, Set(this)) }
+    /**
+      * @return An iterator of this components parents (wrapped)
+      */
     def parents: Iterator[Wrapper] = new ParentsIterator()
     
+    /**
+      * @return Whether this component is currently visible
+      */
     def visible = component.isVisible
     def visible_=(isVisible: Boolean) = component.setVisible(isVisible)
     
+    /**
+      * @return The background color of this component
+      */
     def background = component.getBackground
     def background_=(color: Color) = component.setBackground(color)
     
+    /**
+      * @return Whether this component is transparent (not drawing full area)
+      */
     def transparent = !component.isOpaque
     
+    /**
+      * @return The font used in this component. None if no font has been specified.
+      */
     def font = component.getFont.toOption
     def font_=(f: Font) = component.setFont(f)
     
+    /**
+      * @return The font metrics object for this component. None if font hasn't been specified.
+      */
     def fontMetrics = font.map(component.getFontMetrics(_))
+    /**
+      * Calculates text width within this component
+      * @param text Text to be presented
+      * @return The with of the would be text. None if font metrics couldn't be found.
+      */
     def textWidth(text: String) = 
     {   
         if (text.isEmpty)
@@ -112,10 +153,15 @@ trait Wrapper extends Area
     
     // OTHER    -------------------------
     
-    def updateBounds() = 
+    def updateBounds(): Unit =
     {
+        // Updates own position and size
         cachedPosition.current.foreach { p => component.setLocation(p.toAwtPoint) }
         cachedSize.current.foreach { s => component.setSize(s.toDimension) }
+        
+        // TODO: Remove
+        // Also updates child bounds
+        // children.foreach { _.updateBounds() }
     }
     
     /**
@@ -152,4 +198,4 @@ trait Wrapper extends Area
     }
 }
 
-private class SimpleWrapper(val component: Component) extends Wrapper
+private class SimpleWrapper(val component: Component, val children: Set[Wrapper]) extends Wrapper

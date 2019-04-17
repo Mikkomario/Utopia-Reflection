@@ -10,8 +10,8 @@ object JStackable
      * @param component wrapped component
      * @param getSize a function for retrieving component size
      */
-    def apply(component: JComponent, getSize: () => StackSize, update: () => Unit = () => Unit): JStackable =
-        new JStackWrapper(component, getSize, update)
+    def apply(component: JComponent, getSize: () => StackSize, update: () => Unit = () => Unit,
+              children: Set[Wrapper] = Set()): JStackable = new JStackWrapper(component, children, getSize, update)
     
     /**
      * Wraps a component as stackable
@@ -28,7 +28,8 @@ object JStackable
 **/
 trait JStackable extends Stackable with JWrapper
 
-private class JStackWrapper(val component: JComponent, val getSize: () => StackSize, val update: () => Unit) extends JStackable
+private class JStackWrapper(val component: JComponent, val children: Set[Wrapper] = Set(),
+                            val getSize: () => StackSize, val update: () => Unit) extends JStackable
 {
     def calculatedStackSize = getSize()
     

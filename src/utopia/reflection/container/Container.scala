@@ -7,7 +7,7 @@ import utopia.reflection.component.Wrapper
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-trait Container[C] extends Wrapper
+trait Container[C <: Wrapper] extends Wrapper
 {
     // ABSTRACT    ----------------
     
@@ -40,6 +40,11 @@ trait Container[C] extends Wrapper
 	 * Whether this container is currently empty
 	 */
 	def isEmpty = components.isEmpty
+	
+	
+	// IMPLEMENTED	---------------
+	
+	override def children = components.toSet
 	
 	
 	// OPERATORS    ---------------

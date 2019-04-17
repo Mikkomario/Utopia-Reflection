@@ -13,8 +13,8 @@ object Stackable
      * @param component wrapped component
      * @param getSize a function for retrieving component size
      */
-    def apply(component: Component, getSize: () => StackSize, update: () => Unit = () => Unit): Stackable =
-		new StackWrapper(component, getSize, update)
+    def apply(component: Component, getSize: () => StackSize, update: () => Unit = () => Unit,
+			  children: Set[Wrapper] = Set()): Stackable = new StackWrapper(component, getSize, update, children)
     
     /**
      * Wraps a component as stackable
@@ -83,7 +83,8 @@ trait Stackable extends Wrapper
 	def setToMinSize() = size = stackSize.min
 }
 
-private class StackWrapper(val component: Component, val getSize: () => StackSize, val update: () => Unit) extends Stackable
+private class StackWrapper(val component: Component, val getSize: () => StackSize, val update: () => Unit,
+						   val children: Set[Wrapper] = Set()) extends Stackable
 {
 	override def updateLayout() = update()
 	

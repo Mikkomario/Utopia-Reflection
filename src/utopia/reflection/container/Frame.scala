@@ -54,10 +54,11 @@ class Frame(val content: StackContainer[_], val title: String,
     if (!fullScreen)
         position = ((Screen.size - size) / 2).toVector.toPoint
     
+    // TODO: Won't fire resize events on first time because cached size matches component size
     updateContentBounds(size)
     
     // Registers to update bounds on each validation
-    // _component.validationListeners :+= (() => updateContentBounds(size))
+    _component.validationListeners :+= (() => frameRevalidated())
     
     // Registers a listener to update content bounds on frame size changes
     resizeListeners :+= ResizeListener(e => updateContentBounds(e.newSize))
@@ -105,10 +106,25 @@ class Frame(val content: StackContainer[_], val title: String,
         }
     }
     
+    private def frameRevalidated() =
+    {
+        println("Revalidating")
+        // Each time frame is validated, updates cached size, which then fires content bounds update too
+        size = Size(_component.getWidth, _component.getHeight)
+        println("Validation completed")
+    }
+    
     private def updateContentBounds(newSize: Size) = 
     {
-        println(s"Setting frame content size to: $newSize")
-        content.size = newSize - insets.total
+        val newContentSize = newSize - insets.total
+        println(s"Setting frame content size to: $newContentSize")
+        content.size = newContentSize
+        
+        // Fires resize events for container (since they won't be fired from the container itself)
+        /*
+        val event = ResizeEvent(lastContentSize, newContentSize)
+        lastContentSize = newContentSize
+        content.resizeListeners.foreach { _.onResizeEvent(event) }*/
     }
 }
 

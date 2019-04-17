@@ -111,9 +111,13 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     {
         if (_components.nonEmpty)
         {
+            println("Updating stack layout ----------------------")
+            
             // Calculates the necessary length adjustment
             val stackSize = this.stackSize
             val lengthAdjustment = lengthAlong(direction) - stackSize.along(direction).optimal
+            
+            println(s"Required adjustment: $lengthAdjustment")
             
             // Arranges the mutable items in a vector first. Treats margins and caps as separate items
             val caps = Vector.fill(2)(Pointer(0.0))
@@ -222,7 +226,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
     {
-        // println(s"Adjusting length for ${targets.size} targets. Remaining adjustment: $adjustment")
+        println(s"Adjusting length for ${targets.size} targets. Remaining adjustment: $adjustment")
         
         // Finds out how much each item should be adjusted
         val adjustmentPerComponent = adjustment / targets.size
@@ -230,7 +234,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
         // Adjusts the items (some may be maxed) and caches results
         val results = targets map { target => target -> (target += adjustmentPerComponent) }
         
-        // println(s"Remaining: (${results.map { _._2 }.fold(""){ _ + ", " + _ }})")
+        println(s"Remaining: (${results.map { _._2 }.fold(""){ _ + ", " + _ }})")
         
         // Finds out the remaining adjustment and available targets
         val remainingAdjustment = results.foldLeft(0.0) { case (total, next) => total + next._2 }
@@ -309,10 +313,12 @@ private trait LengthAdjust
     
     // OPERATORS    ------------------
     
+    // Adjusts length, returns remaining adjustment
     def +=(amount: Double) = 
     {
         val target = currentAdjust + amount
         
+        // Adjustment may be negative (shrinking) or positive (enlarging)
         if (amount < 0)
         {
             if (target > min)
@@ -320,18 +326,20 @@ private trait LengthAdjust
                 currentAdjust = target
                 0.0
             }
+            // If trying to shrink below minimum, goes to minimum and returns remaining amount (negative)
             else
             {
                 currentAdjust = min
-                min - target
+                target - min
             }
         }
         else if (amount > 0)
         {
+            // If trying to enlarge beyond maximum, caps at maximum and returns remaining amount (positive)
             if (max exists { target > _ })
             {
                 currentAdjust = max.get
-                max.get - target
+                target - max.get
             }
             else
             {

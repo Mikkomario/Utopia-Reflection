@@ -1,8 +1,7 @@
 package utopia.reflection.container
 
-import javax.swing.JPanel
+import javax.swing.{JComponent, JPanel, SwingUtilities}
 import utopia.reflection.component.JWrapper
-import javax.swing.JComponent
 import utopia.reflection.component.Wrapper
 
 /**
@@ -34,12 +33,14 @@ class Panel extends Container[Wrapper] with JWrapper
 	protected def add(component: Wrapper) =
 	{
 	    _components :+= component
-	    panel.add(component.component)
+		// Adds the component to the underlying panel in GUI thread
+		SwingUtilities.invokeLater(() => panel.add(component.component))
 	}
 	
 	protected def remove(component: Wrapper) =
 	{
 	    _components = components filterNot { _.equals(component) }
-	    panel.remove(component.component)
+		// Panel action is done in the GUI thread
+	    SwingUtilities.invokeLater(() => panel.remove(component.component))
 	}
 }
