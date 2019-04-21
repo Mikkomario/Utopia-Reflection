@@ -2,10 +2,13 @@ package utopia.reflection.container
 
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 
+import utopia.flow.async.VolatileFlag
+import utopia.genesis.handling.ActorHandler
 import utopia.reflection.component.Stackable
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.{Point, Size}
+import utopia.genesis.view.MouseEventGenerator
 
 /**
 * This is a common wrapper for all window implementations
@@ -14,6 +17,11 @@ import utopia.genesis.shape.shape2D.{Point, Size}
 **/
 trait Window[Content <: Stackable] extends Stackable
 {
+    // ATTRIBUTES   ----------------
+    
+    private val generatorActivated = new VolatileFlag()
+    
+    
 	// ABSTRACT    -----------------
     
     override def component: java.awt.Window
@@ -84,6 +92,11 @@ trait Window[Content <: Stackable] extends Stackable
     
     
     // OTHER    --------------------
+    
+    def startEventGenerators(actorHandler: ActorHandler) =
+    {
+        // TODO: Start mouse event generator
+    }
     
     /**
       * Updates the bounds of this window's contents to match those of this window
