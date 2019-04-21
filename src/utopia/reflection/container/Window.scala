@@ -3,7 +3,8 @@ package utopia.reflection.container
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 
 import utopia.flow.async.VolatileFlag
-import utopia.genesis.handling.ActorHandler
+import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.reflection.component.Stackable
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
@@ -93,9 +94,23 @@ trait Window[Content <: Stackable] extends Stackable
     
     // OTHER    --------------------
     
+    /**
+      * Starts mouse event generation for this window
+      * @param actorHandler An actorhandler that generates the necessary action events
+      */
     def startEventGenerators(actorHandler: ActorHandler) =
     {
-        // TODO: Start mouse event generator
+        generatorActivated.runAndSet
+        {
+            val mouseButtonListener = MouseButtonStateListener(distributeMouseButtonEvent)
+            val mouseMovelistener = MouseMoveListener(distributeMouseMoveEvent)
+            val mouseWheelListener = MouseWheelListener(_ => Unit) // TODO: Finish
+            
+            actorHandler += new MouseEventGenerator(content.component, mouseMovelistener, mouseButtonListener,
+                mouseWheelListener, () => 1.0)
+            
+            // TODO: Add other generators when Wrapper supports it
+        }
     }
     
     /**
