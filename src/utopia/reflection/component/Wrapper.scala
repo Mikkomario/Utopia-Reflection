@@ -13,6 +13,11 @@ import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.event.ResizeEvent
 import utopia.flow.datastructure.mutable.Lazy
+import utopia.genesis.event.{MouseButtonStateEvent, MouseMoveEvent}
+import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener}
+import utopia.genesis.handling.mutable.{MouseButtonStateHandler, MouseMoveHandler}
+import utopia.inception.handling.Handleable
+import utopia.reflection.container.Container
 
 object Wrapper
 {
@@ -36,6 +41,11 @@ trait Wrapper extends Area
     private val cachedSize = new Lazy(() => Size(component.getWidth, component.getHeight))
     
     private val updateDisabled = new VolatileFlag()
+    
+    // Handlers for distributing events
+    private val mouseButtonHandler = MouseButtonStateHandler()
+    private val mouseMoveHandler = MouseMoveHandler()
+    // TODO: Continue with mouseWheelHandler and Key handlers
     
     /**
      * The currently active resize listeners for this wrapper. Please note that the listeners 
@@ -145,10 +155,57 @@ trait Wrapper extends Area
             fontMetrics.map(_.stringWidth(text))
     }
     
-    // TODO: Add support for mouse events
+    // TODO: Add support for mouse and keyboard events
     
     
     // OTHER    -------------------------
+    
+    /**
+      * Distributes a mouse button event to this wrapper and children
+      * @param event A mouse event, should be within this component's context (origin should be at this component's position)
+      */
+    def distributeMouseButtonEvent(event: MouseButtonStateEvent): Unit =
+    {
+        // Informs own listeners first
+        mouseButtonHandler.onMouseButtonState(event)
+        
+        distributeEvent[MouseButtonStateEvent](event, e => Vector(e.mousePosition),
+            (e, t) => e.copy(mousePosition = e.mousePosition - t), _.distributeMouseButtonEvent(_))
+    }
+    
+    /**
+      * Distributes a mouse move event to this wrapper and children
+      * @param event A mouse move event, should be within this component's context (origin should be at this
+      *              component's position)
+      */
+    def distributeMouseMoveEvent(event: MouseMoveEvent): Unit =
+    {
+        // Informs own listeners first
+        mouseMoveHandler.onMouseMove(event)
+        
+        distributeEvent[MouseMoveEvent](event, e => Vector(e.mousePosition, e.previousMousePosition),
+            (e, t) => e.copy(mousePosition = e.mousePosition - t, previousMousePosition = e.previousMousePosition - t),
+            _.distributeMouseMoveEvent(_))
+    }
+    
+    /**
+      * Adds a new mouse button listener to this wrapper
+      * @param listener A new listener
+      */
+    def addMouseButtonListener(listener: MouseButtonStateListener) = forMeAndChildren { _.mouseButtonHandler += listener }
+    
+    def addMouseMoveListener(listener: MouseMoveListener) = forMeAndChildren { _.mouseMoveHandler += listener }
+    
+    /**
+      * Removes a mouse button listener from this wrapper
+      * @param listener A listener to be removed
+      */
+    def removeListener(listener: Handleable) = forMeAndChildren
+    {
+        c =>
+            c.mouseButtonHandler -= listener
+            c.mouseMoveHandler -= listener
+    }
     
     /**
       * Performs a (longer) operation on the GUI thread and updates the component size & position only after the update
@@ -194,6 +251,30 @@ trait Wrapper extends Area
             { p => component.setLocation(p.toAwtPoint) }
             cachedSize.current.foreach
             { s => component.setSize(s.toDimension) }
+        }
+    }
+    
+    private def forMeAndChildren[U](operation: Wrapper => U): Unit =
+    {
+        operation(this)
+        forChildren(operation)
+    }
+    
+    private def forChildren[U](operation: Wrapper => U): Unit = this match
+    {
+        case c: Container[_] => c.components.foreach { operation(_) }
+    }
+    
+    private def distributeEvent[E](event: E, positionsFromEvent: E => Traversable[Point],
+                                   translateEvent: (E, Point) => E, childAccept: (Wrapper, E) => Unit) =
+    {
+        // If has chilren, informs them. Event position is modified and only children within event area are informed
+        forChildren
+        {
+            child =>
+                val bounds = child.bounds
+                if (positionsFromEvent(event).exists(bounds.contains))
+                    childAccept(child, translateEvent(event, bounds.topLeft))
         }
     }
     
