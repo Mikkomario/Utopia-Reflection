@@ -9,7 +9,7 @@ import utopia.reflection.component.Wrapper
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-class Panel extends Container[Wrapper] with JWrapper
+class Panel extends MultiContainer[Wrapper] with JWrapper
 {
     // ATTRIBUTES    -------------------
     

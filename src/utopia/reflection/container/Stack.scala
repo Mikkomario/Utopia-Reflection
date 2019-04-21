@@ -21,7 +21,7 @@ import utopia.reflection.event.ResizeListener
 * @since 25.2.2019
 **/
 class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLength, 
-        val cap: StackLength) extends StackContainer[Stackable] with JWrapper
+        val cap: StackLength) extends StackMultiContainer[Stackable] with JWrapper
 {
 	// ATTRIBUTES    --------------------
     

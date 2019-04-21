@@ -40,45 +40,4 @@ trait Container[C <: Wrapper] extends Wrapper
 	 * Whether this container is currently empty
 	 */
 	def isEmpty = components.isEmpty
-	
-	
-	// OPERATORS    ---------------
-	
-	/**
-	  * Adds a new item to this container
-	  */
-	def +=(component: C) = add(component)
-	
-	/**
-	  * Removes an item from this container
-	  */
-	def -=(component: C) = remove(component)
-	
-	/**
-	 * Adds multiple items to this container
-	 */
-	def ++=(components: TraversableOnce[C]) = components.foreach(+=)
-	
-	/**
-	 * Adds multiple items to this container
-	 */
-	def ++=(first: C, second: C, more: C*): Unit = ++=(Vector(first, second) ++ more)
-	
-	/**
-	 * Removes multiple items from this container
-	 */
-	def --=(components: TraversableOnce[C]) = components.foreach(-=)
-	
-	/**
-	 * Removes multiple items from this container
-	 */
-	def --=(first: C, second: C, more: C*): Unit = --=(Vector(first, second) ++ more)
-	
-	
-	// OTHER    -------------------
-	
-	/**
-	 * Removes all items from this container
-	 */
-	def clear() = components.foreach(-=)
 }

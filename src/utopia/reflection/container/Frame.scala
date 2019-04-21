@@ -14,7 +14,7 @@ object Frame
       * @return A new windowed frame
       */
     def windowed(content: StackContainer[_], title: String,
-                 resizePolicy: WindowResizePolicy = WindowResizePolicy.User) =
+				 resizePolicy: WindowResizePolicy = WindowResizePolicy.User) =
         new Frame(content, title, resizePolicy, false, false, false)
     
     /**
@@ -35,7 +35,7 @@ object Frame
 **/
 // TODO: Maybe add title to the window trait
 class Frame(override val content: StackContainer[_], override val title: String, startResizePolicy: WindowResizePolicy,
-        val borderless: Boolean, startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[StackContainer[_]]
+			val borderless: Boolean, startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[StackContainer[_]]
 {
     // ATTRIBUTES    -------------------
     
