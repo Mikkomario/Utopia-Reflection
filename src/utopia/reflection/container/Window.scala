@@ -112,7 +112,7 @@ trait Window[Content <: Stackable] extends Stackable
         generatorActivated.runAndSet
         {
 			// Starts mouse listening
-            val mouseButtonListener = MouseButtonStateListener { content.distributeMouseButtonEvent(_) }
+            val mouseButtonListener = MouseButtonStateListener { e => content.distributeMouseButtonEvent(e); false }
             val mouseMovelistener = MouseMoveListener { content.distributeMouseMoveEvent(_) }
             val mouseWheelListener = MouseWheelListener { content.distributeMouseWheelEvent(_) }
             
