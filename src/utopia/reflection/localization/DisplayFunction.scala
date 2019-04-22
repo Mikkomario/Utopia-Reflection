@@ -1,5 +1,8 @@
 package utopia.reflection.localization
 
+import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAccessor
+
 import scala.language.implicitConversions
 
 object DisplayFunction
@@ -16,6 +19,26 @@ object DisplayFunction
 	  * A DisplayFunction that displays the item as is, no transformation or localization applied
 	  */
 	val raw = noLocalization[Any] { a => LocalString(a.toString) }
+	
+	/**
+	  * A display function that shows hours and minutes, like '13:26'
+	  */
+	val hhmm = forTime(DateTimeFormatter.ofPattern("hh:mm"))
+	
+	/**
+	  * A display function that shows hours, minutes and seconds. Like '03:22:42'
+	  */
+	val hhmmss = forTime(DateTimeFormatter.ofPattern("hh:mm:ss"))
+	
+	/**
+	  * A display function that shows day of month of year, like '13.05.2025'
+	  */
+	val ddmmyyyy = forTime(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+	
+	/**
+	  * A display function that shows day of month of year and hour and minute information. Like '13.05.2025 13:26'
+	  */
+	val ddmmyyyyhhmm = forTime(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm"))
 	
 	
 	// IMPLICIT	----------------------
@@ -101,6 +124,14 @@ object DisplayFunction
 	  * @return A new display function
 	  */
 	def localized[Meta]()(implicit localizer: Localizer[Meta]) = localizeOnly[Meta](localizer.localize)
+	
+	/**
+	  * This display function is used for displaying time in a specific format
+	  * @param formatter A date time formatter
+	  * @return A display function for time elements
+	  */
+	def forTime(formatter: DateTimeFormatter) = noLocalization[TemporalAccessor] {
+		t => LocalString(formatter.format(t)) }
 }
 
 /**
