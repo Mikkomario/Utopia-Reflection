@@ -12,6 +12,8 @@ object LocalString
 	  */
 	implicit def stringToLocal(string: String)(implicit defaultLanguageCode: String): LocalString =
 		LocalString(string, defaultLanguageCode)
+	
+	def apply(string: String, languageCode: String) = new LocalString(string, Some(languageCode))
 }
 
 /**
@@ -21,7 +23,7 @@ object LocalString
   * @param string A source string
   * @param languageCode The 2-character ISO code for the language of the string
   */
-case class LocalString(override val string: String, override val languageCode: String) extends LocalStringLike[LocalString]
+case class LocalString(override val string: String, override val languageCode: Option[String] = None) extends LocalStringLike[LocalString]
 {
 	// COMPUTED	--------------------------
 	
@@ -31,6 +33,28 @@ case class LocalString(override val string: String, override val languageCode: S
 	def localizationSkipped = LocalizedString(this, None)
 	
 	
+	// IMPLEMENTED	----------------------
+	
+	override def +(other: LocalString) =
+	{
+		val newCode =
+		{
+			if (languageCode.isDefined)
+			{
+				if (other.languageCode.forall { _ == languageCode.get }) languageCode else None
+			}
+			else
+				other.languageCode
+		}
+		
+		LocalString(string + other.string, newCode)
+	}
+	
+	override def split(regex: String) = string.split(regex).toVector.map { LocalString(_, languageCode) }
+	
+	override def interpolate(firstArg: Any, moreArgs: Any*) = LocalString(parseArguments(string, firstArg +: moreArgs),
+		languageCode)
+	
 	// OPERATORS	----------------------
 	
 	/**
@@ -39,14 +63,6 @@ case class LocalString(override val string: String, override val languageCode: S
 	  * @return An appended local string
 	  */
 	def +(str: String) = LocalString(string + str, languageCode)
-	
-	
-	// IMPLEMENTED	----------------------
-	
-	override def split(regex: String) = string.split(regex).toVector.map { LocalString(_, languageCode) }
-	
-	override def interpolate(firstArg: Any, moreArgs: Any*) = LocalString(parseArguments(string, firstArg +: moreArgs),
-		languageCode)
 	
 	
 	// OTHER	--------------------------

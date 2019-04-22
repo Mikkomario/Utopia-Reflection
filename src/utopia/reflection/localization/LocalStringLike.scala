@@ -15,9 +15,17 @@ trait LocalStringLike[Repr <: LocalStringLike[Repr]]
 	def string: String
 	
 	/**
-	  * @return The ISO code of this string representation's language
+	  * @return The ISO code of this string representation's language. None if this string isn't language specific
+	  *         (like a number or a whitespace, etc.)
 	  */
-	def languageCode: String
+	def languageCode: Option[String]
+	
+	/**
+	  * Adds another string to this string
+	  * @param other Another string
+	  * @return A combination of these two strings
+	  */
+	def +(other: Repr): Repr
 	
 	/**
 	  * Splits this string based on provided regex

@@ -34,9 +34,15 @@ case class LocalizedString(original: LocalString, localized: Option[LocalString]
 	// COMPUTED	------------------------
 	
 	/**
+	  * @return A string that will be displayed when using this localized string (uses localized if available and
+	  *         original as backup)
+	  */
+	def displayed = localized getOrElse original
+	
+	/**
 	  * @return A string representation of this localized string
 	  */
-	def string = localized.getOrElse(original).string
+	def string = displayed.string
 	
 	/**
 	  * @return The ISO code for the source language
@@ -46,7 +52,7 @@ case class LocalizedString(original: LocalString, localized: Option[LocalString]
 	/**
 	  * @return The ISO code for the target language
 	  */
-	def targetLanguageCode = localized.map { _.languageCode }
+	def targetLanguageCode = displayed.languageCode
 	
 	/**
 	  * @return Whether localized data is available
@@ -56,7 +62,9 @@ case class LocalizedString(original: LocalString, localized: Option[LocalString]
 	
 	// IMPLEMENTED	------------------------
 	
-	override def languageCode = targetLanguageCode getOrElse sourceLanguageCode
+	override def languageCode = targetLanguageCode orElse sourceLanguageCode
+	
+	override def +(other: LocalizedString) = LocalizedString(original + other.original, displayed + other.displayed)
 	
 	override def split(regex: String) =
 	{
@@ -88,5 +96,5 @@ case class LocalizedString(original: LocalString, localized: Option[LocalString]
 	  * @return a combined localized string
 	  */
 	def +(str: String)(implicit localizer: Localizer[_]) = LocalizedString(original + str,
-		localized.getOrElse(original) + localizer.localizeWithoutContext(LocalString(str, sourceLanguageCode)).string)
+		displayed + localizer.localizeWithoutContext(LocalString(str, sourceLanguageCode)).string)
 }
