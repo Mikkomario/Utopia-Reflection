@@ -40,4 +40,9 @@ trait Container[C <: Wrapper] extends Wrapper
 	 * Whether this container is currently empty
 	 */
 	def isEmpty = components.isEmpty
+	
+	
+	// IMPLEMENTED	----------------
+	
+	override def toString = components.mkString(", ")
 }

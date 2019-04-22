@@ -13,9 +13,9 @@ import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.event.ResizeEvent
 import utopia.flow.datastructure.mutable.Lazy
-import utopia.genesis.event.{MouseButtonStateEvent, MouseMoveEvent}
-import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener}
-import utopia.genesis.handling.mutable.{MouseButtonStateHandler, MouseMoveHandler}
+import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
+import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
+import utopia.genesis.handling.mutable.{MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
 import utopia.inception.handling.Handleable
 import utopia.reflection.container.Container
 
@@ -45,7 +45,9 @@ trait Wrapper extends Area
     // Handlers for distributing events
     private val mouseButtonHandler = MouseButtonStateHandler()
     private val mouseMoveHandler = MouseMoveHandler()
-    // TODO: Continue with mouseWheelHandler and Key handlers
+    private val mouseWheelHandler = MouseWheelHandler()
+    
+    // TODO: Continue with Key handlers
     
     /**
      * The currently active resize listeners for this wrapper. Please note that the listeners 
@@ -162,21 +164,24 @@ trait Wrapper extends Area
     
     /**
       * Distributes a mouse button event to this wrapper and children
-      * @param event A mouse event, should be within this component's context (origin should be at this component's position)
+      * @param event A mouse event. Should be within this component's parent's context
+      *              (origin should be at the parent component's position). Events outside parent context shouldn't be
+      *              distributed.
       */
     def distributeMouseButtonEvent(event: MouseButtonStateEvent): Unit =
     {
         // Informs own listeners first
         mouseButtonHandler.onMouseButtonState(event)
         
-        distributeEvent[MouseButtonStateEvent](event, e => Vector(e.mousePosition),
-            (e, t) => e.copy(mousePosition = e.mousePosition - t), _.distributeMouseButtonEvent(_))
+        distributeDefaultMouseEvent[MouseButtonStateEvent](event, (e, p) => e.copy(mousePosition = p),
+            _.distributeMouseButtonEvent(_))
     }
     
     /**
       * Distributes a mouse move event to this wrapper and children
-      * @param event A mouse move event, should be within this component's context (origin should be at this
-      *              component's position)
+      * @param event A mouse move event. Should be within this component's parent's context
+      *              (origin should be at the parent component's position). Events outside parent context shouldn't be
+      *              distributed.
       */
     def distributeMouseMoveEvent(event: MouseMoveEvent): Unit =
     {
@@ -189,12 +194,36 @@ trait Wrapper extends Area
     }
     
     /**
+      * Distributes a mouse wheel event to this wrapper and children
+      * @param event A mouse wheel event. Should be within this component's parent's context
+      *              (origin should be at the parent component's position). Events outside parent context shouldn't be
+      *              distributed.
+      */
+    def distributeMouseWheelEvent(event: MouseWheelEvent): Unit =
+    {
+        // Informs own listeners
+        mouseWheelHandler.onMouseWheelRotated(event)
+        // Then continues with child components
+        distributeDefaultMouseEvent[MouseWheelEvent](event, (e, p) => e.copy(mousePosition = p), _.distributeMouseWheelEvent(_))
+    }
+    
+    /**
       * Adds a new mouse button listener to this wrapper
       * @param listener A new listener
       */
-    def addMouseButtonListener(listener: MouseButtonStateListener) = forMeAndChildren { _.mouseButtonHandler += listener }
+    def addMouseButtonListener(listener: MouseButtonStateListener) = mouseButtonHandler += listener
     
-    def addMouseMoveListener(listener: MouseMoveListener) = forMeAndChildren { _.mouseMoveHandler += listener }
+    /**
+      * Adds a new mouse move listener to this wrapper
+      * @param listener A new listener
+      */
+    def addMouseMoveListener(listener: MouseMoveListener) = mouseMoveHandler += listener
+    
+    /**
+      * Adds a new mouse wheel listener to this wrapper
+      * @param listener A new listener
+      */
+    def addMouseWheelListener(listener: MouseWheelListener) = mouseWheelHandler += listener
     
     /**
       * Removes a mouse button listener from this wrapper
@@ -263,18 +292,23 @@ trait Wrapper extends Area
     private def forChildren[U](operation: Wrapper => U): Unit = this match
     {
         case c: Container[_] => c.components.foreach { operation(_) }
+        case _ => Unit
     }
+    
+    private def distributeDefaultMouseEvent[E <: MouseEvent](event: E, withPosition: (E, Point) => E,
+                                                             childAccept: (Wrapper, E) => Unit) =
+        distributeEvent[E](event, e => Vector(e.mousePosition), (e, t) => withPosition(e, e.mousePosition - t), childAccept)
     
     private def distributeEvent[E](event: E, positionsFromEvent: E => Traversable[Point],
                                    translateEvent: (E, Point) => E, childAccept: (Wrapper, E) => Unit) =
     {
-        // If has chilren, informs them. Event position is modified and only children within event area are informed
-        forChildren
+        // If has chilren, informs them. Event position is modified and only events within this component's area
+        // are relayed forward
+        val myBounds = bounds
+        if (positionsFromEvent(event).exists(myBounds.contains))
         {
-            child =>
-                val bounds = child.bounds
-                if (positionsFromEvent(event).exists(bounds.contains))
-                    childAccept(child, translateEvent(event, bounds.topLeft))
+            val translated = translateEvent(event, myBounds.position)
+            forChildren { childAccept(_, translated) }
         }
     }
     

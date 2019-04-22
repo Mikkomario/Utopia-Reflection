@@ -27,5 +27,7 @@ class Label extends JWrapper
 	
 	// IMPLEMENTED	-----------------
 	
+	override def toString = s"Label($text)"
+	
 	override def component: JComponent = label
 }
