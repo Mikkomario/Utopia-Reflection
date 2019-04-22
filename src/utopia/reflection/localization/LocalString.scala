@@ -44,4 +44,65 @@ case class LocalString(override val string: String, override val languageCode: S
 	// IMPLEMENTED	----------------------
 	
 	override def split(regex: String) = string.split(regex).toVector.map { LocalString(_, languageCode) }
+	
+	override def interpolate(firstArg: Any, moreArgs: Any*) = LocalString(parseArguments(string, firstArg +: moreArgs),
+		languageCode)
+	
+	
+	// OTHER	--------------------------
+	
+	private def parseArguments(field: String, args: Seq[Any]) =
+	{
+		val str = new StringBuilder()
+		
+		var cursor = 0
+		var nextArgIndex = 0
+		
+		while (cursor < field.length)
+		{
+			// Finds the next argument position
+			val nextArgumentPosition = cursor + field.substring(cursor).indexOf('%')
+			
+			// After all arguments have been parsed, adds the remaining part of the string
+			if (nextArgumentPosition < cursor)
+			{
+				str.append(field.substring(cursor))
+				cursor = field.length
+			}
+			else
+			{
+				// The part between the arguments is kept as is
+				str.append(field.substring(cursor, nextArgumentPosition))
+				
+				// The field may end in '%', in which case the following checks cannot be made
+				if (field.length <= nextArgumentPosition + 1)
+				{
+					str.append('%')
+					cursor = field.length
+				}
+				else
+				{
+					// Checks the argument type
+					val argType = StringArgumentType(field.charAt(nextArgumentPosition + 1))
+					
+					// Sometimes '%' is used without argument type, in which case it is copied as is
+					// This also happens when there aren't enough arguments provided
+					if (argType.isEmpty || nextArgIndex >= args.size)
+					{
+						str.append('%')
+						cursor = nextArgumentPosition + 1
+					}
+					else
+					{
+						// Parses argument and inserts it to string
+						str.append(argType.get.parse(args(nextArgIndex)))
+						nextArgIndex += 1
+						cursor = nextArgumentPosition + 2
+					}
+				}
+			}
+		}
+		
+		str.toString()
+	}
 }

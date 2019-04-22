@@ -1,8 +1,25 @@
 package utopia.reflection.localization
 
+import scala.language.implicitConversions
+
 object LocalizedString
 {
-
+	/**
+	  * Creates a new localized string
+	  * @param original The local string
+	  * @param localized The localized version
+	  * @return A new localized string
+	  */
+	def apply(original: LocalString, localized: LocalString) = new LocalizedString(original, Some(localized))
+	
+	/**
+	  * Automatically converts a local string to localized string using an implicit localizer
+	  * @param local A local string
+	  * @param localizer A localizer (implicit)
+	  * @return A localized version of the string
+	  */
+	implicit def autoLocalize(local: LocalString)(implicit localizer: Localizer[_]): LocalizedString =
+		localizer.localizeWithoutContext(local)
 }
 
 /**
@@ -39,15 +56,8 @@ case class LocalizedString(original: LocalString, localized: Option[LocalString]
 	
 	// IMPLEMENTED	------------------------
 	
-	/**
-	  * @return The ISO code for this string representation
-	  */
 	override def languageCode = targetLanguageCode getOrElse sourceLanguageCode
 	
-	/**
-	  * @param regex A splitting regex
-	  * @return A split version of this localized string
-	  */
 	override def split(regex: String) =
 	{
 		val originalSplits = original.split(regex)
@@ -65,8 +75,18 @@ case class LocalizedString(original: LocalString, localized: Option[LocalString]
 			originalSplits.map { LocalizedString(_, None) }
 	}
 	
+	override def interpolate(firstArg: Any, moreArgs: Any*) = LocalizedString(original.interpolate(firstArg, moreArgs),
+		localized.map { _.interpolate(firstArg, moreArgs) })
+	
 	
 	// OPERATORS	--------------------------
 	
-	// TODO: Add string append with implicit localizer
+	/**
+	  * Appends this localized string with another localization
+	  * @param str A string
+	  * @param localizer A localizer that will loalize the string
+	  * @return a combined localized string
+	  */
+	def +(str: String)(implicit localizer: Localizer[_]) = LocalizedString(original + str,
+		localized.getOrElse(original) + localizer.localizeWithoutContext(LocalString(str, sourceLanguageCode)).string)
 }
