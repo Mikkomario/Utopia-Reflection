@@ -13,9 +13,9 @@ import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.event.ResizeEvent
 import utopia.flow.datastructure.mutable.Lazy
-import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
-import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
-import utopia.genesis.handling.mutable.{MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
+import utopia.genesis.event.{KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
+import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
+import utopia.genesis.handling.mutable.{KeyStateHandler, KeyTypedHandler, MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
 import utopia.inception.handling.Handleable
 import utopia.reflection.container.Container
 
@@ -47,7 +47,8 @@ trait Wrapper extends Area
     private val mouseMoveHandler = MouseMoveHandler()
     private val mouseWheelHandler = MouseWheelHandler()
     
-    // TODO: Continue with Key handlers
+    private val keyStateHandler = KeyStateHandler()
+    private val keyTypedHandler = KeyTypedHandler()
     
     /**
      * The currently active resize listeners for this wrapper. Please note that the listeners 
@@ -208,6 +209,28 @@ trait Wrapper extends Area
     }
     
     /**
+      * Distributes a keyboard state event through this component's hierarchy. Should only be called for components
+      * in the topmost window
+      * @param event A keyboard state event
+      */
+    def distributeKeyStateEvent(event: KeyStateEvent): Unit =
+    {
+        keyStateHandler.onKeyState(event)
+        forChildren { _.distributeKeyStateEvent(event) }
+    }
+    
+    /**
+      * Distributes a key typed event through this component's hierarchy. Should only be called for components
+      * in the topmost window
+      * @param event A key typed event
+      */
+    def distributeKeyTypedEvent(event: KeyTypedEvent): Unit =
+    {
+        keyTypedHandler.onKeyTyped(event)
+        forChildren { _.distributeKeyTypedEvent(event) }
+    }
+    
+    /**
       * Adds a new mouse button listener to this wrapper
       * @param listener A new listener
       */
@@ -226,7 +249,19 @@ trait Wrapper extends Area
     def addMouseWheelListener(listener: MouseWheelListener) = mouseWheelHandler += listener
     
     /**
-      * Removes a mouse button listener from this wrapper
+      * Adds a new key state listener to this wrapper
+      * @param listener A listener
+      */
+    def addKeyStateListener(listener: KeyStateListener) = keyStateHandler += listener
+    
+    /**
+      * Adds a new key typed listener to this wrapper
+      * @param listener A listener
+      */
+    def addKeyTypedListener(listener: KeyTypedListener) = keyTypedHandler += listener
+    
+    /**
+      * Removes a listener from this wrapper
       * @param listener A listener to be removed
       */
     def removeListener(listener: Handleable) = forMeAndChildren
@@ -234,6 +269,9 @@ trait Wrapper extends Area
         c =>
             c.mouseButtonHandler -= listener
             c.mouseMoveHandler -= listener
+            c.mouseWheelHandler -= listener
+            c.keyStateHandler -= listener
+            c.keyTypedHandler -= listener
     }
     
     /**

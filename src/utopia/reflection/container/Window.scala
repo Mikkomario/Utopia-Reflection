@@ -4,12 +4,13 @@ import java.awt.event.{ComponentAdapter, ComponentEvent}
 
 import utopia.flow.async.VolatileFlag
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
+import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.reflection.component.Stackable
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
 import utopia.genesis.shape.shape2D.{Point, Size}
-import utopia.genesis.view.MouseEventGenerator
+import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
+import utopia.inception.handling.Handleable
 
 /**
 * This is a common wrapper for all window implementations
@@ -90,11 +91,19 @@ trait Window[Content <: Stackable] extends Stackable
     
     // Each time (content) layout is updated, may resize this window
     override def updateLayout() = updateWindowBounds(resizePolicy.allowsProgramResize)
+	
+	// Overrides listener functions to send them to content instead
+	override def addMouseButtonListener(listener: MouseButtonStateListener) = content.addMouseButtonListener(listener)
+	override def addMouseMoveListener(listener: MouseMoveListener) = content.addMouseMoveListener(listener)
+	override def addMouseWheelListener(listener: MouseWheelListener) = content.addMouseWheelListener(listener)
+	override def addKeyStateListener(listener: KeyStateListener) = content.addKeyStateListener(listener)
+	override def addKeyTypedListener(listener: KeyTypedListener) = content.addKeyTypedListener(listener)
+	override def removeListener(listener: Handleable) = content.removeListener(listener)
     
     
     // OTHER    --------------------
-    
-    /**
+	
+	/**
       * Starts mouse event generation for this window
       * @param actorHandler An actorhandler that generates the necessary action events
       */
@@ -102,14 +111,19 @@ trait Window[Content <: Stackable] extends Stackable
     {
         generatorActivated.runAndSet
         {
+			// Starts mouse listening
             val mouseButtonListener = MouseButtonStateListener { content.distributeMouseButtonEvent(_) }
             val mouseMovelistener = MouseMoveListener { content.distributeMouseMoveEvent(_) }
             val mouseWheelListener = MouseWheelListener { content.distributeMouseWheelEvent(_) }
             
             actorHandler += new MouseEventGenerator(content.component, mouseMovelistener, mouseButtonListener,
                 mouseWheelListener, () => 1.0)
-            
-            // TODO: Add other generators when Wrapper supports it
+			
+			// Starts key listening
+			val keyStateListener = KeyStateListener { content.distributeKeyStateEvent(_) }
+			val keyTypedListener = KeyTypedListener { content.distributeKeyTypedEvent(_) }
+			
+			component.addKeyListener(new ConvertingKeyListener(keyStateListener, keyTypedListener))
         }
     }
     

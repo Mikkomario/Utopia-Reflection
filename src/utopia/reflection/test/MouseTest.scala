@@ -6,7 +6,7 @@ import utopia.flow.async.ThreadPool
 import utopia.flow.generic.DataType
 import utopia.genesis.event.{MouseEvent, MouseMoveEvent}
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.handling.{ActorLoop, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
+import utopia.genesis.handling.{ActorLoop, KeyStateListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.shape.X
 import utopia.genesis.shape.shape2D.Size
 import utopia.inception.handling.immutable.Handleable
@@ -62,6 +62,8 @@ object MouseTest extends App
 		MouseEvent.isOverAreaFilter(items(1).bounds)))
 	items(2).addMouseButtonListener(MouseButtonStateListener.onLeftPressedInside(items(2).bounds, e => println(e.mousePosition)))
 	items(2).addMouseWheelListener(MouseWheelListener.onWheelInsideArea(items(2).bounds, e => println(e.wheelTurn)))
+	
+	frame.addKeyStateListener(KeyStateListener(println))
 	
 	// Starts the program
 	val actorHandler = ActorHandler()
