@@ -5,6 +5,11 @@ import scala.language.implicitConversions
 object LocalizedString
 {
 	/**
+	  * An empty localized string
+	  */
+	val empty = LocalizedString(LocalString.empty, LocalString.empty)
+	
+	/**
 	  * Creates a new localized string
 	  * @param original The local string
 	  * @param localized The localized version

@@ -4,6 +4,16 @@ import scala.language.implicitConversions
 
 object LocalString
 {
+	// ATTRIBUTES	-----------------------------
+	
+	/**
+	  * An empty local string
+	  */
+	val empty = LocalString("")
+	
+	
+	// IMPLICIT CONVERSIONS	---------------------
+	
 	/**
 	  * Converts a string into a local string using the default language code (implicit)
 	  * @param string A string
@@ -12,6 +22,9 @@ object LocalString
 	  */
 	implicit def stringToLocal(string: String)(implicit defaultLanguageCode: String): LocalString =
 		LocalString(string, defaultLanguageCode)
+	
+	
+	// OPERATORS	-----------------------------
 	
 	def apply(string: String, languageCode: String) = new LocalString(string, Some(languageCode))
 }

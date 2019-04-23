@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.input
 
 /**
   * Selectable components are selections that can be interacted with from the program side

@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.input
 
 /**
   * Interactions are Inputs that can also be adjusted from program side. Kind of like a mutable version of input.

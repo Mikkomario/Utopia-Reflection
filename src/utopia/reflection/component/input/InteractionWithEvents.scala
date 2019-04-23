@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.input
 
 /**
   * This component allows two-way interaction with the users while generating events for value changes

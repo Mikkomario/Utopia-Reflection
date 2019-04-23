@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.input
 
 import scala.concurrent.{ExecutionContext, Future}
 

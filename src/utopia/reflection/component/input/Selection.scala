@@ -1,4 +1,6 @@
-package utopia.reflection.component
+package utopia.reflection.component.input
+
+import utopia.reflection.component.Pool
 
 /**
   * Selection is an input that has a base pool of value(s), from which some are selected

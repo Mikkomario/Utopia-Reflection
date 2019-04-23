@@ -40,7 +40,7 @@ object MouseTest extends App
 	// Creates the basic components & wrap as Stackable
 	def makeItem() =
 	{
-		val item = new Label().withStackSize(StackSize.any(Size(64, 64)))
+		val item = Label().withStackSize(StackSize.any(Size(64, 64)))
 		item.background = Color.BLUE
 		item
 	}

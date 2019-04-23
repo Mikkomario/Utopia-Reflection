@@ -1,33 +1,51 @@
 package utopia.reflection.component
 
 import javax.swing.{JComponent, JLabel}
+import utopia.reflection.localization.{LocalString, LocalizedString, Localizer, TextContext}
 
-// TODO: Later change this to trait and create separate implementations for text and icon + stackable support
-// (Maybe use special wrapper classes)
+object Label
+{
+	/**
+	  * @return A new empty label
+	  */
+	def apply() = new EmptyLabel()
+	
+	/**
+	  * @param text Localized text to be displayed in this label
+	  * @param context The text context
+	  * @return A new label that holds text
+	  */
+	def apply(text: LocalizedString, context: TextContext) = new TextLabel(text, context)
+	
+	/**
+	  * @param text Non-localized text to be localized and then displayed in this label
+	  * @param context Text context
+	  * @param localizer A localizer that will localize the text (implicit)
+	  * @return A new label that holds the localized text
+	  */
+	def apply(text: LocalString, context: TextContext)(implicit localizer: Localizer[TextContext]) =
+		TextLabel(text, context)
+}
 
 /**
-  * Labels are used as UI-elements that present text
+  * Labels are used as basic UI-elements to display either text or an image. Labels may, of course, also be empty
   * @author Mikko Hilpinen
   * @since 21.4.2019, v1+
   */
-class Label extends JWrapper
+abstract class Label extends JWrapper
 {
 	// ATTRIBUTES	-----------------
 	
-	private val label = new JLabel()
+	protected val label = new JLabel()
 	
 	
-	// COMPUTED	---------------------
+	// INITIAL CODE	-----------------
 	
-	// TODO: Add localization support (use implicit translator parameter?)
-	// TODO: Also move these sort of things to a separate trait
-	def text = label.getText
-	def text_=(newText: String) = label.setText(newText)
+	label.setOpaque(false)
+	label.setFocusable(false)
 	
 	
 	// IMPLEMENTED	-----------------
-	
-	override def toString = s"Label($text)"
 	
 	override def component: JComponent = label
 }
