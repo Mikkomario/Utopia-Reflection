@@ -11,5 +11,5 @@ trait Interaction[A] extends Input[A]
 	  * Updates the value of this interaction element
 	  * @param newValue New (input) value for this interaction
 	  */
-	def input_=(newValue: A): Unit
+	def value_=(newValue: A): Unit
 }

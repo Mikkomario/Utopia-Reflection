@@ -10,5 +10,5 @@ trait Input[+A]
 	/**
 	  * @return The current input in this input
 	  */
-	def input: A
+	def value: A
 }
