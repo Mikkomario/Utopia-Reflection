@@ -312,6 +312,7 @@ trait Wrapper extends Area
     /**
      * Transforms this wrapper into a Stackable
      */
+    // TODO: Don't just wrap the component, wrap this wrapper
     def withStackSize(size: StackSize) = Stackable(component, size)
     
     private def updateBounds(): Unit =

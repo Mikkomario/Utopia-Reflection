@@ -4,9 +4,9 @@ import java.awt.{Color, Font}
 
 import javax.swing.JLabel
 import utopia.reflection.component.Alignment.Center
-import utopia.reflection.component.{Alignable, Alignment, JStackable}
+import utopia.reflection.component.{Alignable, Alignment}
 import utopia.reflection.localization.{LocalString, LocalizedString, Localizer, TextContext}
-import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.shape.StackLength
 
 object TextLabel
 {
@@ -130,49 +130,6 @@ class TextLabel protected(label: JLabel, initialText: LocalizedString, initialFo
 	  *                    If false, the text may not show completely. Default = true
 	  * @return A new stackable version of this text label
 	  */
-	def stackable(hMargin: StackLength, vMargin: StackLength, hasMinWidth: Boolean = true) =
-		new StackableTextLabel(label, text, font.get, context, hMargin, vMargin, hasMinWidth)
-}
-
-/**
-  * This is a stackable version of text label
-  * @author Mikko Hilpinen
-  * @since 23.4.2019, v1+
-  */
-class StackableTextLabel(label: JLabel, initialText: LocalizedString, initialFont: Font, context: TextContext,
-								 val hMargin: StackLength, val vMargin: StackLength, val hasMinWidth: Boolean)
-	extends TextLabel(label, initialText, initialFont, context) with JStackable
-{
-	// IMPLEMENTED	-----------------------
-	
-	// Revalidates this object when text, font or alignment changes
-	override def text_=(newText: LocalizedString) =
-	{
-		super.text_=(newText)
-		revalidate()
-	}
-	override def font_=(newFont: Font) =
-	{
-		super.font_=(newFont)
-		revalidate()
-	}
-	override def align(alignment: Alignment) =
-	{
-		super.align(alignment)
-		revalidate()
-	}
-	
-	override def updateLayout() = Unit // Doesn't need to update layout
-	
-	override protected def calculatedStackSize =
-	{
-		// Adds margins to base text size. Alignment matters on this one.
-		val textW = textWidth.getOrElse(128)
-		val totalHMargin = if (horizontalAlignment == Center) hMargin * 2 else hMargin
-		val totalVMargin = if (verticalAlignment == Center) vMargin * 2 else vMargin
-		val w = (if (hasMinWidth) StackLength.fixed(textW) else StackLength.downscaling(textW)) + totalHMargin
-		val h = StackLength.fixed(textHeight.getOrElse(32)) + totalVMargin
-		
-		StackSize(w, h)
-	}
+	def stackableCopy(hMargin: StackLength, vMargin: StackLength, hasMinWidth: Boolean = true) =
+		StackableTextLabel(text, font.get, context, hMargin, vMargin, hasMinWidth)
 }
