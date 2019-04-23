@@ -10,7 +10,8 @@ import utopia.genesis.handling.{ActorLoop, KeyStateListener, MouseButtonStateLis
 import utopia.genesis.shape.X
 import utopia.genesis.shape.shape2D.Size
 import utopia.inception.handling.immutable.Handleable
-import utopia.reflection.component.{Area, Label}
+import utopia.reflection.component.Area
+import utopia.reflection.component.label.Label
 import utopia.reflection.container.StackLayout.Fit
 import utopia.reflection.container.{Frame, Stack}
 import utopia.reflection.shape.{StackLength, StackSize}

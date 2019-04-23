@@ -144,19 +144,24 @@ trait Wrapper extends Area
     /**
       * @return The font metrics object for this component. None if font hasn't been specified.
       */
-    def fontMetrics = font.map(component.getFontMetrics(_))
+    def fontMetrics = font.map { component.getFontMetrics(_) } orElse
+        component.getGraphics.toOption.map { _.getFontMetrics }
     /**
       * Calculates text width within this component
       * @param text Text to be presented
-      * @return The with of the would be text. None if font metrics couldn't be found.
+      * @return The with of the would be text
       */
     def textWidth(text: String) = 
-    {   
+    {
         if (text.isEmpty)
             Some(0)
         else
-            fontMetrics.map(_.stringWidth(text))
+            fontMetrics.map { _.stringWidth(text) }
     }
+    /**
+      * @return The text height for the current font used in this component
+      */
+    def textHeight = fontMetrics.map { _.getHeight }
     
     // TODO: Add support for mouse and keyboard events
     

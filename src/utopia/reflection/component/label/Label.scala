@@ -1,6 +1,9 @@
-package utopia.reflection.component
+package utopia.reflection.component.label
+
+import java.awt.Font
 
 import javax.swing.{JComponent, JLabel}
+import utopia.reflection.component.JWrapper
 import utopia.reflection.localization.{LocalString, LocalizedString, Localizer, TextContext}
 
 object Label
@@ -12,19 +15,21 @@ object Label
 	
 	/**
 	  * @param text Localized text to be displayed in this label
+	  * @param font the font used in the label
 	  * @param context The text context
 	  * @return A new label that holds text
 	  */
-	def apply(text: LocalizedString, context: TextContext) = new TextLabel(text, context)
+	def apply(text: LocalizedString, font: Font, context: TextContext) = TextLabel(text, font, context)
 	
 	/**
 	  * @param text Non-localized text to be localized and then displayed in this label
+	  * @param font the font used in the label
 	  * @param context Text context
 	  * @param localizer A localizer that will localize the text (implicit)
 	  * @return A new label that holds the localized text
 	  */
-	def apply(text: LocalString, context: TextContext)(implicit localizer: Localizer[TextContext]) =
-		TextLabel(text, context)
+	def apply(text: LocalString, font: Font, context: TextContext)(implicit localizer: Localizer[TextContext]) =
+		TextLabel(text, font, context)
 }
 
 /**
@@ -32,13 +37,8 @@ object Label
   * @author Mikko Hilpinen
   * @since 21.4.2019, v1+
   */
-abstract class Label extends JWrapper
+class Label protected(protected val label: JLabel) extends JWrapper
 {
-	// ATTRIBUTES	-----------------
-	
-	protected val label = new JLabel()
-	
-	
 	// INITIAL CODE	-----------------
 	
 	label.setOpaque(false)
