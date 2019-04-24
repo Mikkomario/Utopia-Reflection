@@ -25,6 +25,16 @@ object LocalizedString
 	  */
 	implicit def autoLocalize(local: LocalString)(implicit localizer: Localizer[_]): LocalizedString =
 		localizer.localizeWithoutContext(local)
+	
+	/**
+	  * Automatically converts a raw string to localized using an implicit localizer + default language code
+	  * @param str A raw string
+	  * @param defaultLanguageCode The default language ISO-code (implicit)
+	  * @param localizer A localizer (implicit)
+	  * @return A localized version of the string
+	  */
+	implicit def autoLocalize(str: String)(implicit defaultLanguageCode: String, localizer: Localizer[_]): LocalizedString =
+		localizer.localizeWithoutContext(LocalString(str, defaultLanguageCode))
 }
 
 /**

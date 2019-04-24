@@ -4,7 +4,8 @@ import java.awt.Font
 
 import javax.swing.{JComponent, JLabel}
 import utopia.reflection.component.JWrapper
-import utopia.reflection.localization.{LocalString, LocalizedString, Localizer, TextContext}
+import utopia.reflection.localization.{LocalizedString, TextContext}
+import utopia.reflection.shape.StackSize
 
 object Label
 {
@@ -19,17 +20,7 @@ object Label
 	  * @param context The text context
 	  * @return A new label that holds text
 	  */
-	def apply(text: LocalizedString, font: Font, context: TextContext) = TextLabel(text, font, context)
-	
-	/**
-	  * @param text Non-localized text to be localized and then displayed in this label
-	  * @param font the font used in the label
-	  * @param context Text context
-	  * @param localizer A localizer that will localize the text (implicit)
-	  * @return A new label that holds the localized text
-	  */
-	def apply(text: LocalString, font: Font, context: TextContext)(implicit localizer: Localizer[TextContext]) =
-		TextLabel(text, font, context)
+	def apply(text: LocalizedString, font: Font, context: TextContext, margins: StackSize) = TextLabel(text, font, context, margins)
 }
 
 /**

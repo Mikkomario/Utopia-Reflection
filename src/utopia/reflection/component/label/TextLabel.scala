@@ -1,12 +1,12 @@
 package utopia.reflection.component.label
 
-import java.awt.{Color, Font}
+import java.awt.Font
 
 import javax.swing.JLabel
 import utopia.reflection.component.Alignment.Center
-import utopia.reflection.component.{Alignable, Alignment}
-import utopia.reflection.localization.{LocalString, LocalizedString, Localizer, TextContext}
-import utopia.reflection.shape.StackLength
+import utopia.reflection.component.{Alignable, Alignment, TextComponent}
+import utopia.reflection.localization.{LocalizedString, TextContext}
+import utopia.reflection.shape.{StackLength, StackSize}
 
 object TextLabel
 {
@@ -14,28 +14,12 @@ object TextLabel
 	  * @param text The localized text displayed in this label
 	  * @param font the font used in the label
 	  * @param context The text context
+	  * @param margins The margins around the text in this label
+	  * @param hasMinWidth Whether this label always presents the whole text (default = true)
 	  * @return A new label with specified text
 	  */
-	def apply(text: LocalizedString, font: Font, context: TextContext) = new TextLabel(new JLabel(), text, font, context)
-	
-	/**
-	  * Creates a new label with auto-localized text
-	  * @param text The non-localized text in this label
-	  * @param font the font used in the label
-	  * @param context The context of this label
-	  * @param localizer A localizer used for localizing the text (implicit)
-	  * @return A new label with localized text
-	  */
-	def apply(text: LocalString, font: Font, context: TextContext)(implicit localizer: Localizer[TextContext]) =
-		new TextLabel(new JLabel(), localizer.localize(text, context), font, context)
-	
-	/**
-	  * Creates a new label with no text
-	  * @param font the font used in the label
-	  * @param context Text context
-	  * @return A label with no text
-	  */
-	def empty(font: Font, context: TextContext) = new TextLabel(new JLabel(), LocalizedString.empty, font, context)
+	def apply(text: LocalizedString, font: Font, context: TextContext, margins: StackSize, hasMinWidth: Boolean = true) =
+		new TextLabel(new JLabel(), text, font, context, margins, hasMinWidth)
 }
 
 /**
@@ -45,8 +29,9 @@ object TextLabel
   * @param initialText The text initially displayed in this label
   * @param context The text context for this label (used in localization)
   */
-class TextLabel protected(label: JLabel, initialText: LocalizedString, initialFont: Font, val context: TextContext) extends Label(label)
-	with Alignable
+class TextLabel protected(label: JLabel, initialText: LocalizedString, initialFont: Font, val context: TextContext,
+						  override val margins: StackSize, override val hasMinWidth: Boolean = true)
+	extends Label(label) with TextComponent with Alignable
 {
 	// ATTRIBUTES	------------------
 	
@@ -56,15 +41,17 @@ class TextLabel protected(label: JLabel, initialText: LocalizedString, initialFo
 	// INITIAL CODE	------------------
 	
 	label.setText(initialText.string)
-	font = initialFont
+	label.setFont(initialFont)
+	
+	// TODO: Set the default color to 88% black
 	
 	
-	// COMPUTED	----------------------
+	// IMPLEMENTED	------------------
 	
 	/**
 	  * @return The text currently displayed in this label
 	  */
-	def text = _text
+	override def text = _text
 	/**
 	  * @param newText The new text to be displayed on this label
 	  */
@@ -72,46 +59,27 @@ class TextLabel protected(label: JLabel, initialText: LocalizedString, initialFo
 	{
 		_text = newText
 		label.setText(newText.string)
+		revalidate()
 	}
-	/**
-	  * @param newText The new text to be displayed on this label (non-localized)
-	  * @param localizer A localizer that localizes the text (implicit)
-	  */
-	def text_=(newText: LocalString)(implicit localizer: Localizer[TextContext]): Unit = text = localizer.localize(newText, context)
-	
-	// TODO: Set the default color to 88% black
-	/**
-	  * @return The current text color for this label
-	  */
-	def textColor = label.getForeground
-	/**
-	  * @param newColor The new text color for this label
-	  */
-	def textColor_=(newColor: Color) = label.setForeground(newColor)
-	
-	/**
-	  * @return The current text width of this component
-	  */
-	def textWidth: Option[Int] = textWidth(text.string)
-	
-	/**
-	  * @return The current horizontal alignment of this label
-	  */
-	def horizontalAlignment = Alignment.forSwingAlignment(label.getHorizontalAlignment) getOrElse Center
-	/**
-	  * @return The current vertical alignment of this label
-	  */
-	def verticalAlignment = Alignment.forSwingAlignment(label.getVerticalAlignment) getOrElse Center
-	
-	
-	// IMPLEMENTED	------------------
 	
 	override def toString = s"Label($text)"
+	
+	override def alignment =
+	{
+		val vertical = Alignment.forSwingAlignment(label.getVerticalAlignment)
+		if (vertical.exists { _ != Center})
+			vertical.get
+		else
+			Alignment.forSwingAlignment(label.getHorizontalAlignment) getOrElse Center
+	}
+	
+	override def updateLayout() = Unit
 	
 	override def align(alignment: Alignment) =
 	{
 		label.setHorizontalAlignment(alignment.horizontal.toSwingAlignment)
 		label.setVerticalAlignment(alignment.vertical.toSwingAlignment)
+		revalidate()
 	}
 	
 	
@@ -121,15 +89,4 @@ class TextLabel protected(label: JLabel, initialText: LocalizedString, initialFo
 	  * Clears all text from this label
 	  */
 	def clear() = text = LocalizedString.empty
-	
-	/**
-	  * Creates a stackable copy of this label
-	  * @param hMargin The horizontal margin beside text
-	  * @param vMargin The vertical margin beside text
-	  * @param hasMinWidth Whether the label's minimum width will at least contain the whole text for the label.
-	  *                    If false, the text may not show completely. Default = true
-	  * @return A new stackable version of this text label
-	  */
-	def stackableCopy(hMargin: StackLength, vMargin: StackLength, hasMinWidth: Boolean = true) =
-		StackableTextLabel(text, font.get, context, hMargin, vMargin, hasMinWidth)
 }
