@@ -15,7 +15,7 @@ object Alignment
 		
 		override def opposite = Right
 		
-		override def toSwingAlignment = SwingConstants.LEFT
+		override def toSwingAlignment = SwingConstants.LEADING
 	}
 	
 	/**
@@ -27,7 +27,7 @@ object Alignment
 		
 		override def opposite = Left
 		
-		override def toSwingAlignment = SwingConstants.RIGHT
+		override def toSwingAlignment = SwingConstants.TRAILING
 	}
 	
 	/**

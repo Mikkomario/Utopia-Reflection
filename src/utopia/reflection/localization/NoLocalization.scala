@@ -6,7 +6,7 @@ package utopia.reflection.localization
   * @author Mikko Hilpinen
   * @since 22.4.2019, v1+
   */
-object NoLocalization extends Localizer[Any]
+object NoLocalization extends Localizer
 {
-	override def localize(string: LocalString, context: Option[Any]) = string.localizationSkipped
+	override def localize(string: LocalString) = string.localizationSkipped
 }

@@ -23,8 +23,7 @@ object LocalizedString
 	  * @param localizer A localizer (implicit)
 	  * @return A localized version of the string
 	  */
-	implicit def autoLocalize(local: LocalString)(implicit localizer: Localizer[_]): LocalizedString =
-		localizer.localizeWithoutContext(local)
+	implicit def autoLocalize(local: LocalString)(implicit localizer: Localizer): LocalizedString = localizer.localize(local)
 	
 	/**
 	  * Automatically converts a raw string to localized using an implicit localizer + default language code
@@ -33,8 +32,8 @@ object LocalizedString
 	  * @param localizer A localizer (implicit)
 	  * @return A localized version of the string
 	  */
-	implicit def autoLocalize(str: String)(implicit defaultLanguageCode: String, localizer: Localizer[_]): LocalizedString =
-		localizer.localizeWithoutContext(LocalString(str, defaultLanguageCode))
+	implicit def autoLocalize(str: String)(implicit defaultLanguageCode: String, localizer: Localizer): LocalizedString =
+		localizer.localize(LocalString(str, defaultLanguageCode))
 }
 
 /**
@@ -110,6 +109,6 @@ case class LocalizedString(original: LocalString, localized: Option[LocalString]
 	  * @param localizer A localizer that will loalize the string
 	  * @return a combined localized string
 	  */
-	def +(str: String)(implicit localizer: Localizer[_]) = LocalizedString(original + str,
-		displayed + localizer.localizeWithoutContext(LocalString(str, sourceLanguageCode)).string)
+	def +(str: String)(implicit localizer: Localizer) = LocalizedString(original + str,
+		displayed + localizer.localize(LocalString(str, sourceLanguageCode)).string)
 }

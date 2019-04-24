@@ -4,7 +4,6 @@ import utopia.flow.util.NullSafe._
 import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
 import java.awt.Component
-import java.awt.Font
 import java.awt.Color
 
 import javax.swing.SwingUtilities
@@ -136,15 +135,9 @@ trait Wrapper extends Area
     def transparent = !component.isOpaque
     
     /**
-      * @return The font used in this component. None if no font has been specified.
-      */
-    def font = component.getFont.toOption
-    def font_=(f: Font) = component.setFont(f)
-    
-    /**
       * @return The font metrics object for this component. None if font hasn't been specified.
       */
-    def fontMetrics = font.map { component.getFontMetrics(_) } orElse
+    def fontMetrics = component.getFont.toOption.map { component.getFontMetrics(_) } orElse
         component.getGraphics.toOption.map { _.getFontMetrics }
     /**
       * Calculates text width within this component

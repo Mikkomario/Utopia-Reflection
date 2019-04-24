@@ -1,10 +1,11 @@
 package utopia.reflection.component
 
-import java.awt.{Color, Font}
+import java.awt.Color
 
 import utopia.reflection.component.Alignment.Center
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.text.Font
 
 /**
   * This is a commom trait for components that present text
@@ -28,6 +29,10 @@ trait TextComponent extends Stackable
 	  * @return The text currently presented in this component
 	  */
 	def text: LocalizedString
+	/**
+	  * @return The font used in this component
+	  */
+	def font: Font
 	/**
 	  * @return Whether this component has a minimum width based on text size. If false, text may not always show.
 	  */
@@ -57,13 +62,6 @@ trait TextComponent extends Stackable
 	
 	
 	// IMPLEMENTED	----------------------
-	
-	override def font_=(font: Font) =
-	{
-		// Revalidates size when font is changed
-		super.font_=(font)
-		revalidate()
-	}
 	
 	override protected def calculatedStackSize =
 	{
