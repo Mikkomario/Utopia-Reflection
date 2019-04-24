@@ -33,7 +33,6 @@ object Frame
 * @author Mikko Hilpinen
 * @since 26.3.2019
 **/
-// TODO: Maybe add title to the window trait
 class Frame(override val content: StackContainer[_], override val title: String, startResizePolicy: WindowResizePolicy,
 			val borderless: Boolean, startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[StackContainer[_]]
 {

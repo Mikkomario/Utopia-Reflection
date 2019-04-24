@@ -163,8 +163,6 @@ trait Wrapper extends Area
       */
     def textHeight = fontMetrics.map { _.getHeight }
     
-    // TODO: Add support for mouse and keyboard events
-    
     
     // OTHER    -------------------------
     

@@ -140,6 +140,7 @@ trait Window[Content <: Stackable] extends Stackable
         component.addComponentListener(new ComponentAdapter
         {
             // Resizes content each time this window is resized
+            // TODO: This will not limit user's ability to resize window beyond minimum and maximum
             override def componentResized(e: ComponentEvent) = updateContentBounds()
         })
     }
