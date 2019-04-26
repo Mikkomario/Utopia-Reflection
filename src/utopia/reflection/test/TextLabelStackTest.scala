@@ -1,8 +1,12 @@
 package utopia.reflection.test
 
-import java.awt.Color
-
+import utopia.flow.async.ThreadPool
+import utopia.genesis.color.Color
+import utopia.genesis.generic.GenesisDataType
+import utopia.genesis.handling.ActorLoop
+import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
+import utopia.reflection.component.Button
 import utopia.reflection.component.label.TextLabel
 import utopia.reflection.container.{Frame, Stack}
 import utopia.reflection.container.StackLayout.Leading
@@ -12,6 +16,8 @@ import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
+import scala.concurrent.ExecutionContext
+
 /**
   * This is a simple test implementation of text labels in a stack
   * @author Mikko Hilpinen
@@ -19,6 +25,8 @@ import utopia.reflection.text.FontStyle.Plain
   */
 object TextLabelStackTest extends App
 {
+	GenesisDataType.setup()
+	
 	// Sets up localization context
 	implicit val defaultLanguageCode: String = "EN"
 	implicit val localizer: Localizer = NoLocalization
@@ -27,17 +35,28 @@ object TextLabelStackTest extends App
 	val basicFont = Font("Arial", 12, Plain, 2)
 	val labels = Vector("Here are some labels", "just", "for you").map { s => TextLabel(s, basicFont,
 		StackSize(StackLength.any(16), StackLength.fixed(0))) }
-	labels.foreach { _.background = Color.YELLOW }
+	labels.foreach { _.background = Color.yellow }
 	
-	println(labels.map { _.alignment }.mkString(", "))
+	// Creates a button too
+	val button = new Button("A Button!", basicFont, Color.magenta, StackSize(StackLength.any(32),
+		StackLength.any(8)), () => println("The Button was pressed"))
 	
 	// Creates the stack
 	val stack = new Stack(Y, Leading, StackLength.any(8), StackLength.any(16))
 	stack ++= labels
-	stack.background = Color.BLACK
+	stack += button
+	stack.background = Color.black
 	
 	// Creates the frame and displays it
+	val actorHandler = ActorHandler()
+	val actionLoop = new ActorLoop(actorHandler)
+	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
+	
 	val frame = Frame.windowed(stack, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
-	frame.visible = true
+	
+	actionLoop.registerToStopOnceJVMCloses()
+	actionLoop.startAsync()
+	frame.startEventGenerators(actorHandler)
+	frame.isVisible = true
 }

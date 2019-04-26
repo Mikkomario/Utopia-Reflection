@@ -1,7 +1,6 @@
 package utopia.reflection.component
 
-import java.awt.Color
-
+import utopia.genesis.color.Color
 import utopia.reflection.component.Alignment.Center
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{StackLength, StackSize}
@@ -52,8 +51,8 @@ trait TextComponent extends Stackable
 	/**
 	  * @return The color of the text in this component
 	  */
-	def textColor = component.getForeground
-	def textColor_=(newColor: Color) = component.setForeground(newColor)
+	def textColor: Color = component.getForeground
+	def textColor_=(newColor: Color) = component.setForeground(newColor.toAwt)
 	
 	/**
 	  * @return The width of the current text in this component. None if width couldn't be calculated.

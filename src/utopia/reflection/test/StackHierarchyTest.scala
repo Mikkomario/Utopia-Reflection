@@ -96,5 +96,5 @@ object StackHierarchyTest extends App
     pulseLoop.startAsync()
     StackHierarchyManager.startRevalidationLoop()
     
-    frame.visible = true
+    frame.isVisible = true
 }

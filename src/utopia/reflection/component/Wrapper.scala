@@ -3,8 +3,7 @@ package utopia.reflection.component
 import utopia.flow.util.NullSafe._
 import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
-import java.awt.Component
-import java.awt.Color
+import java.awt.{Component, Cursor}
 
 import javax.swing.SwingUtilities
 import utopia.flow.async.VolatileFlag
@@ -12,6 +11,7 @@ import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.event.ResizeEvent
 import utopia.flow.datastructure.mutable.Lazy
+import utopia.genesis.color.Color
 import utopia.genesis.event.{KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.handling.mutable.{KeyStateHandler, KeyTypedHandler, MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
@@ -116,23 +116,47 @@ trait Wrapper extends Area
       * @return An iterator of this components parents (wrapped)
       */
     def parents: Iterator[Wrapper] = new ParentsIterator()
+    /**
+      * @return The background color of this component's first non-transparent parent. None if this component doesn't
+      *         have a non-transparent parent
+      */
+    def parentBackground = parents.find { !_.isTransparent }.map { _.background }
     
     /**
       * @return Whether this component is currently visible
       */
-    def visible = component.isVisible
-    def visible_=(isVisible: Boolean) = component.setVisible(isVisible)
+    def isVisible = component.isVisible
+    def isVisible_=(isVisible: Boolean) = component.setVisible(isVisible)
     
     /**
       * @return The background color of this component
       */
-    def background = component.getBackground
-    def background_=(color: Color) = component.setBackground(color)
+    def background: Color = component.getBackground
+    def background_=(color: Color) =
+    {
+        // Since swing components don't handle transparency very well, mixes a transparent color with background instead
+        if (color.isTransparent)
+        {
+            val myRGB = color.rgb
+            val parentRGB = parentBackground.map { _.rgb }
+            
+            if (parentRGB.isDefined)
+            {
+                // Picks average, weighting by alpha
+                val finalRGB = myRGB * color.alpha + parentRGB.get * (1 - color.alpha)
+                component.setBackground(finalRGB.toAwt)
+            }
+            else
+                component.setBackground(myRGB.toAwt)
+        }
+        else
+            component.setBackground(color.toAwt)
+    }
     
     /**
       * @return Whether this component is transparent (not drawing full area)
       */
-    def transparent = !component.isOpaque
+    def isTransparent = !component.isOpaque
     
     /**
       * @return The font metrics object for this component. None if font hasn't been specified.
@@ -158,6 +182,16 @@ trait Wrapper extends Area
     
     
     // OTHER    -------------------------
+    
+    /**
+      * Specifies that the mouse should have a hand cursor when hovering over this component
+      */
+    def setHandCursor() = component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
+    
+    /**
+      * Specifies that the mouse should have the default cursor when hovering over this component
+      */
+    def setArrowCursor() = component.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
     
     /**
       * Distributes a mouse button event to this wrapper and children

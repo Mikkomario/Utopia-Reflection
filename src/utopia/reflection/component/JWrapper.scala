@@ -1,10 +1,11 @@
 package utopia.reflection.component
 
 import javax.swing.JComponent
-import java.awt.Color
 import javax.swing.AbstractAction
 import java.awt.event.ActionEvent
+
 import javax.swing.KeyStroke
+import utopia.genesis.color.Color
 import utopia.reflection.shape.StackSize
 
 object JWrapper
@@ -29,12 +30,12 @@ trait JWrapper extends Wrapper
     
     // COMPUTED    -----------------------
     
-    def transparent_=(isTransparent: Boolean) = component.setOpaque(!isTransparent)
+    def isTransparent_=(isTransparent: Boolean) = component.setOpaque(!isTransparent)
     
-	override def background_=(color: Color) = 
+	override def background_=(color: Color) =
 	{
-	    component.setBackground(color)
-	    transparent = false
+	    super.background_=(color)
+	    isTransparent = false
 	}
     
     /**

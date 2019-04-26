@@ -21,7 +21,7 @@ class Panel extends MultiContainer[Wrapper] with JWrapper
 	
 	// Layout manager is disabled, panel is transparent by default
 	panel.setLayout(null)
-	transparent = true
+	isTransparent = true
 	
 	
 	// IMPLEMENTED    ------------------

@@ -1,6 +1,7 @@
 package utopia.reflection.component.label
 
 import javax.swing.JLabel
+import utopia.genesis.color.Color
 import utopia.reflection.component.Alignment.Center
 import utopia.reflection.component.{Alignable, Alignment, TextComponent}
 import utopia.reflection.localization.LocalizedString
@@ -42,6 +43,7 @@ class TextLabel protected(label: JLabel, initialText: LocalizedString, override 
 	
 	label.setText(initialText.string)
 	label.setFont(font.toAwt)
+	textColor = Color.textBlack
 	
 	
 	// IMPLEMENTED	------------------

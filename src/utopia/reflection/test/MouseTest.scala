@@ -75,5 +75,5 @@ object MouseTest extends App
 	
 	frame.startEventGenerators(actorHandler)
 	actorLoop.startAsync()
-	frame.visible = true
+	frame.isVisible = true
 }
