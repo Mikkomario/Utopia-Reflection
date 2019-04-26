@@ -191,6 +191,13 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  */
 	def /(div: Double) = *(1/div)
 	
+	/**
+	  * Combines this stack length with another in order to create a stack size
+	  * @param vertical The vertical stack length component
+	  * @return A stack size with this length as width and 'vertical' as height
+	  */
+	def x(vertical: StackLength) = StackSize(this, vertical)
+	
 	
 	// OTHER    ---------------------------
 	

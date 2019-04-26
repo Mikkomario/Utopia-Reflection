@@ -1,5 +1,6 @@
 package utopia.reflection.test
 
+import utopia.reflection.shape.LengthExtensions._
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
@@ -12,7 +13,6 @@ import utopia.reflection.container.{Frame, Stack}
 import utopia.reflection.container.StackLayout.Leading
 import utopia.reflection.container.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
-import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -33,16 +33,14 @@ object TextLabelStackTest extends App
 	
 	// Creates the labels
 	val basicFont = Font("Arial", 12, Plain, 2)
-	val labels = Vector("Here are some labels", "just", "for you").map { s => TextLabel(s, basicFont,
-		StackSize(StackLength.any(16), StackLength.fixed(0))) }
+	val labels = Vector("Here are some labels", "just", "for you").map { s => TextLabel(s, basicFont, 16.any x 0.fixed) }
 	labels.foreach { _.background = Color.yellow }
 	
 	// Creates a button too
-	val button = new Button("A Button!", basicFont, Color.magenta, StackSize(StackLength.any(32),
-		StackLength.any(8)), () => println("The Button was pressed"))
+	val button = new Button("A Button!", basicFont, Color.magenta, 32.any x 8.any, () => println("The Button was pressed"))
 	
 	// Creates the stack
-	val stack = new Stack(Y, Leading, StackLength.any(8), StackLength.any(16))
+	val stack = new Stack(Y, Leading, 8.any, 16.any)
 	stack ++= labels
 	stack += button
 	stack.background = Color.black
