@@ -25,7 +25,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
 {
 	// ATTRIBUTES    --------------------
     
-    private val panel = new Panel()
+    private val panel = new Panel[Stackable]()
     private var _components = Vector[CacheStackable]()
     
     

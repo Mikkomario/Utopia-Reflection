@@ -1,7 +1,13 @@
 package utopia.reflection.event
 
+import scala.language.implicitConversions
+
 object ResizeListener
 {
+	implicit def functionToListener(f: ResizeEvent => Unit): ResizeListener = apply(f)
+	
+	implicit def functionToListener2(f: => Unit): ResizeListener = apply(_ => f)
+	
     /**
      * Wraps a function into a resize listener
      */

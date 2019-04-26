@@ -17,6 +17,8 @@ trait StackMultiContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 		// Adds the component, but also registers it to stack hierarchy manager
 		super.+=(component)
 		StackHierarchyManager.registerConnection(this, component)
+		
+		// TODO: Revalidate this hierarchy?
 	}
 	
 	override def -=(component: C) =
@@ -28,5 +30,7 @@ trait StackMultiContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 		// If this container was left empty, unregisters it as well
 		if (isEmpty)
 			StackHierarchyManager.unregister(this)
+		
+		// TODO: Revalidate this hierarchy?
 	}
 }

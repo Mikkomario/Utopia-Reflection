@@ -43,8 +43,6 @@ class Label protected(protected val label: JLabel) extends JWrapper
 	  */
 	def alignment =
 	{
-		println(label.getVerticalAlignment)
-		
 		val vertical = Alignment.forSwingAlignment(label.getVerticalAlignment)
 		
 		if (vertical.exists { _ != Center})

@@ -134,6 +134,11 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  */
 	def downscaling = noMin
 	
+	/**
+	  * @return A stacksize that uses this length as both widht and height
+	  */
+	def square = StackSize(this, this)
+	
 	
 	// IMPLEMENTED    -----------------------
 	

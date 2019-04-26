@@ -50,7 +50,7 @@ object TextLabelStackTest extends App
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val frame = Frame.windowed(stack, "TextLabel Stack Test", User)
+	val frame = Frame.windowed(stack.framed(24.downscaling.square), "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	
 	actionLoop.registerToStopOnceJVMCloses()

@@ -4,7 +4,7 @@ import utopia.reflection.shape.StackSize
 import java.awt.Component
 
 import utopia.flow.datastructure.mutable.Lazy
-import utopia.reflection.container.StackHierarchyManager
+import utopia.reflection.container.{Framing, StackHierarchyManager}
 
 object Stackable
 {
@@ -71,6 +71,12 @@ trait Stackable extends Wrapper
 	
 	
 	// OTHER	---------------------
+	
+	/**
+	  * @param margins The margins placed around this instance
+	  * @return A framing that contains this stackable item
+	  */
+	def framed(margins: StackSize) = new Framing[Stackable](this, margins)
 	
 	/**
 	  * Resets cached stackSize, if there is one, so that it will be recalculated when requested next time

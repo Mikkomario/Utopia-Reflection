@@ -190,6 +190,12 @@ case class StackSize(width: StackLength, height: StackLength)
     def +(size: Size) = StackSize(width + size.width.toInt, height + size.height.toInt)
     
     /**
+      * @param other Another stack size
+      * @return A sum of these two sizes (with combined min, optimal and max (if defined))
+      */
+    def +(other: StackSize) = StackSize(width + other.width, height + other.height)
+    
+    /**
       * @param size A decrease in size
       * @return A decreased version of this size
       */

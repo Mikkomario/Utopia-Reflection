@@ -9,12 +9,12 @@ import utopia.reflection.component.Wrapper
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-class Panel extends MultiContainer[Wrapper] with JWrapper
+class Panel[C <: Wrapper] extends MultiContainer[C] with JWrapper
 {
     // ATTRIBUTES    -------------------
     
 	private val panel = new JPanel()
-	private var _components = Vector[Wrapper]()
+	private var _components = Vector[C]()
 	
 	
 	// INITIAL CODE    -----------------
@@ -30,14 +30,14 @@ class Panel extends MultiContainer[Wrapper] with JWrapper
 	
 	def components = _components
 	
-	protected def add(component: Wrapper) =
+	protected def add(component: C) =
 	{
 	    _components :+= component
 		// Adds the component to the underlying panel in GUI thread
 		SwingUtilities.invokeLater(() => panel.add(component.component))
 	}
 	
-	protected def remove(component: Wrapper) =
+	protected def remove(component: C) =
 	{
 	    _components = components filterNot { _.equals(component) }
 		// Panel action is done in the GUI thread

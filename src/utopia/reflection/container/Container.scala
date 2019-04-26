@@ -44,5 +44,5 @@ trait Container[C <: Wrapper] extends Wrapper
 	
 	// IMPLEMENTED	----------------
 	
-	override def toString = components.mkString(", ")
+	override def toString = s"[${ components.mkString(", ") }]"
 }

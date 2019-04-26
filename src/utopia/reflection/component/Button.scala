@@ -75,6 +75,8 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	
 	override def updateLayout() = Unit
 	
+	override def toString = s"Button($text)"
+	
 	
 	// OTHER	----------------------
 	
@@ -85,14 +87,12 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	
 	private def pushColor(newColor: Color) =
 	{
-		println(s"Pushing $newColor")
 		colorHistory +:= background
 		SwingUtilities.invokeLater { () => background = newColor }
 	}
 	
 	private def returnColor() =
 	{
-		println("Returning")
 		SwingUtilities.invokeLater { () => colorHistory.pop().foreach { background = _ } }
 	}
 	

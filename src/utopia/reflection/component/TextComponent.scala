@@ -72,8 +72,6 @@ trait TextComponent extends Stackable
 		val w = (if (hasMinWidth) StackLength.fixed(textW) else StackLength.downscaling(textW)) + totalHMargin
 		val h = StackLength.fixed(textHeight.getOrElse(32)) + totalVMargin
 		
-		println(s"margin = $totalHMargin -> width = $w")
-		
 		StackSize(w, h)
 	}
 }
