@@ -13,7 +13,6 @@ import utopia.flow.datastructure.mutable.Pointer
 import scala.collection.immutable.VectorBuilder
 import utopia.reflection.container.StackLayout.Leading
 import utopia.reflection.container.StackLayout.Trailing
-import utopia.reflection.event.ResizeListener
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically
@@ -21,7 +20,7 @@ import utopia.reflection.event.ResizeListener
 * @since 25.2.2019
 **/
 class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLength, 
-        val cap: StackLength) extends StackMultiContainer[Stackable] with JWrapper
+        val cap: StackLength) extends MultiStackContainer[Stackable] with JWrapper
 {
 	// ATTRIBUTES    --------------------
     
@@ -32,12 +31,12 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     // INITIAL CODE    ------------------
     
     // Each time size changes, also updates content (doesn't reset stack sizes at this time)
-    resizeListeners :+= ResizeListener(_ => updateLayout())
+    addResizeListener(updateLayout())
     
     
     // COMPUTED    ----------------------
     
-    private def numberOfMargins = _components.size - 1
+    private def numberOfMargins = (_components.count { _.isVisible } - 1) max 0
     private def totalMarginsLength = margin * numberOfMargins
     
     /**
@@ -71,12 +70,14 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     protected def calculatedStackSize =
     {
-        if (_components.isEmpty)
+        val visibleComponents = _components.filter { _.isVisible }
+        
+        if (visibleComponents.isEmpty)
             StackSize.any.withLowPriorityFor(direction)
         else
         {
             // Checks component sizes
-            val sizes = _components map { _.stackSize }
+            val sizes = visibleComponents map { _.stackSize }
             val lengths = sizes map { _ along direction }
             val breadths = sizes map { _ perpendicularTo direction }
             
@@ -109,15 +110,16 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
     
     def updateLayout() =
     {
-        if (_components.nonEmpty)
+        val visibleComponents = _components.filter { _.isVisible }
+        
+        if (visibleComponents.nonEmpty)
         {
             // Calculates the necessary length adjustment
-            val stackSize = this.stackSize
             val lengthAdjustment = lengthAlong(direction) - stackSize.along(direction).optimal
             
             // Arranges the mutable items in a vector first. Treats margins and caps as separate items
             val caps = Vector.fill(2)(Pointer(0.0))
-            val margins = Vector.fill(count - 1)(Pointer(0.0))
+            val margins = Vector.fill(numberOfMargins)(Pointer(0.0))
             val targets =
             {
                 val builder = new VectorBuilder[LengthAdjust]()
@@ -126,7 +128,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                 builder += new GapLengthAdjust(caps.head, cap)
                 
                 // Next adds items with margins
-                _components.zip(margins).foreach
+                visibleComponents.zip(margins).foreach
                 {
                     case (component, marginPointer) =>
                         builder += new StackableLengthAdjust(component, direction)
@@ -134,7 +136,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
                 }
                 
                 // Adds final component and final cap
-                builder += new StackableLengthAdjust(_components.last, direction)
+                builder += new StackableLengthAdjust(visibleComponents.last, direction)
                 builder += new GapLengthAdjust(caps.last, cap)
                 
                 builder.result()
@@ -160,18 +162,18 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
             
             // Positions the components length-wise (first components with margin and then the final component)
             var cursor = caps.head.get
-            _components.zip(margins).foreach
+            visibleComponents.zip(margins).foreach
             {
                 case (component, marginPointer) =>
                     component.setCoordinate(cursor, direction)
                     cursor += component.lengthAlong(direction) + marginPointer.get
             }
-            _components.last.setCoordinate(cursor, direction)
+            visibleComponents.last.setCoordinate(cursor, direction)
             
             // Handles the breadth of the components too, as well as their perpendicular positioning
             val breadthAxis = direction.perpendicular
             val newBreadth = lengthAlong(breadthAxis)
-            _components.foreach
+            visibleComponents.foreach
             {
                 component =>
                     val breadth = component.stackSize.along(breadthAxis)
@@ -211,7 +213,7 @@ class Stack(val direction: Axis2D, val layout: StackLayout, val margin: StackLen
             }
             
             // Finally applies the changes
-            _components.foreach { _.updateBounds() }
+            visibleComponents.foreach { _.updateBounds() }
         }
     }
     
@@ -270,6 +272,8 @@ private class CacheStackable(val source: Stackable) extends Area
     def component = source.component
     
     def stackSize = source.stackSize
+    
+    def isVisible = source.isVisible
     
     
     // OTHER    -----------------------

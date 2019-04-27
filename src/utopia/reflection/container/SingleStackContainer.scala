@@ -19,6 +19,7 @@ trait SingleStackContainer[C <: Stackable] extends SingleContainer[C] with Stack
 		// Adds new connection to stack hierarchy
 		StackHierarchyManager.registerConnection(this, content)
 		
-		// TODO: Revalidate this hierarchy?
+		// Revalidates the hierarchy
+		revalidate()
 	}
 }

@@ -3,7 +3,6 @@ package utopia.reflection.container
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.shape.{Axis2D, X, Y}
 import utopia.reflection.component.{JWrapper, Stackable}
-import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.{StackLength, StackSize}
 
 /**
@@ -16,14 +15,14 @@ class Framing[C <: Stackable](initialComponent: C, val margins: StackSize) exten
 	// ATTRIBUTES	--------------------
 	
 	private val panel = new Panel[C]()
-	private var content = initialComponent
+	private var content: Option[C] = Some(initialComponent)
 	
 	
 	// INITIAL CODE	--------------------
 	
 	set(initialComponent)
 	// Each time Framing size changes, changes content size too
-	resizeListeners :+= ResizeListener(_ => updateLayout())
+	addResizeListener(updateLayout())
 	
 	
 	// IMPLEMENTED	--------------------
@@ -35,38 +34,41 @@ class Framing[C <: Stackable](initialComponent: C, val margins: StackSize) exten
 	override protected def add(component: C) =
 	{
 		panel += component
-		content = component
+		content = Some(component)
 	}
 	
 	override protected def remove(component: C) =
 	{
 		panel -= component
-		content = component
+		content = None
 	}
 	
 	override def updateLayout() =
 	{
-		// Repositions and resizes content
-		val layout = Axis2D.values.map
+		if (content.isDefined)
 		{
-			axis =>
+			// Repositions and resizes content
+			val layout = Axis2D.values.map
+			{
+				axis =>
+					
+					// Calculates lengths
+					val (contentLength, marginLength) = lengthsFor(axis)
+					// Margin cannot go below 0
+					if (marginLength < 0)
+						axis -> (0, lengthAlong(axis).toInt)
+					else
+						axis -> (marginLength / 2, contentLength)
+			}.toMap
 			
-				// Calculates lengths
-				val (contentLength, marginLength) = lengthsFor(axis)
-				// Margin cannot go below 0
-				if (marginLength < 0)
-					axis -> (0, lengthAlong(axis).toInt)
-				else
-					axis -> (marginLength / 2, contentLength)
-		}.toMap
-		
-		val position = Point(layout(X)._1, layout(Y)._1)
-		val size = Size(layout(X)._2, layout(Y)._2)
-		
-		content.bounds = Bounds(position, size)
+			val position = Point(layout(X)._1, layout(Y)._1)
+			val size = Size(layout(X)._2, layout(Y)._2)
+			
+			content.get.bounds = Bounds(position, size)
+		}
 	}
 	
-	override protected def calculatedStackSize = content.stackSize + margins * 2
+	override protected def calculatedStackSize = content.map { _.stackSize + margins * 2 } getOrElse StackSize.any.withLowPriority
 	
 	
 	// OTHER	-----------------------
@@ -75,7 +77,7 @@ class Framing[C <: Stackable](initialComponent: C, val margins: StackSize) exten
 	private def lengthsFor(axis: Axis2D) =
 	{
 		val myLength = lengthAlong(axis)
-		val contentLength = content.stackSize.along(axis)
+		val contentLength = content.get.stackSize.along(axis)
 		val margin = margins.along(axis) * 2
 		
 		val totalAdjustment = myLength - (contentLength.optimal + margin.optimal)

@@ -8,7 +8,7 @@ import utopia.reflection.component.Stackable
   * @author Mikko Hilpinen
   * @since 15.4.2019, v0.1+
   */
-trait StackMultiContainer[C <: Stackable] extends MultiContainer[C] with StackContainer[C]
+trait MultiStackContainer[C <: Stackable] extends MultiContainer[C] with StackContainer[C]
 {
 	// IMPLEMENTED	---------------------
 	
@@ -18,7 +18,8 @@ trait StackMultiContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 		super.+=(component)
 		StackHierarchyManager.registerConnection(this, component)
 		
-		// TODO: Revalidate this hierarchy?
+		// Revalidates the component hierarchy
+		revalidate()
 	}
 	
 	override def -=(component: C) =
@@ -31,6 +32,7 @@ trait StackMultiContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 		if (isEmpty)
 			StackHierarchyManager.unregister(this)
 		
-		// TODO: Revalidate this hierarchy?
+		// Revalidates component hierarchy
+		revalidate()
 	}
 }

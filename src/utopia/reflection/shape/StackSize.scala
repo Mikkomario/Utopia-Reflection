@@ -175,6 +175,11 @@ case class StackSize(width: StackLength, height: StackLength)
       */
     def withAnyHeight = mapHeight { _.noLimits }
     
+    /**
+      * @return A copy of this size with low priority for both width and height
+      */
+    def withLowPriority = mapWidth { _.withLowPriority }.mapHeight { _.withLowPriority }
+    
     
     // IMPLEMENTED    ----------------
     

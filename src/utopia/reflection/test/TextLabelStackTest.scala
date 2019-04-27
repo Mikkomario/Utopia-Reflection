@@ -1,7 +1,9 @@
 package utopia.reflection.test
 
+import java.time.Duration
+
 import utopia.reflection.shape.LengthExtensions._
-import utopia.flow.async.ThreadPool
+import utopia.flow.async.{Loop, ThreadPool}
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
@@ -9,7 +11,7 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
 import utopia.reflection.component.Button
 import utopia.reflection.component.label.TextLabel
-import utopia.reflection.container.{Frame, Stack}
+import utopia.reflection.container.{Frame, Stack, StackHierarchyManager}
 import utopia.reflection.container.StackLayout.Leading
 import utopia.reflection.container.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
@@ -53,8 +55,13 @@ object TextLabelStackTest extends App
 	val frame = Frame.windowed(stack.framed(24.downscaling.square), "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	
+	val buttonLoop = Loop(Duration.ofSeconds(2), () => button.isVisible = !button.isVisible)
+	buttonLoop.registerToStopOnceJVMCloses()
+	buttonLoop.startAsync()
+	
 	actionLoop.registerToStopOnceJVMCloses()
 	actionLoop.startAsync()
+	StackHierarchyManager.startRevalidationLoop()
 	frame.startEventGenerators(actorHandler)
 	frame.isVisible = true
 }

@@ -55,9 +55,9 @@ trait Stackable extends Wrapper
 	// COMPUTED	---------------------
 	
     /**
-     * The current sizes of this wrapper
+     * The current sizes of this wrapper. Invisible wrappers always have a stack size of zero.
      */
-	def stackSize = cachedStackSize.get
+	def stackSize = if (isVisible) cachedStackSize.get else StackSize.any
 	
 	/**
 	  * @return Whether this component is now larger than its maximum size
@@ -68,6 +68,17 @@ trait Stackable extends Wrapper
 	  * @return Whether this component is now smaller than its minimum size
 	  */
 	def isUnderSized = width < stackSize.minWidth || height < stackSize.minHeight
+	
+	
+	// IMPLEMENTED	-----------------
+	
+	// Since visibility affects component layout (stack size + in stack, for example), the component is revalidated
+	// each time visibility changes
+	override def isVisible_=(isVisible: Boolean) =
+	{
+		super.isVisible_=(isVisible)
+		revalidate()
+	}
 	
 	
 	// OTHER	---------------------

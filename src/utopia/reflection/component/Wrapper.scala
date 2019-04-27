@@ -305,6 +305,18 @@ trait Wrapper extends Area
     }
     
     /**
+      * Adds a resize listener to listen to this component
+      * @param listener A resize listener
+      */
+    def addResizeListener(listener: ResizeListener) = resizeListeners :+= listener
+    
+    /**
+      * Removes a resize listener from this component
+      * @param listener A resize listener to be removed
+      */
+    def removeResizeListener(listener: Any) = resizeListeners = resizeListeners.filterNot { _ == listener }
+    
+    /**
       * Performs a (longer) operation on the GUI thread and updates the component size & position only after the update
       * has been done
       * @param operation The operation that will be run
