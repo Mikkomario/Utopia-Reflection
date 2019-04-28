@@ -8,7 +8,7 @@ import utopia.flow.async.{Loop, ThreadPool}
 import utopia.flow.generic.DataType
 import utopia.genesis.shape.X
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.{JStackable, JWrapper}
+import utopia.reflection.component.{JStackableWrapper, JWrapper}
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.{Stack, StackHierarchyManager}
 import utopia.reflection.container.window.Frame
@@ -26,7 +26,7 @@ object StackHierarchyTest extends App
 {
     DataType.setup()
     
-    private class ChangingWrapper extends JStackable
+    private class ChangingWrapper extends JStackableWrapper
     {
         // ATTRIBUTES   -----------------
         
@@ -77,9 +77,8 @@ object StackHierarchyTest extends App
     
     // Creates the stack
     private val item = new ChangingWrapper()
-    val stack = new Stack(X, Fit, StackLength.fixed(16), StackLength.fixed(16))
-    stack ++= Vector.fill(3)(makeItem())
-    stack += item
+    val items = Vector.fill(3)(makeItem()) :+ item
+    val stack = Stack.withItems(X, Fit, StackLength.fixed(16), StackLength.fixed(16), items)
     
     stack.background = Color.ORANGE
     

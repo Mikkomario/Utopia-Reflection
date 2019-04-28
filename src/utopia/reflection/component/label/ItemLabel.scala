@@ -1,7 +1,7 @@
 package utopia.reflection.component.label
 
 import javax.swing.JLabel
-import utopia.reflection.component.{Alignable, Alignment, TextComponent}
+import utopia.reflection.component.{Alignable, Alignment, AwtTextComponentWrapper}
 import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
@@ -14,7 +14,7 @@ import utopia.reflection.text.Font
   */
 class ItemLabel[A](initialItem: A, val displayFunction: DisplayFunction[A], override val font: Font,
 				   override val margins: StackSize, override val hasMinWidth: Boolean = true)
-	extends Label(new JLabel()) with TextComponent with Alignable
+	extends Label(new JLabel()) with AwtTextComponentWrapper with Alignable
 {
 	// ATTRIBUTES	--------------------
 	

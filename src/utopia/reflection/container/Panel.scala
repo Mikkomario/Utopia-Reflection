@@ -1,15 +1,14 @@
 package utopia.reflection.container
 
-import javax.swing.{JComponent, JPanel, SwingUtilities}
-import utopia.reflection.component.JWrapper
-import utopia.reflection.component.Wrapper
+import javax.swing.{JPanel, SwingUtilities}
+import utopia.reflection.component.{AwtComponentRelated, ComponentLike, JWrapper}
 
 /**
 * Panel is the standard container that holds other components in it (based on JPanel)
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-class Panel[C <: Wrapper] extends MultiContainer[C] with JWrapper
+class Panel[C <: ComponentLike with AwtComponentRelated] extends MultiContainer[C] with JWrapper with AwtContainerRelated
 {
     // ATTRIBUTES    -------------------
     
@@ -26,7 +25,7 @@ class Panel[C <: Wrapper] extends MultiContainer[C] with JWrapper
 	
 	// IMPLEMENTED    ------------------
 	
-	def component: JComponent = panel
+	def component = panel
 	
 	def components = _components
 	

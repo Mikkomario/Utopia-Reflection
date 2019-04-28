@@ -48,10 +48,8 @@ object MouseTest extends App
 	}
 	
 	// Creates the stack
-	val stack = new Stack(X, Fit, StackLength.fixed(16), StackLength.fixed(16))
 	val items = Vector.fill(3)(makeItem())
-	stack ++= items
-	
+	val stack = Stack.withItems(X, Fit, StackLength.fixed(16), StackLength.fixed(16), items)
 	stack.background = Color.ORANGE
 	
 	// Creates the frame

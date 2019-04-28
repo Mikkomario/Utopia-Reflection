@@ -17,7 +17,7 @@ import utopia.reflection.text.Font
   * @since 25.4.2019, v1+
   */
 class Button(override val text: LocalizedString, override val font: Font, color: Color, override val margins: StackSize,
-			 val action: () => Unit) extends TextComponent with JWrapper
+			 val action: () => Unit) extends AwtTextComponentWrapper with JWrapper
 {
 	// ATTRIBUTES	------------------
 	

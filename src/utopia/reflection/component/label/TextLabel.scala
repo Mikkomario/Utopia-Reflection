@@ -3,7 +3,7 @@ package utopia.reflection.component.label
 import javax.swing.JLabel
 import utopia.genesis.color.Color
 import utopia.reflection.component.Alignment.Center
-import utopia.reflection.component.{Alignable, Alignment, TextComponent}
+import utopia.reflection.component.{Alignable, Alignment, AwtTextComponentWrapper}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
@@ -32,7 +32,7 @@ object TextLabel
   */
 class TextLabel protected(label: JLabel, initialText: LocalizedString, override val font: Font,
 						  override val margins: StackSize, override val hasMinWidth: Boolean = true)
-	extends Label(label) with TextComponent with Alignable
+	extends Label(label) with AwtTextComponentWrapper with Alignable
 {
 	// ATTRIBUTES	------------------
 	

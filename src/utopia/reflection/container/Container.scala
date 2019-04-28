@@ -1,17 +1,15 @@
 package utopia.reflection.container
 
-import utopia.reflection.component.Wrapper
+import utopia.reflection.component.ComponentLike
 
 /**
 * This trait is extended by classes that may contain one or multiple components
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-trait Container[C <: Wrapper] extends Wrapper
+trait Container[C <: ComponentLike] extends ComponentLike
 {
     // ABSTRACT    ----------------
-    
-    def component: java.awt.Container
     
     /**
      * The current components in this container

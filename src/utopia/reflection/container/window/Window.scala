@@ -3,12 +3,14 @@ package utopia.reflection.container.window
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 
 import utopia.flow.async.VolatileFlag
+import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling._
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
-import utopia.inception.handling.Handleable
-import utopia.reflection.component.Stackable
+import utopia.reflection.component.{AwtComponentRelated, CachingStackable, Stackable}
+import utopia.reflection.container.AwtContainerRelated
+import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
 
@@ -17,7 +19,7 @@ import utopia.reflection.util.Screen
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-trait Window[Content <: Stackable] extends Stackable
+trait Window[Content <: Stackable with AwtComponentRelated] extends CachingStackable with AwtContainerRelated
 {
     // ATTRIBUTES   ----------------
     
@@ -64,12 +66,14 @@ trait Window[Content <: Stackable] extends Stackable
     
     // IMPLEMENTED    --------------
     
-    // Overrides size and position because user may resize and move this Window at will, breaking the cached size / position logic
+    // Size and position are not cached since the user may resize and move this Window at will, breaking the cached size / position logic
     override def size = Size(component.getWidth, component.getHeight)
     override def size_=(newSize: Size) = component.setSize(newSize.toDimension)
     
     override def position = Point(component.getX, component.getY)
     override def position_=(newPosition: Point) = component.setLocation(newPosition.toAwtPoint)
+    
+    override protected def updateVisibility(visible: Boolean) = component.setVisible(visible)
     
     override protected def calculatedStackSize =
     {
@@ -91,14 +95,27 @@ trait Window[Content <: Stackable] extends Stackable
     
     // Each time (content) layout is updated, may resize this window
     override def updateLayout() = updateWindowBounds(resizePolicy.allowsProgramResize)
-	
-	// Overrides listener functions to send them to content instead
-	override def addMouseButtonListener(listener: MouseButtonStateListener) = content.addMouseButtonListener(listener)
-	override def addMouseMoveListener(listener: MouseMoveListener) = content.addMouseMoveListener(listener)
-	override def addMouseWheelListener(listener: MouseWheelListener) = content.addMouseWheelListener(listener)
-	override def addKeyStateListener(listener: KeyStateListener) = content.addKeyStateListener(listener)
-	override def addKeyTypedListener(listener: KeyTypedListener) = content.addKeyTypedListener(listener)
-	override def removeListener(listener: Handleable) = content.removeListener(listener)
+    
+    override def resizeListeners = content.resizeListeners
+    override def resizeListeners_=(listeners: Vector[ResizeListener]) = content.resizeListeners = listeners
+    
+    // Windows have no parents
+    override def parent = None
+    
+    override def isVisible = component.isVisible
+    
+    override def background = content.background
+    override def background_=(color: Color) = content.background = color
+    
+    override def isTransparent = content.isTransparent
+    
+    override def fontMetrics = content.fontMetrics
+    
+    override def mouseButtonHandler = content.mouseButtonHandler
+    override def mouseMoveHandler = content.mouseMoveHandler
+    override def mouseWheelHandler = content.mouseWheelHandler
+    override def keyStateHandler = content.keyStateHandler
+    override def keyTypedHandler = content.keyTypedHandler
     
     
     // OTHER    --------------------

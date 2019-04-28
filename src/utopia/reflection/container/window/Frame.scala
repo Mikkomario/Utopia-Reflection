@@ -1,7 +1,9 @@
 package utopia.reflection.container.window
 
 import javax.swing.{JFrame, WindowConstants}
-import utopia.reflection.container.stack.{StackContainer, StackHierarchyManager}
+import utopia.reflection.component.Stackable
+import utopia.reflection.container.AwtContainerRelated
+import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.util.Screen
 
 object Frame
@@ -13,8 +15,8 @@ object Frame
       * @param resizePolicy The policy used about Frame resizing. By default, only the user may resize the Frame
       * @return A new windowed frame
       */
-    def windowed(content: StackContainer[_], title: String,
-				 resizePolicy: WindowResizePolicy = WindowResizePolicy.User) =
+    def windowed[C <: Stackable with AwtContainerRelated](content: C, title: String,
+                                                          resizePolicy: WindowResizePolicy = WindowResizePolicy.User) =
         new Frame(content, title, resizePolicy, false, false, false)
     
     /**
@@ -24,8 +26,8 @@ object Frame
       * @param showToolBar Whether tool bar (bottom) should be displayed
       * @return A new full screen frame
       */
-    def fullScreen(content: StackContainer[_], title: String, showToolBar: Boolean) = new Frame(content, title,
-        WindowResizePolicy.Program, true, true, showToolBar)
+    def fullScreen[C <: Stackable with AwtContainerRelated](content: C, title: String, showToolBar: Boolean) =
+        new Frame(content, title, WindowResizePolicy.Program, true, true, showToolBar)
 }
 
 /**
@@ -33,8 +35,9 @@ object Frame
 * @author Mikko Hilpinen
 * @since 26.3.2019
 **/
-class Frame(override val content: StackContainer[_], override val title: String, startResizePolicy: WindowResizePolicy,
-			val borderless: Boolean, startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[StackContainer[_]]
+class Frame[C <: Stackable with AwtContainerRelated](override val content: C, override val title: String,
+                                                     startResizePolicy: WindowResizePolicy, val borderless: Boolean,
+                                                     startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[C]
 {
     // ATTRIBUTES    -------------------
     

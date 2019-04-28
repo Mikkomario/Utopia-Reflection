@@ -1,41 +1,16 @@
 package utopia.reflection.component
 
 import utopia.reflection.shape.StackSize
-import java.awt.Component
 
-import utopia.flow.datastructure.mutable.Lazy
-import utopia.reflection.container.stack.{Framing, StackHierarchyManager}
-
-object Stackable
-{
-    /**
-     * Wraps a component as stackable
-     * @param component wrapped component
-     * @param getSize a function for retrieving component size
-     */
-    def apply(component: Component, getSize: () => StackSize, update: () => Unit = () => Unit): Stackable =
-		new StackWrapper(component, getSize, update)
-    
-    /**
-     * Wraps a component as stackable
-     * @param component wrapped component
-     * @param size fixed component sizes
-     */
-    def apply(component: Component, size: StackSize): Stackable = apply(component, () => size)
-}
+import utopia.reflection.container.stack.StackHierarchyManager
 
 /**
 * This trait is inherited by component classes that can be placed in stacks
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-trait Stackable extends Wrapper
+trait Stackable extends ComponentLike
 {
-	// ATTRIBUTES	-----------------
-	
-	private val cachedStackSize = new Lazy[StackSize](() => calculatedStackSize)
-	
-	
 	// ABSTRACT	---------------------
 	
 	/**
@@ -46,18 +21,17 @@ trait Stackable extends Wrapper
 	def updateLayout(): Unit
 	
 	/**
-	  * Calculates an up-to-date stack size for this component
-	  * @return An up-to-date stack size for this component
+	  * The current sizes of this wrapper. Invisible wrappers should always have a stack size of zero.
 	  */
-	protected def calculatedStackSize: StackSize
+	def stackSize: StackSize
+	
+	/**
+	  * Resets cached stackSize, if there is one, so that it will be recalculated when requested next time
+	  */
+	def resetCachedSize(): Unit
 	
 	
 	// COMPUTED	---------------------
-	
-    /**
-     * The current sizes of this wrapper. Invisible wrappers always have a stack size of zero.
-     */
-	def stackSize = if (isVisible) cachedStackSize.get else StackSize.any
 	
 	/**
 	  * @return Whether this component is now larger than its maximum size
@@ -70,29 +44,7 @@ trait Stackable extends Wrapper
 	def isUnderSized = width < stackSize.minWidth || height < stackSize.minHeight
 	
 	
-	// IMPLEMENTED	-----------------
-	
-	// Since visibility affects component layout (stack size + in stack, for example), the component is revalidated
-	// each time visibility changes
-	override def isVisible_=(isVisible: Boolean) =
-	{
-		super.isVisible_=(isVisible)
-		revalidate()
-	}
-	
-	
 	// OTHER	---------------------
-	
-	/**
-	  * @param margins The margins placed around this instance
-	  * @return A framing that contains this stackable item
-	  */
-	def framed(margins: StackSize) = new Framing[Stackable](this, margins)
-	
-	/**
-	  * Resets cached stackSize, if there is one, so that it will be recalculated when requested next time
-	  */
-	def resetCachedSize() = cachedStackSize.reset()
 	
 	/**
 	  * Requests a revalidation for this item
@@ -108,11 +60,4 @@ trait Stackable extends Wrapper
 	 * Sets the size of this component to minimum (by stack size)
 	 */
 	def setToMinSize() = size = stackSize.min
-}
-
-private class StackWrapper(val component: Component, val getSize: () => StackSize, val update: () => Unit) extends Stackable
-{
-	override def updateLayout() = update()
-	
-	override protected def calculatedStackSize = getSize()
 }

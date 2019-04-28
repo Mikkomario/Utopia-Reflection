@@ -21,55 +21,9 @@ object JWrapper
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-trait JWrapper extends Wrapper
+trait JWrapper extends AwtComponentWrapper with SwingComponentRelated
 {
-    // ABSTRACT    -----------------------
-    
-    override def component: JComponent
-    
-    
-    // COMPUTED    -----------------------
-    
-    def isTransparent_=(isTransparent: Boolean) = component.setOpaque(!isTransparent)
-    
-	override def background_=(color: Color) =
-	{
-	    super.background_=(color)
-	    isTransparent = false
-	}
-    
-    /**
-     * Adds a keystroke shortcut to the wrapped component
-     * @param key the target key code
-     * @param action the action performed when the key is pressed
-     */
-    def addShortcut(key: Int, action: () => Unit) = 
-    {
-        val actionName = s"action-for-key-$key"
-        component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(key, 0), actionName)
-        component.getActionMap.put(actionName, new RunAction(action))
-    }
-    
-    
-    // OTHER    --------------------------
-    
-    /**
-     * Transforms this wrapper into a Stackable
-     */
-    override def withStackSize(getSize: () => StackSize) = JStackable(component, getSize)
-    
-    /**
-     * Transforms this wrapper into a Stackable
-     */
-    override def withStackSize(size: StackSize) = JStackable(component, size)
-    
-    
-    // NESTED CLASSES    -----------------
-    
-    private class RunAction(val action: () => Unit) extends AbstractAction
-    {
-        def actionPerformed(e: ActionEvent) = action()
-    }
+    override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
 }
 
 private class SimpleJWrapper(val component: JComponent) extends JWrapper

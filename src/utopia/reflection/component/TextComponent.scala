@@ -11,7 +11,7 @@ import utopia.reflection.text.Font
   * @author Mikko Hilpinen
   * @since 24.4.2019, v1+
   */
-trait TextComponent extends Stackable
+trait TextComponent extends Stackable with StackSizeCalculating
 {
 	// ABSTRACT	--------------------------
 	
@@ -37,6 +37,12 @@ trait TextComponent extends Stackable
 	  */
 	def hasMinWidth: Boolean
 	
+	/**
+	  * @return The color of the text in this component
+	  */
+	def textColor: Color
+	def textColor_=(newColor: Color): Unit
+	
 	
 	// COMPUTED	--------------------------
 	
@@ -48,11 +54,6 @@ trait TextComponent extends Stackable
 	  * @return The length of a vertical margin around this component
 	  */
 	def vMargin = margins.height
-	/**
-	  * @return The color of the text in this component
-	  */
-	def textColor: Color = component.getForeground
-	def textColor_=(newColor: Color) = component.setForeground(newColor.toAwt)
 	
 	/**
 	  * @return The width of the current text in this component. None if width couldn't be calculated.
@@ -62,7 +63,10 @@ trait TextComponent extends Stackable
 	
 	// IMPLEMENTED	----------------------
 	
-	override protected def calculatedStackSize =
+	/**
+	  * @return The calculated stack size of this component
+	  */
+	protected def calculatedStackSize =
 	{
 		// Adds margins to base text size. Alignment also matters.
 		val textW = textWidth.getOrElse(128)

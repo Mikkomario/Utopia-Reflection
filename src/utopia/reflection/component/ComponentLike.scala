@@ -1,16 +1,9 @@
 package utopia.reflection.component
 
-import utopia.flow.util.NullSafe._
 import utopia.genesis.shape.shape2D.Point
-import utopia.genesis.shape.shape2D.Size
-import java.awt.{Component, Cursor}
+import java.awt.FontMetrics
 
-import javax.swing.SwingUtilities
-import utopia.flow.async.VolatileFlag
-import utopia.reflection.shape.StackSize
 import utopia.reflection.event.ResizeListener
-import utopia.reflection.event.ResizeEvent
-import utopia.flow.datastructure.mutable.Lazy
 import utopia.genesis.color.Color
 import utopia.genesis.event.{KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
@@ -18,151 +11,70 @@ import utopia.genesis.handling.mutable.{KeyStateHandler, KeyTypedHandler, MouseB
 import utopia.inception.handling.Handleable
 import utopia.reflection.container.Container
 
-object Wrapper
-{
-    /**
-     * Wraps a component
-     */
-    def apply(component: Component, children: Set[Wrapper] = Set()): Wrapper = new SimpleWrapper(component, children)
-}
-
 /**
-* This class wraps a JComponent for a standardized interface
+* This trait describes basic component features without any implementation
 * @author Mikko Hilpinen
 * @since 25.2.2019
 **/
-trait Wrapper extends Area
+trait ComponentLike extends Area
 {
-    // ATTRIBUTES    ----------------------
-    
-    // Temporarily cached position and size
-    private val cachedPosition = new Lazy(() => Point(component.getX, component.getY))
-    private val cachedSize = new Lazy(() => Size(component.getWidth, component.getHeight))
-    
-    private val updateDisabled = new VolatileFlag()
-    
-    // Handlers for distributing events
-    private val mouseButtonHandler = MouseButtonStateHandler()
-    private val mouseMoveHandler = MouseMoveHandler()
-    private val mouseWheelHandler = MouseWheelHandler()
-    
-    private val keyStateHandler = KeyStateHandler()
-    private val keyTypedHandler = KeyTypedHandler()
-    
-    /**
-     * The currently active resize listeners for this wrapper. Please note that the listeners 
-     * will by default only be informed on size changes made through this wrapper. Size changes 
-     * that happen directly in the component are ignored by default
-     */
-    var resizeListeners = Vector[ResizeListener]()
-    /**
-     * Removes a resize listener from the informed listeners
-     */
-    def resizeListeners_-=(listener: Any) = resizeListeners = resizeListeners.filterNot { _ == listener }
-    
-    
     // ABSTRACT    ------------------------
     
-    /**
-     * @return The wrapped component
-     */
-    def component: Component
-    
-    
-    // IMPLEMENTED    ---------------------
+    def resizeListeners: Vector[ResizeListener]
+    def resizeListeners_=(listeners: Vector[ResizeListener]): Unit
     
     /**
-      * @return This component's current position
+      * @return The parent component of this component
       */
-    def position = cachedPosition.get
-    def position_=(p: Point) =
-    {
-        cachedPosition.set(p)
-        updateBounds()
-    }
+    def parent: Option[ComponentLike]
     
     /**
-      * @return This component's current size
+      * @return Whether this component is currently visible
       */
-    def size = cachedSize.get
-    def size_=(s: Size) = 
-    {
-        // Informs resize listeners, if there are any
-        if (resizeListeners.isEmpty)
-            cachedSize.set(s)
-        else
-        {
-            val oldSize = size
-            cachedSize.set(s)
-            
-            if (oldSize !~== s)
-            {
-                val newEvent = ResizeEvent(oldSize, s)
-                resizeListeners.foreach { _.onResizeEvent(newEvent) }
-            }
-        }
-        
-        updateBounds()
-    }
-    
-    
-	// COMPUTED PROPERTIES    -------------
+    def isVisible: Boolean
+    /**
+      * Updates this component's visibility
+      * @param isVisible Whether this component is currently visible
+      */
+    def isVisible_=(isVisible: Boolean): Unit
     
     /**
-      * @return The parent component of this component (wrapped)
+      * @return The background color of this component
       */
-    def parent: Option[Wrapper] =  component.getParent.toOption.map { new SimpleWrapper(_, Set(this)) }
+    def background: Color
+    def background_=(color: Color): Unit
+    
     /**
-      * @return An iterator of this components parents (wrapped)
+      * @return Whether this component is transparent (not drawing full area)
       */
-    def parents: Iterator[Wrapper] = new ParentsIterator()
+    def isTransparent: Boolean
+    
+    /**
+      * @return The font metrics object for this component. None if font hasn't been specified.
+      */
+    def fontMetrics: Option[FontMetrics]
+    
+    def mouseButtonHandler: MouseButtonStateHandler
+    def mouseMoveHandler: MouseMoveHandler
+    def mouseWheelHandler: MouseWheelHandler
+    
+    def keyStateHandler: KeyStateHandler
+    def keyTypedHandler: KeyTypedHandler
+    
+    
+    // OTHER    ---------------------------
+    
+    /**
+      * @return An iterator of this components parents
+      */
+    def parents: Iterator[ComponentLike] = new ParentsIterator()
+    
     /**
       * @return The background color of this component's first non-transparent parent. None if this component doesn't
       *         have a non-transparent parent
       */
     def parentBackground = parents.find { !_.isTransparent }.map { _.background }
     
-    /**
-      * @return Whether this component is currently visible
-      */
-    def isVisible = component.isVisible
-    def isVisible_=(isVisible: Boolean) = component.setVisible(isVisible)
-    
-    /**
-      * @return The background color of this component
-      */
-    def background: Color = component.getBackground
-    def background_=(color: Color) =
-    {
-        // Since swing components don't handle transparency very well, mixes a transparent color with background instead
-        if (color.isTransparent)
-        {
-            val myRGB = color.rgb
-            val parentRGB = parentBackground.map { _.rgb }
-            
-            if (parentRGB.isDefined)
-            {
-                // Picks average, weighting by alpha
-                val finalRGB = myRGB * color.alpha + parentRGB.get * (1 - color.alpha)
-                component.setBackground(finalRGB.toAwt)
-            }
-            else
-                component.setBackground(myRGB.toAwt)
-        }
-        else
-            component.setBackground(color.toAwt)
-    }
-    
-    /**
-      * @return Whether this component is transparent (not drawing full area)
-      */
-    def isTransparent = !component.isOpaque
-    
-    /**
-      * @return The font metrics object for this component. None if font hasn't been specified.
-      */
-    def fontMetrics = component.getFont.toOption.map { component.getFontMetrics(_) } orElse
-        component.getGraphics.toOption.map { _.getFontMetrics }
     /**
       * Calculates text width within this component
       * @param text Text to be presented
@@ -182,16 +94,6 @@ trait Wrapper extends Area
     
     
     // OTHER    -------------------------
-    
-    /**
-      * Specifies that the mouse should have a hand cursor when hovering over this component
-      */
-    def setHandCursor() = component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
-    
-    /**
-      * Specifies that the mouse should have the default cursor when hovering over this component
-      */
-    def setArrowCursor() = component.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
     
     /**
       * Distributes a mouse button event to this wrapper and children
@@ -317,71 +219,29 @@ trait Wrapper extends Area
     def removeResizeListener(listener: Any) = resizeListeners = resizeListeners.filterNot { _ == listener }
     
     /**
-      * Performs a (longer) operation on the GUI thread and updates the component size & position only after the update
-      * has been done
-      * @param operation The operation that will be run
-      * @tparam U Arbitary result type
-      */
-    def doThenUpdate[U](operation: => U) =
-    {
-        SwingUtilities.invokeLater(() =>
-        {
-            // Disables update during operation
-            updateDisabled.set()
-            operation
-            
-            // Enables updates and performs them
-            updateDisabled.reset()
-            updateBounds()
-        })
-    }
-    
-    /**
      * Removes all resize listeners from this wrapper
      */
     def clearResizeListeners() = resizeListeners = Vector()
     
-    /**
-     * Transforms this wrapper into a Stackable
-     */
-    def withStackSize(getSize: () => StackSize) = Stackable(component, getSize)
-    
-    /**
-     * Transforms this wrapper into a Stackable
-     */
-    // TODO: Don't just wrap the component, wrap this wrapper
-    def withStackSize(size: StackSize) = Stackable(component, size)
-    
-    private def updateBounds(): Unit =
-    {
-        updateDisabled.doIfNotSet
-        {
-            // Updates own position and size
-            cachedPosition.current.foreach
-            { p => component.setLocation(p.toAwtPoint) }
-            cachedSize.current.foreach
-            { s => component.setSize(s.toDimension) }
-        }
-    }
-    
-    private def forMeAndChildren[U](operation: Wrapper => U): Unit =
+    private def forMeAndChildren[U](operation: ComponentLike => U): Unit =
     {
         operation(this)
         forChildren(operation)
     }
     
-    private def forChildren[U](operation: Wrapper => U): Unit = this match
+    private def forChildren[U](operation: ComponentLike => U): Unit = this match
     {
+            // TODO: Container needs a non-swing super type here
         case c: Container[_] => c.components.foreach { operation(_) }
         case _ => Unit
     }
     
     private def distributeDefaultMouseEvent[E <: MouseEvent](event: E, withPosition: (E, Point) => E,
-                                                             childAccept: (Wrapper, E) => Unit) =
+                                                             childAccept: (ComponentLike, E) => Unit) =
         distributeEvent[E](event, e => Vector(e.mousePosition), (e, t) => withPosition(e, e.mousePosition - t), childAccept)
     
     private def distributeEvent[E](event: E, positionsFromEvent: E => Traversable[Point],
-                                   translateEvent: (E, Point) => E, childAccept: (Wrapper, E) => Unit) =
+                                   translateEvent: (E, Point) => E, childAccept: (ComponentLike, E) => Unit) =
     {
         // If has chilren, informs them. Event position is modified and only events within this component's area
         // are relayed forward
@@ -397,7 +257,7 @@ trait Wrapper extends Area
     // NESTED CLASSES    ----------------
     
     // This iterator is used for iterating through parent components (bottom to top)
-    private class ParentsIterator extends Iterator[Wrapper]
+    private class ParentsIterator extends Iterator[ComponentLike]
     {
         var nextParent = parent
         
@@ -411,5 +271,3 @@ trait Wrapper extends Area
         }
     }
 }
-
-private class SimpleWrapper(val component: Component, val children: Set[Wrapper]) extends Wrapper

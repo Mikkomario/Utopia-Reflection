@@ -3,14 +3,14 @@ package utopia.reflection.component
 import javax.swing.JComponent
 import utopia.reflection.shape.StackSize
 
-object JStackable
+object JStackableWrapper
 {
     /**
      * Wraps a component as stackable
      * @param component wrapped component
      * @param getSize a function for retrieving component size
      */
-    def apply(component: JComponent, getSize: () => StackSize, update: () => Unit = () => Unit): JStackable =
+    def apply(component: JComponent, getSize: () => StackSize, update: () => Unit = () => Unit): JStackableWrapper =
         new JStackWrapper(component, getSize, update)
     
     /**
@@ -18,7 +18,7 @@ object JStackable
      * @param component wrapped component
      * @param size fixed component sizes
      */
-    def apply(component: JComponent, size: StackSize): JStackable = apply(component, () => size)
+    def apply(component: JComponent, size: StackSize): JStackableWrapper = apply(component, () => size)
 }
 
 /**
@@ -26,9 +26,9 @@ object JStackable
 * @author Mikko Hilpinen
 * @since 27.3.2019
 **/
-trait JStackable extends Stackable with JWrapper
+trait JStackableWrapper extends StackableAwtComponentWrapper with JWrapper
 
-private class JStackWrapper(val component: JComponent, val getSize: () => StackSize, val update: () => Unit) extends JStackable
+private class JStackWrapper(val component: JComponent, val getSize: () => StackSize, val update: () => Unit) extends JStackableWrapper
 {
     def calculatedStackSize = getSize()
     

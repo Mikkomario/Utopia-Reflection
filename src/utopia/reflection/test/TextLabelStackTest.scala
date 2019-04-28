@@ -9,10 +9,11 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
-import utopia.reflection.component.Button
+import utopia.reflection.component.{Button, Stackable}
 import utopia.reflection.component.label.TextLabel
+import utopia.reflection.container.AwtContainerRelated
 import utopia.reflection.container.stack.StackLayout.Leading
-import utopia.reflection.container.stack.{Stack, StackHierarchyManager}
+import utopia.reflection.container.stack.{Framing, Stack, StackHierarchyManager}
 import utopia.reflection.container.window.Frame
 import utopia.reflection.container.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
@@ -43,9 +44,7 @@ object TextLabelStackTest extends App
 	val button = new Button("A Button!", basicFont, Color.magenta, 32.any x 8.any, () => println("The Button was pressed"))
 	
 	// Creates the stack
-	val stack = new Stack(Y, Leading, 8.any, 16.any)
-	stack ++= labels
-	stack += button
+	val stack = Stack.withItems(Y, Leading, 8.any, 16.any, labels :+ button)
 	stack.background = Color.black
 	
 	// Creates the frame and displays it
@@ -53,7 +52,8 @@ object TextLabelStackTest extends App
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val frame = Frame.windowed(stack.framed(24.downscaling.square), "TextLabel Stack Test", User)
+	val framing = new Framing(stack, 24.downscaling.square)
+	val frame = Frame.windowed(framing, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	
 	val buttonLoop = Loop(Duration.ofSeconds(2), () => button.isVisible = !button.isVisible)

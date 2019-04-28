@@ -1,7 +1,8 @@
 package utopia.reflection.container.stack
 
-import utopia.reflection.component.{JWrapper, Stackable}
-import utopia.reflection.container.Panel
+import utopia.genesis.color.Color
+import utopia.reflection.component.{AwtComponentRelated, AwtComponentWrapperWrapper, CachingStackable, JWrapper, Stackable, StackableAwtComponentWrapper, SwingComponentRelated}
+import utopia.reflection.container.{AwtContainerRelated, Panel}
 import utopia.reflection.shape.StackSize
 
 /**
@@ -9,12 +10,12 @@ import utopia.reflection.shape.StackSize
   * @author Mikko Hilpinen
   * @since 27.4.2019, v1+
   */
-class SwitchPanel(initialContent: Stackable) extends SingleStackContainer[Stackable] with JWrapper
+class SwitchPanel[C <: Stackable with AwtComponentRelated](initialContent: C) extends SingleStackContainer[C]
+	with AwtComponentWrapperWrapper with SwingComponentRelated with AwtContainerRelated with CachingStackable
 {
 	// ATTRIBUTES	-------------------
 	
-	private val panel = new Panel[Stackable]()
-	private var content: Option[Stackable] = Some(initialContent)
+	private val panel = new Panel[C]()
 	
 	
 	// INITIAL CODE	-------------------
@@ -25,6 +26,10 @@ class SwitchPanel(initialContent: Stackable) extends SingleStackContainer[Stacka
 	
 	// IMPLEMENTED	-------------------
 	
+	override protected def wrapped = panel
+	
+	override protected def updateVisibility(visible: Boolean) = super[AwtComponentWrapperWrapper].isVisible_=(visible)
+	
 	override def component = panel.component
 	
 	// Content size matches that of this panel
@@ -34,15 +39,9 @@ class SwitchPanel(initialContent: Stackable) extends SingleStackContainer[Stacka
 	
 	override def components = panel.components
 	
-	override protected def add(component: Stackable) =
-	{
-		panel += component
-		content = Some(component)
-	}
+	override protected def add(component: C) = panel += component
 	
-	override protected def remove(component: Stackable) =
-	{
-		panel -= component
-		content = None
-	}
+	override protected def remove(component: C) = panel -= component
+	
+	override def background_=(color: Color) = super[AwtComponentWrapperWrapper].background_=(color)
 }

@@ -1,13 +1,13 @@
 package utopia.reflection.container
 
-import utopia.reflection.component.Wrapper
+import utopia.reflection.component.ComponentLike
 
 /**
 * This trait is extended by classes that may contain one or multiple components
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-trait MultiContainer[C <: Wrapper] extends Container[C] with Wrapper
+trait MultiContainer[C <: ComponentLike] extends Container[C]
 {
 	// OPERATORS    ---------------
 	
@@ -48,4 +48,16 @@ trait MultiContainer[C <: Wrapper] extends Container[C] with Wrapper
 	 * Removes all items from this container
 	 */
 	def clear() = components.foreach(-=)
+	
+	/**
+	  * Removes all items except those kept by the filter
+	  * @param keep A filter for keeping items
+	  */
+	def filter(keep: C => Boolean) = this --= components.filterNot(keep)
+	
+	/**
+	  * Removes all items picked by the filter function
+	  * @param f A filter function
+	  */
+	def filterNot(f: C => Boolean) = this --= components.filter(f)
 }
