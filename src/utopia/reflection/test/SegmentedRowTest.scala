@@ -49,6 +49,8 @@ object SegmentedRowTest extends App
 	val hGroup = new SegmentedGroup(X)
 	val row1 = SegmentedRow.partOfGroupWithItems(hGroup, Fit, 8.fixed, 0.fixed, Vector(labels(0), labels(1)))
 	val row2 = SegmentedRow.partOfGroupWithItems(hGroup, Fit, 8.fixed, 0.fixed, Vector(labels(2), labels(3)))
+	row1.background = Color.cyan
+	row2.background = Color.green
 	
 	// Creates the columns
 	/*

@@ -75,6 +75,8 @@ trait StackLike[C <: Stackable] extends MultiStackContainer[C] with StackSizeCal
     
     protected def calculatedStackSize =
     {
+        println("Calculating stack size")
+        
         val visibleComponents = _components.filter { _.isVisible }
         
         if (visibleComponents.isEmpty)
@@ -115,6 +117,8 @@ trait StackLike[C <: Stackable] extends MultiStackContainer[C] with StackSizeCal
     
     def updateLayout() =
     {
+        println("Updating stack layout for " + this)
+        
         val visibleComponents = _components.filter { _.isVisible }
         
         if (visibleComponents.nonEmpty)
@@ -278,6 +282,8 @@ private class StackItem[C <: Stackable](val source: C) extends Area with Stackab
     
     def updateBounds() = 
     {
+        println(s"Updating bounds for $source: $nextPosition, $nextSize")
+        
         nextPosition filterNot { _ ~== source.position } foreach { source.position = _ }
         nextPosition = None
         

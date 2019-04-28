@@ -1,6 +1,7 @@
 package utopia.reflection.container.stack.segmented
 
 import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.{AwtComponentRelated, JWrapper, StackableWrapper}
 import utopia.reflection.container.stack.Stack.AwtStackable
 import utopia.reflection.container.stack.segmented.SegmentedRow.RowSegment
@@ -77,6 +78,13 @@ class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: St
 	override protected val stack = new Stack[RowSegment](direction, layout, margin, cap)
 	
 	
+	// INITIAL CODE	----------------
+	
+	// TODO: Why is the stack's resizelistener not being called but this one is?
+	// TODO: + this doesn't set bounds correctly (segment setSize not getting called either)
+	addResizeListener(updateLayout())
+	
+	
 	// IMPLEMENTED	-----------------
 	
 	override protected def addSegmentToStack(segment: Segment) = stack += new AwtComponentSegment(segment)
@@ -90,6 +98,12 @@ class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: St
 	
 	private class AwtComponentSegment(val segment: Segment) extends StackableWrapper with AwtComponentRelated
 	{
+		override def size_=(s: Size) =
+		{
+			println(s"Setting size $s for segment at index ${segment.index}")
+			super.size_=(s)
+		}
+		
 		override protected def wrapped = segment
 		
 		override def component = segment.item.component

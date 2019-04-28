@@ -2,6 +2,7 @@ package utopia.reflection.container.stack.segmented
 
 import utopia.flow.util.CollectionExtensions._
 import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.{ComponentWrapper, Stackable, StackableWrapper}
 import utopia.reflection.container.stack.{MultiStackContainer, StackLike}
 import utopia.reflection.shape.StackLength
@@ -101,7 +102,10 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 		{
 			// When another segment is updated, resets component stack sizes
 			if (source != SegmentedRowLike.this)
+			{
+				println("Master updated")
 				stack.resetCachedSize()
+			}
 		}
 	}
 	
@@ -120,12 +124,20 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 		
 		// IMPLEMENTED	-------------
 		
+		override def size_=(s: Size) =
+		{
+			println(s"Setting segment ($index) size to: $s")
+			super.size_=(s)
+		}
+		
 		override def updateLayout() = item.updateLayout()
 		
 		override protected def wrapped = item
 		
 		override def stackSize =
 		{
+			println(s"Calculating segment size for index: $index")
+			
 			// Takes default size from master
 			// Also applies margin & cap
 			val lengthFromMaster = master.naturalLengthForSegment(index).map(lengthWithMargins)

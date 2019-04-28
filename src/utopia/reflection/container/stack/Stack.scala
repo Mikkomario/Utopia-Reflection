@@ -2,6 +2,7 @@ package utopia.reflection.container.stack
 
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.{AwtComponentRelated, AwtComponentWrapperWrapper, CachingStackable, Stackable, SwingComponentRelated}
 import utopia.reflection.container.{AwtContainerRelated, Panel}
 import utopia.reflection.shape.StackLength
@@ -47,9 +48,17 @@ class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override va
     
     // Each time size changes, also updates content (doesn't reset stack sizes at this time)
     addResizeListener(updateLayout())
+    addResizeListener(e => println(s"New size (${e.newSize}) for stack: $this"))
     
     
     // IMPLEMENTED    -------------------
+    
+    
+    override def size_=(s: Size) =
+    {
+        println(s"Setting new size ($s) for stack: $this")
+        super.size_=(s)
+    }
     
     override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
     
