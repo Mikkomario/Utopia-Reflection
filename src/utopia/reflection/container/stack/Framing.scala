@@ -1,8 +1,9 @@
-package utopia.reflection.container
+package utopia.reflection.container.stack
 
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.shape.{Axis2D, X, Y}
 import utopia.reflection.component.{JWrapper, Stackable}
+import utopia.reflection.container.Panel
 import utopia.reflection.shape.{StackLength, StackSize}
 
 /**

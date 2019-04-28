@@ -4,7 +4,7 @@ import utopia.reflection.shape.StackSize
 import java.awt.Component
 
 import utopia.flow.datastructure.mutable.Lazy
-import utopia.reflection.container.{Framing, StackHierarchyManager}
+import utopia.reflection.container.stack.{Framing, StackHierarchyManager}
 
 object Stackable
 {

@@ -9,9 +9,10 @@ import utopia.flow.generic.DataType
 import utopia.genesis.shape.X
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.{JStackable, JWrapper}
-import utopia.reflection.container.{Frame, Stack, StackHierarchyManager}
-import utopia.reflection.container.StackLayout.Fit
-import utopia.reflection.container.WindowResizePolicy.Program
+import utopia.reflection.container.stack.StackLayout.Fit
+import utopia.reflection.container.stack.{Stack, StackHierarchyManager}
+import utopia.reflection.container.window.Frame
+import utopia.reflection.container.window.WindowResizePolicy.Program
 import utopia.reflection.shape.{StackLength, StackSize}
 
 import scala.concurrent.ExecutionContext

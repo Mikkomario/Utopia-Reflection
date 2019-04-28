@@ -1,18 +1,18 @@
 package utopia.reflection.test
 
 import javax.swing.JLabel
-import utopia.reflection.component.Wrapper
 import utopia.reflection.shape.StackSize
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.JWrapper
 import java.awt.Color
-import utopia.reflection.container.Stack
+
 import utopia.genesis.shape.X
-import utopia.reflection.container.StackLayout.Fit
 import utopia.reflection.shape.StackLength
-import utopia.reflection.container.Frame
 import utopia.reflection.event.ResizeListener
 import utopia.flow.generic.DataType
+import utopia.reflection.container.stack.Stack
+import utopia.reflection.container.stack.StackLayout.Fit
+import utopia.reflection.container.window.Frame
 
 /**
  * This test creates a simple stack and sees whether the components are positioned properly

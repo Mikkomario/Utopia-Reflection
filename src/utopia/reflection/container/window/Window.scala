@@ -1,16 +1,16 @@
-package utopia.reflection.container
+package utopia.reflection.container.window
 
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 
 import utopia.flow.async.VolatileFlag
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
-import utopia.reflection.component.Stackable
-import utopia.reflection.shape.Insets
-import utopia.reflection.util.Screen
+import utopia.genesis.handling._
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
 import utopia.inception.handling.Handleable
+import utopia.reflection.component.Stackable
+import utopia.reflection.shape.Insets
+import utopia.reflection.util.Screen
 
 /**
 * This is a common wrapper for all window implementations
@@ -73,11 +73,11 @@ trait Window[Content <: Stackable] extends Stackable
     
     override protected def calculatedStackSize =
     {
-        val maxSize = 
+        val maxSize =
         {
             if (showsToolBar)
                 Screen.size - Screen.insetsAt(component.getGraphicsConfiguration).total
-            else 
+            else
                 Screen.size
         }
         val normal = (content.stackSize + insets.total).limitedTo(maxSize)
@@ -201,7 +201,7 @@ trait Window[Content <: Stackable] extends Stackable
     // TODO: This method is redundant in Frame, which has no parent
     def center() = centerOn(component.getParent)
     
-    private def centerOn(component: java.awt.Component) = 
+    private def centerOn(component: java.awt.Component) =
     {
         if (fullScreen)
         {

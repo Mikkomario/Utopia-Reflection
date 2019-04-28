@@ -11,9 +11,10 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
 import utopia.reflection.component.Button
 import utopia.reflection.component.label.TextLabel
-import utopia.reflection.container.{Frame, Stack, StackHierarchyManager}
-import utopia.reflection.container.StackLayout.Leading
-import utopia.reflection.container.WindowResizePolicy.User
+import utopia.reflection.container.stack.StackLayout.Leading
+import utopia.reflection.container.stack.{Stack, StackHierarchyManager}
+import utopia.reflection.container.window.Frame
+import utopia.reflection.container.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain

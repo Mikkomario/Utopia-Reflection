@@ -1,18 +1,14 @@
-package utopia.reflection.container
+package utopia.reflection.container.stack
 
-import utopia.reflection.component.JWrapper
-import utopia.reflection.component.Stackable
-import utopia.genesis.shape.Axis2D
-import utopia.reflection.shape.StackLength
-import utopia.genesis.shape.shape2D.Point
-import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.Area
-import utopia.reflection.shape.StackSize
-import utopia.reflection.container.StackLayout.Fit
 import utopia.flow.datastructure.mutable.Pointer
+import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.shape2D.{Point, Size}
+import utopia.reflection.component.{Area, JWrapper, Stackable}
+import utopia.reflection.container.Panel
+import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.container.stack.StackLayout._
+
 import scala.collection.immutable.VectorBuilder
-import utopia.reflection.container.StackLayout.Leading
-import utopia.reflection.container.StackLayout.Trailing
 
 /**
 * A stack holds multiple stackable components in a stack-like manner either horizontally or vertically

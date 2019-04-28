@@ -1,6 +1,7 @@
-package utopia.reflection.container
+package utopia.reflection.container.stack
 
 import utopia.reflection.component.Stackable
+import utopia.reflection.container.Container
 
 /**
   * This is a common trait for containers with stackable

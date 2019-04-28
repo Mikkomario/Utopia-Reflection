@@ -1,6 +1,7 @@
-package utopia.reflection.container
+package utopia.reflection.container.stack
 
 import utopia.reflection.component.Stackable
+import utopia.reflection.container.MultiContainer
 
 /**
   * Stack containers hold stackable items, which means that they might update their content when content changes

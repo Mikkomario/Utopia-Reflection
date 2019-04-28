@@ -1,6 +1,7 @@
-package utopia.reflection.container
+package utopia.reflection.container.stack
 
 import utopia.reflection.component.{JWrapper, Stackable}
+import utopia.reflection.container.Panel
 import utopia.reflection.shape.StackSize
 
 /**

@@ -1,6 +1,7 @@
-package utopia.reflection.container
+package utopia.reflection.container.stack
 
 import utopia.reflection.component.Stackable
+import utopia.reflection.container.SingleContainer
 
 /**
   * This single item container holds an stackable component
