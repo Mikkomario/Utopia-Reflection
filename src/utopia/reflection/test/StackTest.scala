@@ -1,15 +1,13 @@
 package utopia.reflection.test
 
-import javax.swing.JLabel
 import utopia.reflection.shape.StackSize
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.JWrapper
 import java.awt.Color
 
 import utopia.genesis.shape.X
 import utopia.reflection.shape.StackLength
-import utopia.reflection.event.ResizeListener
 import utopia.flow.generic.DataType
+import utopia.reflection.component.label.EmptyLabel
 import utopia.reflection.container.stack.Stack
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.window.Frame
@@ -26,7 +24,7 @@ object StackTest extends App
     // Creates the basic components & wrap as Stackable
     def makeItem() = 
     {
-        val item = JWrapper(new JLabel()).withStackSize(StackSize.any(Size(64, 64)))
+        val item = new EmptyLabel().withStackSize(StackSize.any(Size(64, 64)))
         item.background = Color.CYAN
         item
     }
@@ -34,7 +32,7 @@ object StackTest extends App
     // Creates the stack
     val stack = Stack.withItems(X, Fit, StackLength.fixed(16), StackLength.fixed(16), Vector.fill(3)(makeItem()))
     
-    stack.resizeListeners :+= ResizeListener(e => println(e.newSize))
+    stack.addResizeListener(e => println(e.newSize))
     stack.background = Color.ORANGE
     
     // Creates the frame

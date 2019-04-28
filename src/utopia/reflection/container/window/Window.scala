@@ -3,12 +3,13 @@ package utopia.reflection.container.window
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 
 import utopia.flow.async.VolatileFlag
+import utopia.flow.datastructure.mutable.Lazy
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling._
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
-import utopia.reflection.component.{AwtComponentRelated, CachingStackable, Stackable}
+import utopia.reflection.component.{AwtComponentRelated, Stackable}
 import utopia.reflection.container.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.Insets
@@ -19,10 +20,11 @@ import utopia.reflection.util.Screen
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-trait Window[Content <: Stackable with AwtComponentRelated] extends CachingStackable with AwtContainerRelated
+trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable with AwtContainerRelated
 {
     // ATTRIBUTES   ----------------
     
+    private val cachedStackSize = new Lazy(() => calculatedStackSize)
     private val generatorActivated = new VolatileFlag()
     
     
@@ -66,6 +68,12 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends CachingStack
     
     // IMPLEMENTED    --------------
     
+    override def stackSize = cachedStackSize.get
+    
+    override def resetCachedSize() = cachedStackSize.reset()
+    
+    override def isVisible_=(isVisible: Boolean) = component.setVisible(isVisible)
+    
     // Size and position are not cached since the user may resize and move this Window at will, breaking the cached size / position logic
     override def size = Size(component.getWidth, component.getHeight)
     override def size_=(newSize: Size) = component.setSize(newSize.toDimension)
@@ -73,9 +81,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends CachingStack
     override def position = Point(component.getX, component.getY)
     override def position_=(newPosition: Point) = component.setLocation(newPosition.toAwtPoint)
     
-    override protected def updateVisibility(visible: Boolean) = component.setVisible(visible)
-    
-    override protected def calculatedStackSize =
+    private def calculatedStackSize =
     {
         val maxSize =
         {

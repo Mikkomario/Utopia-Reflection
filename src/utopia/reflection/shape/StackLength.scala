@@ -148,10 +148,11 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	{
 	    val s = new StringBuilder()
 	    s append min
-	    s append " < "
+	    s append "-"
 	    s append optimal
+		s append "-"
 	    
-	    max foreach {m => s append s" < $m"}
+	    max foreach { s.append }
 	    
 	    if (isLowPriority)
 	        s append " (low prio)"
