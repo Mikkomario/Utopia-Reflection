@@ -1,5 +1,6 @@
 package utopia.reflection.container.stack.segmented
 
+import utopia.flow.async.VolatileFlag
 import utopia.flow.util.CollectionExtensions._
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.Size
@@ -18,6 +19,7 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 {
 	// ATTRIBUTES	-----------------
 	
+	private val listeningMaster = new VolatileFlag()
 	private var lastIndex = -1
 	private var segments = Vector[Segment]()
 	
@@ -94,6 +96,12 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 	}
 	
 	
+	// OTHER	---------------------
+	
+	protected def startListeningToMasterUpdates() = listeningMaster.runAndSet {
+		master.addSegmentChangedListener(new MasterChangeListener()) }
+	
+	
 	// NESTED CLASSES	-------------
 	
 	private class MasterChangeListener extends SegmentChangedListener
@@ -102,10 +110,7 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 		{
 			// When another segment is updated, resets component stack sizes
 			if (source != SegmentedRowLike.this)
-			{
-				println("Master updated")
 				stack.resetCachedSize()
-			}
 		}
 	}
 	

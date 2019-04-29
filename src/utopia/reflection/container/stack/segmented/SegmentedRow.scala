@@ -2,7 +2,6 @@ package utopia.reflection.container.stack.segmented
 
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
-import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.{AwtComponentRelated, StackableWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.Stack.AwtStackable
 import utopia.reflection.container.stack.segmented.SegmentedRow.RowSegment
@@ -81,9 +80,8 @@ class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: St
 	
 	// INITIAL CODE	----------------
 	
-	// TODO: Why is the stack's resizelistener not being called but this one is?
-	// TODO: + this doesn't set bounds correctly (segment setSize not getting called either)
 	addResizeListener(updateLayout())
+	startListeningToMasterUpdates()
 	
 	
 	// IMPLEMENTED	-----------------
