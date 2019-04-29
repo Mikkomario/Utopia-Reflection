@@ -9,7 +9,7 @@ import utopia.inception.handling.HandlerType
 import utopia.reflection.component.Alignment
 import utopia.reflection.component.Alignment.Center
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.StackSize
+import utopia.reflection.shape.{Border, StackSize}
 import utopia.reflection.text.Font
 
 /**
@@ -18,7 +18,7 @@ import utopia.reflection.text.Font
   * @since 25.4.2019, v1+
   */
 class Button(override val text: LocalizedString, override val font: Font, color: Color, override val margins: StackSize,
-			 val action: () => Unit) extends AwtTextComponentWrapper with JWrapper
+			 val borderWidth: Double, val action: () => Unit) extends AwtTextComponentWrapper with JWrapper
 {
 	// ATTRIBUTES	------------------
 	
@@ -68,6 +68,13 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	
 	// IMPLEMENTED	------------------
 	
+	override def background_=(color: Color) =
+	{
+		// When background updates, also updates the border
+		super.background_=(color)
+		updateBorder(color)
+	}
+	
 	override def alignment = Center
 	
 	override def hasMinWidth = true
@@ -85,6 +92,8 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	  * Triggers this button's action. Same as if the user clicked this button (only works for enabled buttons)
 	  */
 	def trigger() = if (isEnabled) action()
+	
+	private def updateBorder(baseColor: Color) = setBorder(Border.raised(borderWidth, baseColor, 0.5))
 	
 	private def pushColor(newColor: Color) =
 	{

@@ -11,7 +11,7 @@ import utopia.genesis.handling.mutable._
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.reflection.component.{CachingStackable, ComponentLike, Stackable}
 import utopia.reflection.event.{ResizeEvent, ResizeListener}
-import utopia.reflection.shape.StackSize
+import utopia.reflection.shape.{Border, StackSize}
 
 object AwtComponentWrapper
 {

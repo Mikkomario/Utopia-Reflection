@@ -41,7 +41,8 @@ object TextLabelStackTest extends App
 	labels.foreach { _.background = Color.yellow }
 	
 	// Creates a button too
-	val button = new Button("A Button!", basicFont, Color.magenta, 32.any x 8.any, () => println("The Button was pressed"))
+	val button = new Button("A Button!", basicFont, Color.magenta, 32.any x 8.any, 4,
+		() => println("The Button was pressed"))
 	
 	// Creates the stack
 	val stack = Stack.withItems(Y, Leading, 8.any, 16.any, labels :+ button)

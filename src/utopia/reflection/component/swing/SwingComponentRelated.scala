@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent
 
 import javax.swing.{AbstractAction, JComponent, KeyStroke}
 import utopia.genesis.color.Color
+import utopia.reflection.shape.Border
 
 /**
   * These items are related to a swing component
@@ -26,6 +27,17 @@ trait SwingComponentRelated extends AwtComponentRelated
 		component.setBackground(color.toAwt)
 		isTransparent_=(false)
 	}
+	
+	/**
+	  * Changes the border of this component
+	  * @param border A new border
+	  */
+	def setBorder(border: Border) = component.setBorder(border.toAwt)
+	
+	/**
+	  * Removes any border from this component
+	  */
+	def clearBorder() = component.setBorder(null)
 	
 	/**
 	  * Adds a keystroke shortcut to the wrapped component

@@ -231,7 +231,6 @@ trait ComponentLike extends Area
     
     private def forChildren[U](operation: ComponentLike => U): Unit = this match
     {
-            // TODO: Container needs a non-swing super type here
         case c: Container[_] => c.components.foreach { operation(_) }
         case _ => Unit
     }
@@ -249,7 +248,8 @@ trait ComponentLike extends Area
         if (positionsFromEvent(event).exists(myBounds.contains))
         {
             val translated = translateEvent(event, myBounds.position)
-            forChildren { childAccept(_, translated) }
+            // Only visible children are informed of events
+            forChildren { c => if (c.isVisible) childAccept(c, translated) }
         }
     }
     
