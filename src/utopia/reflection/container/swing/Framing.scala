@@ -1,7 +1,7 @@
 package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
-import utopia.reflection.component.Stackable
+import utopia.reflection.component.{CustomDrawableWrapper, Stackable}
 import utopia.reflection.component.swing.{AwtComponentRelated, SwingComponentRelated}
 import utopia.reflection.container.stack.FramingLike
 import utopia.reflection.shape.StackSize
@@ -12,7 +12,7 @@ import utopia.reflection.shape.StackSize
   * @since 26.4.2019, v1+
   */
 class Framing[C <: Stackable with AwtComponentRelated](initialComponent: C, val margins: StackSize) extends
-	FramingLike[C] with SwingComponentRelated with AwtContainerRelated
+	FramingLike[C] with SwingComponentRelated with AwtContainerRelated with CustomDrawableWrapper
 {
 	// ATTRIBUTES	--------------------
 	
@@ -27,6 +27,8 @@ class Framing[C <: Stackable with AwtComponentRelated](initialComponent: C, val 
 	
 	
 	// IMPLEMENTED	--------------------
+	
+	override def drawable = panel
 	
 	override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
 	

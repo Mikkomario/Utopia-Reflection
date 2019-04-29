@@ -9,8 +9,9 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
-import utopia.reflection.component.swing.Button
-import utopia.reflection.component.swing.label.TextLabel
+import utopia.genesis.shape.shape2D.Size
+import utopia.reflection.component.DrawLevel.Normal
+import utopia.reflection.component.swing.label.{Button, TextLabel}
 import utopia.reflection.container.stack.StackLayout.Leading
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.{Framing, Stack}
@@ -47,6 +48,10 @@ object TextLabelStackTest extends App
 	// Creates the stack
 	val stack = Stack.withItems(Y, Leading, 8.any, 16.any, labels :+ button)
 	stack.background = Color.black
+	
+	// Tests custom drawing
+	labels(1).addCustomDrawer(Normal, (d, b) => d.withColor(Color.red.withAlpha(0.5).toAwt,
+		Color.red.toAwt).draw(b.shrinked(Size.square(4))))
 	
 	// Creates the frame and displays it
 	val actorHandler = ActorHandler()

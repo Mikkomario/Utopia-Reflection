@@ -15,7 +15,7 @@ import utopia.reflection.text.Font
   */
 class ItemLabel[A](initialItem: A, val displayFunction: DisplayFunction[A], override val font: Font,
 				   override val margins: StackSize, override val hasMinWidth: Boolean = true)
-	extends Label(new JLabel()) with AwtTextComponentWrapper with Alignable
+	extends Label with AwtTextComponentWrapper with Alignable
 {
 	// ATTRIBUTES	--------------------
 	

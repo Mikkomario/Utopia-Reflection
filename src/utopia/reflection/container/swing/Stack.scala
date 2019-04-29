@@ -3,7 +3,7 @@ package utopia.reflection.container.swing
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
-import utopia.reflection.component.{CachingStackable, Stackable}
+import utopia.reflection.component.{CachingStackable, CustomDrawableWrapper, Stackable}
 import utopia.reflection.container.stack.{StackLayout, StackLike}
 import utopia.reflection.shape.StackLength
 
@@ -37,7 +37,8 @@ object Stack
 **/
 class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override val layout: StackLayout,
                                                      override val margin: StackLength, override val cap: StackLength)
-    extends StackLike[C] with AwtComponentWrapperWrapper with CachingStackable with SwingComponentRelated with AwtContainerRelated
+    extends StackLike[C] with AwtComponentWrapperWrapper with CachingStackable with SwingComponentRelated
+        with AwtContainerRelated with CustomDrawableWrapper
 {
 	// ATTRIBUTES    --------------------
     
@@ -51,6 +52,8 @@ class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override va
     
     
     // IMPLEMENTED    -------------------
+    
+    override def drawable = panel
     
     override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
     

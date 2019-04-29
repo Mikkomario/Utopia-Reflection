@@ -2,7 +2,7 @@ package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
-import utopia.reflection.component.StackableWrapper
+import utopia.reflection.component.{CustomDrawableWrapper, StackableWrapper}
 import utopia.reflection.component.swing.{AwtComponentRelated, SwingComponentRelated}
 import utopia.reflection.container.stack.StackLayout
 import utopia.reflection.container.stack.segmented.{Segmented, SegmentedGroup, SegmentedRowLike}
@@ -73,7 +73,7 @@ object SegmentedRow
   */
 class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: StackLayout, margin: StackLength,
 									  cap: StackLength, val master: Segmented)
-	extends SegmentedRowLike[C, RowSegment] with SwingComponentRelated
+	extends SegmentedRowLike[C, RowSegment] with SwingComponentRelated with CustomDrawableWrapper
 {
 	// ATTRIBUTES	-----------------
 	
@@ -87,6 +87,8 @@ class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: St
 	
 	
 	// IMPLEMENTED	-----------------
+	
+	override def drawable = stack
 	
 	override protected def addSegmentToStack(segment: Segment) = stack += new AwtComponentSegment(segment)
 	

@@ -2,7 +2,7 @@ package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
-import utopia.reflection.component.{CachingStackable, Stackable}
+import utopia.reflection.component.{CachingStackable, CustomDrawableWrapper, Stackable}
 import utopia.reflection.container.stack.SingleStackContainer
 import utopia.reflection.shape.StackSize
 
@@ -13,6 +13,7 @@ import utopia.reflection.shape.StackSize
   */
 class SwitchPanel[C <: Stackable with AwtComponentRelated](initialContent: C) extends SingleStackContainer[C]
 	with AwtComponentWrapperWrapper with SwingComponentRelated with AwtContainerRelated with CachingStackable
+	with CustomDrawableWrapper
 {
 	// ATTRIBUTES	-------------------
 	
@@ -26,6 +27,8 @@ class SwitchPanel[C <: Stackable with AwtComponentRelated](initialContent: C) ex
 	
 	
 	// IMPLEMENTED	-------------------
+	
+	override def drawable = panel
 	
 	override protected def wrapped = panel
 	

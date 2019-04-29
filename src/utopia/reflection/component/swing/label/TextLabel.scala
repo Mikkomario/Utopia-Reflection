@@ -1,8 +1,6 @@
 package utopia.reflection.component.swing.label
 
-import javax.swing.JLabel
 import utopia.genesis.color.Color
-import utopia.reflection.component.Alignment.Center
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.{Alignable, Alignment}
 import utopia.reflection.localization.LocalizedString
@@ -19,7 +17,7 @@ object TextLabel
 	  * @return A new label with specified text
 	  */
 	def apply(text: LocalizedString, font: Font, margins: StackSize, hasMinWidth: Boolean = true) =
-		new TextLabel(new JLabel(), text, font, margins, hasMinWidth)
+		new TextLabel(text, font, margins, hasMinWidth)
 }
 
 /**
@@ -31,9 +29,8 @@ object TextLabel
   * @param margins The margins placed around the text
   * @param hasMinWidth Whether this text label always presents the whole text (default = true)
   */
-class TextLabel protected(label: JLabel, initialText: LocalizedString, override val font: Font,
-						  override val margins: StackSize, override val hasMinWidth: Boolean = true)
-	extends Label(label) with AwtTextComponentWrapper with Alignable
+class TextLabel(initialText: LocalizedString, override val font: Font, override val margins: StackSize,
+					 override val hasMinWidth: Boolean = true) extends Label with AwtTextComponentWrapper with Alignable
 {
 	// ATTRIBUTES	------------------
 	

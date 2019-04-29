@@ -1,6 +1,6 @@
-package utopia.reflection.component.swing
+package utopia.reflection.component.swing.label
 
-import javax.swing.{JComponent, JLabel, SwingUtilities}
+import javax.swing.SwingUtilities
 import utopia.flow.collection.VolatileList
 import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButton, MouseButtonStateEvent, MouseMoveEvent}
@@ -8,6 +8,7 @@ import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener}
 import utopia.inception.handling.HandlerType
 import utopia.reflection.component.Alignment
 import utopia.reflection.component.Alignment.Center
+import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackSize}
 import utopia.reflection.text.Font
@@ -18,11 +19,10 @@ import utopia.reflection.text.Font
   * @since 25.4.2019, v1+
   */
 class Button(override val text: LocalizedString, override val font: Font, color: Color, override val margins: StackSize,
-			 val borderWidth: Double, val action: () => Unit) extends AwtTextComponentWrapper with JWrapper
+			 val borderWidth: Double, val action: () => Unit) extends Label with AwtTextComponentWrapper
 {
 	// ATTRIBUTES	------------------
 	
-	private val label = new JLabel()
 	private val colorHistory = VolatileList(color)
 	
 	
@@ -30,7 +30,6 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	
 	label.setFont(font.toAwt)
 	setHandCursor()
-	textColor = Color.textBlack
 	label.setText(text.string)
 	background = color
 	label.setHorizontalAlignment(Alignment.Center.toSwingAlignment)
@@ -56,6 +55,7 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	{
 		if (newEnabled != isEnabled)
 		{
+			// TODO: Also change text color
 			// Adds transparency when disabled
 			if (isEnabled)
 				pushColor(background.withAlpha(0.55))
@@ -78,8 +78,6 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	override def alignment = Center
 	
 	override def hasMinWidth = true
-	
-	override def component: JComponent = label
 	
 	override def updateLayout() = Unit
 	

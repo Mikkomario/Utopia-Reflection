@@ -30,7 +30,8 @@ object StackTest extends App
     }
     
     // Creates the stack
-    val stack = Stack.withItems(X, Fit, StackLength.fixed(16), StackLength.fixed(16), Vector.fill(3)(makeItem()))
+    val items = Vector.fill(3)(makeItem())
+    val stack = Stack.withItems(X, Fit, StackLength.fixed(16), StackLength.fixed(16), items)
     
     stack.addResizeListener(e => println(e.newSize))
     stack.background = Color.ORANGE
