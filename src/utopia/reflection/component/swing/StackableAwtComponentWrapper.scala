@@ -1,9 +1,10 @@
-package utopia.reflection.component
+package utopia.reflection.component.swing
 
-import utopia.reflection.shape.StackSize
 import java.awt.Component
 
-import utopia.reflection.container.stack.Framing
+import utopia.reflection.component.CachingStackable
+import utopia.reflection.container.swing.Framing
+import utopia.reflection.shape.StackSize
 
 object StackableAwtComponentWrapper
 {

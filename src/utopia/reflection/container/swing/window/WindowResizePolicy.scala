@@ -1,4 +1,4 @@
-package utopia.reflection.container.window
+package utopia.reflection.container.swing.window
 
 object WindowResizePolicy
 {

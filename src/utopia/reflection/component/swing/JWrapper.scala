@@ -1,12 +1,7 @@
-package utopia.reflection.component
+package utopia.reflection.component.swing
 
 import javax.swing.JComponent
-import javax.swing.AbstractAction
-import java.awt.event.ActionEvent
-
-import javax.swing.KeyStroke
 import utopia.genesis.color.Color
-import utopia.reflection.shape.StackSize
 
 object JWrapper
 {

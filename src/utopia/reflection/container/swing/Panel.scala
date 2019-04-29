@@ -1,7 +1,9 @@
-package utopia.reflection.container
+package utopia.reflection.container.swing
 
 import javax.swing.{JPanel, SwingUtilities}
-import utopia.reflection.component.{AwtComponentRelated, ComponentLike, JWrapper}
+import utopia.reflection.component.ComponentLike
+import utopia.reflection.component.swing.{AwtComponentRelated, JWrapper}
+import utopia.reflection.container.MultiContainer
 
 /**
 * Panel is the standard container that holds other components in it (based on JPanel)

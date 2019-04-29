@@ -1,4 +1,4 @@
-package utopia.reflection.container.window
+package utopia.reflection.container.swing.window
 
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 
@@ -9,8 +9,9 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling._
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
-import utopia.reflection.component.{AwtComponentRelated, Stackable}
-import utopia.reflection.container.AwtContainerRelated
+import utopia.reflection.component.Stackable
+import utopia.reflection.component.swing.AwtComponentRelated
+import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen

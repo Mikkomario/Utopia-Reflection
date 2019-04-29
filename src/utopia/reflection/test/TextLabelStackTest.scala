@@ -9,13 +9,13 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
-import utopia.reflection.component.{Button, Stackable}
-import utopia.reflection.component.label.TextLabel
-import utopia.reflection.container.AwtContainerRelated
+import utopia.reflection.component.swing.Button
+import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackLayout.Leading
-import utopia.reflection.container.stack.{Framing, Stack, StackHierarchyManager}
-import utopia.reflection.container.window.Frame
-import utopia.reflection.container.window.WindowResizePolicy.User
+import utopia.reflection.container.stack.StackHierarchyManager
+import utopia.reflection.container.swing.{Framing, Stack}
+import utopia.reflection.container.swing.window.Frame
+import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain

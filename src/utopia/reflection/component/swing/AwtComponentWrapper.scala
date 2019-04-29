@@ -1,18 +1,17 @@
-package utopia.reflection.component
+package utopia.reflection.component.swing
 
-import utopia.flow.util.NullSafe._
-import utopia.genesis.shape.shape2D.Point
-import utopia.genesis.shape.shape2D.Size
 import java.awt.{Component, Cursor}
 
 import javax.swing.SwingUtilities
 import utopia.flow.async.VolatileFlag
-import utopia.reflection.shape.StackSize
-import utopia.reflection.event.ResizeListener
-import utopia.reflection.event.ResizeEvent
 import utopia.flow.datastructure.mutable.Lazy
+import utopia.flow.util.NullSafe._
 import utopia.genesis.color.Color
-import utopia.genesis.handling.mutable.{KeyStateHandler, KeyTypedHandler, MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
+import utopia.genesis.handling.mutable._
+import utopia.genesis.shape.shape2D.{Point, Size}
+import utopia.reflection.component.{CachingStackable, ComponentLike, Stackable}
+import utopia.reflection.event.{ResizeEvent, ResizeListener}
+import utopia.reflection.shape.StackSize
 
 object AwtComponentWrapper
 {

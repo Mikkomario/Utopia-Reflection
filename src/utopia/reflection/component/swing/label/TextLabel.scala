@@ -1,9 +1,10 @@
-package utopia.reflection.component.label
+package utopia.reflection.component.swing.label
 
 import javax.swing.JLabel
 import utopia.genesis.color.Color
 import utopia.reflection.component.Alignment.Center
-import utopia.reflection.component.{Alignable, Alignment, AwtTextComponentWrapper}
+import utopia.reflection.component.swing.AwtTextComponentWrapper
+import utopia.reflection.component.{Alignable, Alignment}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font

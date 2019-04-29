@@ -8,11 +8,12 @@ import utopia.flow.async.{Loop, ThreadPool}
 import utopia.flow.generic.DataType
 import utopia.genesis.shape.X
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.{JStackableWrapper, JWrapper}
+import utopia.reflection.component.swing.{JStackableWrapper, JWrapper}
 import utopia.reflection.container.stack.StackLayout.Fit
-import utopia.reflection.container.stack.{Stack, StackHierarchyManager}
-import utopia.reflection.container.window.Frame
-import utopia.reflection.container.window.WindowResizePolicy.Program
+import utopia.reflection.container.stack.StackHierarchyManager
+import utopia.reflection.container.swing.Stack
+import utopia.reflection.container.swing.window.Frame
+import utopia.reflection.container.swing.window.WindowResizePolicy.Program
 import utopia.reflection.shape.{StackLength, StackSize}
 
 import scala.concurrent.ExecutionContext

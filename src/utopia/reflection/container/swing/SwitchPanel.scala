@@ -1,8 +1,9 @@
-package utopia.reflection.container.stack
+package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
-import utopia.reflection.component.{AwtComponentRelated, AwtComponentWrapperWrapper, CachingStackable, JWrapper, Stackable, StackableAwtComponentWrapper, SwingComponentRelated}
-import utopia.reflection.container.{AwtContainerRelated, Panel}
+import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
+import utopia.reflection.component.{CachingStackable, Stackable}
+import utopia.reflection.container.stack.SingleStackContainer
 import utopia.reflection.shape.StackSize
 
 /**

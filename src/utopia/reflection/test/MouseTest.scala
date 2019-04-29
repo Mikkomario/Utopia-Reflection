@@ -11,10 +11,10 @@ import utopia.genesis.shape.X
 import utopia.genesis.shape.shape2D.Size
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Area
-import utopia.reflection.component.label.Label
+import utopia.reflection.component.swing.label.Label
 import utopia.reflection.container.stack.StackLayout.Fit
-import utopia.reflection.container.stack.Stack
-import utopia.reflection.container.window.Frame
+import utopia.reflection.container.swing.Stack
+import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.shape.{StackLength, StackSize}
 
 import scala.concurrent.ExecutionContext

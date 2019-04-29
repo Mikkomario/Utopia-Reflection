@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.swing
 
 /**
   * This trait is extended by classes that have a related awt component

@@ -1,11 +1,13 @@
-package utopia.reflection.container.stack.segmented
+package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
-import utopia.reflection.component.{AwtComponentRelated, StackableWrapper, SwingComponentRelated}
-import utopia.reflection.container.stack.Stack.AwtStackable
-import utopia.reflection.container.stack.segmented.SegmentedRow.RowSegment
-import utopia.reflection.container.stack.{Stack, StackLayout}
+import utopia.reflection.component.StackableWrapper
+import utopia.reflection.component.swing.{AwtComponentRelated, SwingComponentRelated}
+import utopia.reflection.container.stack.StackLayout
+import utopia.reflection.container.stack.segmented.{Segmented, SegmentedGroup, SegmentedRowLike}
+import utopia.reflection.container.swing.SegmentedRow.RowSegment
+import utopia.reflection.container.swing.Stack.AwtStackable
 import utopia.reflection.shape.StackLength
 
 object SegmentedRow

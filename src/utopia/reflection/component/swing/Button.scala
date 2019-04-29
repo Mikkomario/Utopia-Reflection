@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.swing
 
 import javax.swing.{JComponent, JLabel, SwingUtilities}
 import utopia.flow.collection.VolatileList
@@ -6,6 +6,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButton, MouseButtonStateEvent, MouseMoveEvent}
 import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener}
 import utopia.inception.handling.HandlerType
+import utopia.reflection.component.Alignment
 import utopia.reflection.component.Alignment.Center
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.StackSize

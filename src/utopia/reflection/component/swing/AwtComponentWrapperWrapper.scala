@@ -1,4 +1,6 @@
-package utopia.reflection.component
+package utopia.reflection.component.swing
+
+import utopia.reflection.component.ComponentWrapper
 
 /**
   * This wrapper wraps another wrapper

@@ -1,6 +1,7 @@
-package utopia.reflection.component
+package utopia.reflection.component.swing
 
 import utopia.genesis.color.Color
+import utopia.reflection.component.TextComponent
 
 /**
   * This is a commom trait for components that present text

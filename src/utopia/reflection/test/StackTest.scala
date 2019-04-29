@@ -7,10 +7,10 @@ import java.awt.Color
 import utopia.genesis.shape.X
 import utopia.reflection.shape.StackLength
 import utopia.flow.generic.DataType
-import utopia.reflection.component.label.EmptyLabel
-import utopia.reflection.container.stack.Stack
+import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.container.stack.StackLayout.Fit
-import utopia.reflection.container.window.Frame
+import utopia.reflection.container.swing.Stack
+import utopia.reflection.container.swing.window.Frame
 
 /**
  * This test creates a simple stack and sees whether the components are positioned properly

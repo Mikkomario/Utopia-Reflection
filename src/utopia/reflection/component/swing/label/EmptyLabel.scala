@@ -1,4 +1,4 @@
-package utopia.reflection.component.label
+package utopia.reflection.component.swing.label
 
 import javax.swing.JLabel
 
