@@ -48,25 +48,19 @@ object SegmentedRowTest extends App
 	// Creates the rows
 	val hGroup = new SegmentedGroup(X)
 	val row1 = SegmentedRow.partOfGroupWithItems(hGroup, Fit, 8.fixed, 0.fixed, Vector(labels(0), labels(1)))
-	val row2 = SegmentedRow.partOfGroupWithItems(hGroup, Fit, 8.fixed, 0.fixed, Vector(labels(2), labels(3)))
+	val row2 = SegmentedRow.partOfGroupWithItems(hGroup, Fit, 16.fixed, 4.fixed, Vector(labels(2), labels(3)))
 	row1.background = Color.cyan
 	row2.background = Color.green
 	
 	// Creates the columns
-	/*
 	val vGroup = new SegmentedGroup(Y)
-	val column1 = SegmentedRow.partOfGroup(vGroup, Fit, 4.any, 0.fixed)
-	val column2 = SegmentedRow.partOfGroup(vGroup, Fit, 2.upscaling, 2.upscaling)
-	
-	column1 ++= (row1, row2)
-	column2 ++= (button1, button2)*/
+	val column1 = SegmentedRow.partOfGroupWithItems(vGroup, Fit, 4.any, 0.fixed, Vector(row1, row2))
+	val column2 = SegmentedRow.partOfGroupWithItems(vGroup, Fit, 2.upscaling, 2.upscaling, Vector(button1, button2))
 	
 	// Creates the main stack
-	/*
-	val stack = new Stack(X, Fit, 16.any, 0.fixed)
-	stack ++= (column1, column2)
-	*/
-	val stack = Stack.withItems(Y, Fit, 16.any, 0.fixed, Vector(row1, row2))
+	val stack = Stack.withItems(X, Fit, 16.any, 0.fixed, Vector(column1, column2))
+	
+	// val stack = Stack.withItems(Y, Fit, 16.any, 0.fixed, Vector(row1, row2))
 	stack.background = Color.black
 	
 	

@@ -1,8 +1,9 @@
 package utopia.reflection.container.stack.segmented
 
+import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.{AwtComponentRelated, JWrapper, StackableWrapper}
+import utopia.reflection.component.{AwtComponentRelated, StackableWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.Stack.AwtStackable
 import utopia.reflection.container.stack.segmented.SegmentedRow.RowSegment
 import utopia.reflection.container.stack.{Stack, StackLayout}
@@ -71,7 +72,7 @@ object SegmentedRow
   */
 class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: StackLayout, margin: StackLength,
 									  cap: StackLength, val master: Segmented)
-	extends SegmentedRowLike[C, RowSegment] with JWrapper
+	extends SegmentedRowLike[C, RowSegment] with SwingComponentRelated
 {
 	// ATTRIBUTES	-----------------
 	
@@ -94,16 +95,14 @@ class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: St
 	override def component = stack.component
 	
 	
+	
+	
 	// NESTED CLASSES	-----------
+	
+	override def background_=(color: Color) = super[SegmentedRowLike].background_=(color)
 	
 	private class AwtComponentSegment(val segment: Segment) extends StackableWrapper with AwtComponentRelated
 	{
-		override def size_=(s: Size) =
-		{
-			println(s"Setting size $s for segment at index ${segment.index}")
-			super.size_=(s)
-		}
-		
 		override protected def wrapped = segment
 		
 		override def component = segment.item.component

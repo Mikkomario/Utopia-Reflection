@@ -126,7 +126,6 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 		
 		override def size_=(s: Size) =
 		{
-			println(s"Setting segment ($index) size to: $s")
 			super.size_=(s)
 		}
 		
@@ -136,7 +135,7 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 		
 		override def stackSize =
 		{
-			println(s"Calculating segment size for index: $index")
+			// TODO: Maybe add some form of stack size caching?
 			
 			// Takes default size from master
 			// Also applies margin & cap

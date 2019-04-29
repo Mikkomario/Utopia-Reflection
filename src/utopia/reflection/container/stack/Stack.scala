@@ -48,17 +48,9 @@ class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override va
     
     // Each time size changes, also updates content (doesn't reset stack sizes at this time)
     addResizeListener(updateLayout())
-    addResizeListener(e => println(s"New size (${e.newSize}) for stack: $this"))
     
     
     // IMPLEMENTED    -------------------
-    
-    
-    override def size_=(s: Size) =
-    {
-        println(s"Setting new size ($s) for stack: $this")
-        super.size_=(s)
-    }
     
     override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
     
