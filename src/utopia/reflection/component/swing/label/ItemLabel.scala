@@ -1,6 +1,5 @@
 package utopia.reflection.component.swing.label
 
-import javax.swing.JLabel
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.{Alignable, Alignment}
 import utopia.reflection.localization.DisplayFunction
