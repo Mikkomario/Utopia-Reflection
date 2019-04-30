@@ -7,11 +7,11 @@ import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
 import utopia.reflection.component.swing.label.ItemLabel
-import utopia.reflection.container.stack.StackHierarchyManager
+import utopia.reflection.container.stack.{BoxScrollBarDrawer, StackHierarchyManager}
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
-import utopia.reflection.container.swing.Stack
+import utopia.reflection.container.swing.{ScrollView, Stack}
 import utopia.reflection.localization.{DisplayFunction, Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.text.Font
@@ -41,17 +41,20 @@ object ScrollViewTest extends App
 	
 	// Creates the main stack
 	val stack = Stack.withItems(Y, Fit, 8.fixed, 4.fixed, labels)
-	stack.background = Color.black
+	stack.background = Color.yellow.minusHue(33).darkened(1.2)
+	
+	val actorHandler = ActorHandler()
 	
 	// Creates the scroll view
-	// TODO: Add scroll view
+	val scrollView = new ScrollView(stack, Y, actorHandler, 16,
+		BoxScrollBarDrawer(Color.gray(0.33), Color.gray(0.55)), 16,
+		maxOptimalLength = Some(480))
 	
 	// Creates the frame and displays it
-	val actorHandler = ActorHandler()
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val frame = Frame.windowed(stack, "Segmented Row Test", User)
+	val frame = Frame.windowed(scrollView, "Scroll View Test", User)
 	frame.setToExitOnClose()
 	
 	actionLoop.registerToStopOnceJVMCloses()

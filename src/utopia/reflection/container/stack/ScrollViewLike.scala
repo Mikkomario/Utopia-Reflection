@@ -164,7 +164,7 @@ trait ScrollViewLike extends CachingStackable
 		val l = StackLength(minLength, optimal, max, true)
 		
 		// Scroll bar may affect breadth
-		val b = if (scrollBarIsInsideContent) breadth + scrollBarWidth else breadth
+		val b = if (scrollBarIsInsideContent) breadth else breadth + scrollBarWidth
 		
 		StackSize(l, b, axis)
 	}
@@ -174,7 +174,7 @@ trait ScrollViewLike extends CachingStackable
 	{
 		// Content breadth is dependent from this component's breadth while length is always set to optimal
 		val contentSize = content.stackSize
-		val b = if (scrollBarIsInsideContent) breadth - scrollBarWidth else breadth
+		val b = if (scrollBarIsInsideContent) breadth else breadth - scrollBarWidth
 		val l = contentSize.along(axis).optimal
 		
 		content.size = Size(l, b, axis)
@@ -184,8 +184,8 @@ trait ScrollViewLike extends CachingStackable
 			scrollToBottom()
 		else if (isAtTop)
 			scrollToTop()
-		
-		updateScrollBarBounds()
+		else
+			updateScrollBarBounds()
 	}
 	
 	
@@ -239,7 +239,7 @@ trait ScrollViewLike extends CachingStackable
 	  * @param velocityMod A modifier applied to velocity (default = 1.0)
 	  */
 	protected def setupMouseHandling(actorHandler: ActorHandler, scrollPerWheelClick: Double,
-									 dragDuration: Duration = Duration.ofMillis(500), friction: Double = 0.1,
+									 dragDuration: Duration = Duration.ofMillis(300), friction: Double = 0.1,
 									 velocityMod: Double = 1.0) =
 	{
 		val listener = new MouseListener(scrollPerWheelClick, dragDuration, friction, velocityMod)
@@ -344,7 +344,7 @@ trait ScrollViewLike extends CachingStackable
 					if (velocityData.nonEmpty)
 					{
 						val actualDragDutationMillis = (now - velocityData.head._1).toPreciseMillis
-						val averageVelocity = velocities.map { v => v._2 * v._3.toPreciseMillis }.sum / actualDragDutationMillis
+						val averageVelocity = velocityData.map { v => v._2 * v._3.toPreciseMillis }.sum / actualDragDutationMillis
 						currentVelocity += averageVelocity * velocityMod
 					}
 				}
@@ -357,7 +357,7 @@ trait ScrollViewLike extends CachingStackable
 			// If dragging scroll bar, scrolls the content
 			if (isDraggingBar)
 			{
-				val newBarOrigin = event.positionOverArea(scrollBarBounds + position) - barDragPosition
+				val newBarOrigin = event.positionOverArea(bounds) - barDragPosition
 				scrollTo(newBarOrigin.along(axis) / length)
 			}
 			// If dragging content, updates scrolling and remembers velocity
@@ -371,7 +371,7 @@ trait ScrollViewLike extends CachingStackable
 		}
 		
 		// When wheel is rotated inside component bounds, scrolls
-		override def onMouseWheelRotated(event: MouseWheelEvent) = scroll(event.wheelTurn * scrollPerWheelClick)
+		override def onMouseWheelRotated(event: MouseWheelEvent) = scroll(-event.wheelTurn * scrollPerWheelClick)
 		
 		override def act(duration: Duration) =
 		{

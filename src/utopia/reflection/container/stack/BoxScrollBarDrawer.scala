@@ -5,6 +5,17 @@ import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 
+object BoxScrollBarDrawer
+{
+	/**
+	  * Creates a new drawer
+	  * @param barColor The color used when drawing the scroll bar
+	  * @param backgroundColor The color used for drawing scroll bar area background
+	  * @return A new drawer
+	  */
+	def apply(barColor: Color, backgroundColor: Color): BoxScrollBarDrawer = new BoxScrollBarDrawer(barColor, Some(backgroundColor))
+}
+
 /**
   * This drawer draws a scroll bar with simple rectangles
   * @author Mikko Hilpinen
