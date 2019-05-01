@@ -1,6 +1,6 @@
 package utopia.reflection.component.swing
 
-import utopia.reflection.component.StackableWrapper
+import utopia.reflection.component.stack.StackableWrapper
 
 /**
   * This wrapper wraps a stackable wrapper

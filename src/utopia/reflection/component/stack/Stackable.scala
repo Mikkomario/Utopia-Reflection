@@ -1,8 +1,8 @@
-package utopia.reflection.component
+package utopia.reflection.component.stack
 
-import utopia.reflection.shape.StackSize
-
+import utopia.reflection.component.ComponentLike
 import utopia.reflection.container.stack.StackHierarchyManager
+import utopia.reflection.shape.StackSize
 
 /**
 * This trait is inherited by component classes that can be placed in stacks

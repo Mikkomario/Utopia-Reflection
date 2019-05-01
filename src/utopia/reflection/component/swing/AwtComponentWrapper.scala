@@ -9,9 +9,10 @@ import utopia.flow.util.NullSafe._
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable._
 import utopia.genesis.shape.shape2D.{Point, Size}
-import utopia.reflection.component.{CachingStackable, ComponentLike, Stackable}
+import utopia.reflection.component.stack.{CachingStackable, Stackable}
+import utopia.reflection.component.ComponentLike
 import utopia.reflection.event.{ResizeEvent, ResizeListener}
-import utopia.reflection.shape.{Border, StackSize}
+import utopia.reflection.shape.StackSize
 
 object AwtComponentWrapper
 {

@@ -1,7 +1,8 @@
 package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
-import utopia.reflection.component.{CustomDrawableWrapper, Stackable}
+import utopia.reflection.component.CustomDrawableWrapper
+import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, SwingComponentRelated}
 import utopia.reflection.container.stack.FramingLike
 import utopia.reflection.shape.StackSize

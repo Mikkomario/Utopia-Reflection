@@ -4,7 +4,8 @@ import utopia.flow.async.VolatileFlag
 import utopia.flow.util.CollectionExtensions._
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.{ComponentWrapper, Stackable, StackableWrapper}
+import utopia.reflection.component.stack.{Stackable, StackableWrapper}
+import utopia.reflection.component.ComponentWrapper
 import utopia.reflection.container.stack.{MultiStackContainer, StackLike}
 import utopia.reflection.shape.StackLength
 

@@ -2,7 +2,8 @@ package utopia.reflection.container.stack
 
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.shape.{Axis2D, X, Y}
-import utopia.reflection.component.{CachingStackable, ComponentWrapper, Stackable}
+import utopia.reflection.component.stack.{CachingStackable, Stackable}
+import utopia.reflection.component.ComponentWrapper
 import utopia.reflection.container.Container
 import utopia.reflection.shape.{StackLength, StackSize}
 

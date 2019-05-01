@@ -4,7 +4,8 @@ import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.Bounds
-import utopia.reflection.component.{CustomDrawableWrapper, Stackable}
+import utopia.reflection.component.CustomDrawableWrapper
+import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.{ScrollBarDrawer, ScrollViewLike}
 

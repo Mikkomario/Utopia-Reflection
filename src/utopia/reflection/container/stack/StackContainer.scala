@@ -1,6 +1,7 @@
 package utopia.reflection.container.stack
 
-import utopia.reflection.component.{ComponentLike, Stackable}
+import utopia.reflection.component.ComponentLike
+import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.Container
 
 /**

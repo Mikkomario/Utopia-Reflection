@@ -9,7 +9,7 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling._
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
-import utopia.reflection.component.Stackable
+import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener

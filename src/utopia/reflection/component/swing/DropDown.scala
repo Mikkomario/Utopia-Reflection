@@ -7,8 +7,9 @@ import utopia.reflection.shape.LengthExtensions._
 import utopia.flow.util.CollectionExtensions._
 import javax.swing.{JComboBox, JList, ListCellRenderer}
 import utopia.genesis.color.Color
-import utopia.reflection.component.{CachingStackable, Refreshable}
+import utopia.reflection.component.Refreshable
 import utopia.reflection.component.input.Selectable
+import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.component.swing.label.Label
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.{Border, Insets, StackSize}
@@ -18,6 +19,16 @@ import utopia.reflection.text.Font
   * Dropdowns are used for selecting a single value from multiple alternatives
   * @author Mikko Hilpinen
   * @since 1.5.2019, v1+
+  * @param margins The margins placed around the text (affects stack size)
+  * @param selectText The text displayed when no value is selected
+  * @param font The font used in this drop down
+  * @param backgroundColor The default label background color
+  * @param selectedBackground The background color of currently selected item
+  * @param textColor The text color used (default = 88% opacity black)
+  * @param displayFunction A function used for transforming values to displayable strings
+  *                        (default = toString with no localization)
+  * @param initialContent The initially available selections
+  * @param maximumOptimalWidth The maximum optimal widht for this drop down (default = maximum based on text length & margin)
   */
 class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font: Font, backgroundColor: Color,
 				  selectedBackground: Color, textColor: Color = Color.textBlack,

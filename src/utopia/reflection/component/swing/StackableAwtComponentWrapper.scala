@@ -2,7 +2,7 @@ package utopia.reflection.component.swing
 
 import java.awt.Component
 
-import utopia.reflection.component.CachingStackable
+import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.container.swing.Framing
 import utopia.reflection.shape.StackSize
 

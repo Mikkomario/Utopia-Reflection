@@ -1,4 +1,6 @@
-package utopia.reflection.component
+package utopia.reflection.component.stack
+
+import utopia.reflection.component.ComponentWrapper
 
 /**
   * This wrapper wraps a stackable, providing full stackable interface itself

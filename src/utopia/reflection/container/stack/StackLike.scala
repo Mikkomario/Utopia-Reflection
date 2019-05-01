@@ -3,7 +3,8 @@ package utopia.reflection.container.stack
 import utopia.flow.datastructure.mutable.Pointer
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.{Point, Size}
-import utopia.reflection.component.{Area, StackSizeCalculating, Stackable, StackableWrapper}
+import utopia.reflection.component.stack.{StackSizeCalculating, Stackable, StackableWrapper}
+import utopia.reflection.component.Area
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.container.stack.StackLayout._
 

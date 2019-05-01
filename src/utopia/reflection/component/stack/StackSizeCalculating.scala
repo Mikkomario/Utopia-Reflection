@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.stack
 
 import utopia.reflection.shape.StackSize
 
