@@ -41,6 +41,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	private val field = new JComboBox[String]()
 	private var _content = initialContent
 	private var _displayValues = Vector[LocalizedString]()
+	private var isShowingSelectOption = true
 	
 	
 	// INITIAL CODE	-------------------
@@ -51,7 +52,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	field.setForeground(textColor.toAwt)
 	
 	// Modifies the renderer
-	field.setRenderer(new CellRenrerer[String](margins.width.optimal, backgroundColor, selectedBackground, textColor))
+	field.setRenderer(new CellRenrerer(margins.width.optimal, backgroundColor, selectedBackground, textColor))
 	
 	{
 		val popup = field.getUI.getAccessibleChild(field, 0)
@@ -81,23 +82,14 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	def selectedIndex =
 	{
 		val index = field.getSelectedIndex
-		// Index 0 in field is a plaeholder text
-		if (index < 1) None else Some(index - 1)
+		// Index 0 in field is a plaeholder text (sometimes)
+		if (index < indexMod) None else Some(index - indexMod)
 	}
 	def selectedIndex_=(newIndex: Option[Int]): Unit = selectedIndex_=(newIndex getOrElse -1)
 	def selectedIndex_=(newIndex: Int) =
 	{
-		// Index 0 in field represents the placeholder value (not selected)
-		val trueIndex =
-		{
-			if (newIndex < 0)
-				0
-			else if (newIndex >= this.count)
-				this.count
-			else
-				newIndex + 1
-		}
-		
+		// Index 0 in field sometimes represents the placeholder value (not selected)
+		val trueIndex = -1 max ((-1 max newIndex) + indexMod) min (this.count - 1)
 		field.setSelectedIndex(trueIndex)
 	}
 	
@@ -110,11 +102,13 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	  */
 	def displayValues = _displayValues
 	
+	private def indexMod = if (isShowingSelectOption) 1 else 0
+	
 	
 	// IMPLEMENTED	-------------------
 	
 	// Only accepts values that are within selection pool
-	override def value_=(newValue: Option[A]) = super.value_=(newValue.filter(content.contains))
+	// override def value_=(newValue: Option[A]) = super.value_=(newValue.filter(content.contains))
 	
 	override protected def updateVisibility(visible: Boolean) = super[JWrapper].isVisible_=(visible)
 	
@@ -154,16 +148,30 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		
 		_content = newContent
 		_displayValues = newContent.map(displayFunction.apply)
-		field.removeAllItems()
-		(selectText +: _displayValues).foreach { s => field.addItem(s.string) }
 		
-		// If there is only 1 item available, auto-selects it
-		if (_content.size == 1)
-			this.selectFirst(false)
-		else if (oldSelected.exists(newContent.contains))
-			select(oldSelected, false)
-		else
-			this.selectNone(false)
+		// If there is only 1 item available or if previously selected item is still available, auto-selects it afterwards
+		val newSelectedIndex =
+		{
+			if (_content.size == 1)
+				Some(0)
+			else
+				oldSelected.flatMap(_content.optionIndexOf)
+		}
+		
+		// Updates the field (leaves out "select") if there is an item selected or if there are no values available
+		isShowingSelectOption = newSelectedIndex.isEmpty && _content.nonEmpty
+		val finalDisplayOptions = if (isShowingSelectOption) selectText +: _displayValues else _displayValues
+		
+		field.removeAllItems()
+		finalDisplayOptions.foreach { s => field.addItem(s.string) }
+		
+		// If there is only 1 item available, auto-selects it afterwards
+		selectedIndex = newSelectedIndex
+		
+		// Informs listeners if selection changes
+		val newSelected = selected
+		if (oldSelected.isDefined && newSelected.isEmpty)
+			informListeners(newSelected)
 		
 		revalidate()
 	}
@@ -187,33 +195,38 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 			{
 				lastSelected = newSelected
 				informListeners(newSelected)
+				
+				// Once an item has been selected, makes sure that "select" option is no longer shown
+				if (isShowingSelectOption && newSelected.isDefined)
+					content = _content
 			}
 		}
 	}
-}
-
-private class CellRenrerer[A](hmargin: Int, val defaultBackground: Color, val selectedBackground: Color,
-							  val textColor: Color) extends Label with ListCellRenderer[A]
-{
-	// INITIAL CODE	---------------------
 	
-	setBorder(Border(Insets.symmetric(hmargin, 0), None))
-	
-	
-	// IMPLEMENTED	---------------------
-	
-	override def getListCellRendererComponent(list: JList[_ <: A], value: A, index: Int, isSelected: Boolean, cellHasFocus: Boolean) =
+	private class CellRenrerer(hmargin: Int, val defaultBackground: Color, val selectedBackground: Color,
+								  val textColor: Color) extends Label with ListCellRenderer[String]
 	{
-		label.setText(value.toString)
+		// INITIAL CODE	---------------------
 		
-		// check if this cell is selected
-		if (isSelected)
-			background = selectedBackground
-		// unselected, and not the DnD drop location
-		else
-			background = defaultBackground
+		setBorder(Border(Insets.symmetric(hmargin, 0), None))
 		
-		label.setForeground((if (index == 0) textColor.timesAlpha(0.625) else textColor).toAwt)
-		label
+		
+		// IMPLEMENTED	---------------------
+		
+		override def getListCellRendererComponent(list: JList[_ <: String], value: String, index: Int, isSelected: Boolean, cellHasFocus: Boolean) =
+		{
+			if (value != null)
+				label.setText(value)
+			
+			// check if this cell is selected
+			if (isSelected)
+				background = selectedBackground
+			// unselected, and not the DnD drop location
+			else
+				background = defaultBackground
+			
+			label.setForeground((if (isShowingSelectOption && index == 0) textColor.timesAlpha(0.625) else textColor).toAwt)
+			label
+		}
 	}
 }

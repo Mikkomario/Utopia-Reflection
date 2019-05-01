@@ -27,7 +27,7 @@ trait InteractionWithEvents[A] extends Interaction[A] with InputWithEvents[A]
 		if (newValue != value)
 		{
 			setValueNoEvents(newValue)
-			informListeners(newValue)
+			informListeners(value)
 		}
 	}
 	
