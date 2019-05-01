@@ -1,5 +1,24 @@
 package utopia.reflection.component
 
+import scala.collection.generic.CanBuildFrom
+
+object Refreshable
+{
+	implicit class MultiRefreshable[A, C <: Traversable[A]](val r: Refreshable[C]) extends AnyVal
+	{
+		/**
+		  * Removes all items from this pool
+		  * @param cbf Implicit canbuildfrom
+		  * @tparam C2 Arbitary collection type
+		  */
+		def clear[C2]()(implicit cbf: CanBuildFrom[C2, A, C]) =
+		{
+			val builder = cbf()
+			r.content = builder.result()
+		}
+	}
+}
+
 /**
   * Refreshable components are pools that can be refreshed from the program side
   * @author Mikko Hilpinen

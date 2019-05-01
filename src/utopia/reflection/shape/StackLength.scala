@@ -257,7 +257,7 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	/**
 	 * Combines two stack sizes to one which supports both limits
 	 */
-	def combine(other: StackLength) =
+	def combineWith(other: StackLength) =
 	{
 	    val newMin = min max other.min
 	    val newMax = Vector(max, other.max).flatten.reduceOption(_ min _)
@@ -269,6 +269,32 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	        StackLength(newMin, newMax.get, newMax, prio)
 	    else
 	        StackLength(newMin, newOptimal, newMax, prio)
+	}
+	
+	/**
+	  * Creates a new stack length that is within the specified limits
+	  * @param minimum Minimum limit
+	  * @param maximum Maximum limit. None if not limited.
+	  * @return A stack length that has at least 'minimum' minimum width and at most 'maximum' maximum width
+	  */
+	def within(minimum: Int, maximum: Option[Int]) =
+	{
+		if (maximum.isDefined)
+		{
+			val newMin = minimum max min min maximum.get
+			val newMax = max.map { m => minimum max m min maximum.get } getOrElse maximum.get
+			val newOptimal = newMin max optimal min newMax
+			
+			StackLength(newMin, newOptimal, Some(newMax), isLowPriority)
+		}
+		else
+		{
+			val newMin = minimum max min
+			val newMax = max.map { minimum max _ }
+			val newOptimal = newMin max optimal
+			
+			StackLength(newMin, newOptimal, newMax, isLowPriority)
+		}
 	}
 	
 	/**

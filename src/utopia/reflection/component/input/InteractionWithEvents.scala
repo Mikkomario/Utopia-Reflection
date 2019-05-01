@@ -30,4 +30,14 @@ trait InteractionWithEvents[A] extends Interaction[A] with InputWithEvents[A]
 			informListeners(newValue)
 		}
 	}
+	
+	
+	// OTHER	----------------
+	
+	/**
+	  * Specifies input value for this interaction
+	  * @param newValue The new value
+	  * @param generateEvents Whether input events should be generated (default = true)
+	  */
+	def setValue(newValue: A, generateEvents: Boolean = true) = if (generateEvents) value = newValue else setValueNoEvents(newValue)
 }

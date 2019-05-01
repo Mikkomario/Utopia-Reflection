@@ -1,5 +1,26 @@
 package utopia.reflection.component
 
+object Pool
+{
+	implicit class MultiPool(val p: Pool[Traversable[_]]) extends AnyVal
+	{
+		/**
+		  * @return The current item count in this pool
+		  */
+		def count = p.content.size
+		
+		/**
+		  * @return Whether there is currently no content in this pool
+		  */
+		def isEmpty = p.content.isEmpty
+		
+		/**
+		  * @return Whether there is currently content in this pool
+		  */
+		def nonEmpty = p.content.nonEmpty
+	}
+}
+
 /**
   * Pools are used for presenting one or more items
   * @author Mikko Hilpinen

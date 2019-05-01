@@ -411,5 +411,5 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param other Another size
       * @return A combination of these sizes that fulfills constraints of both sizes
       */
-    def combine(other: StackSize) = StackSize(width combine other.width, height combine other.height)
+    def combine(other: StackSize) = StackSize(width combineWith other.width, height combineWith other.height)
 }
