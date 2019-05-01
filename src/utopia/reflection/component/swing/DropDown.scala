@@ -91,6 +91,10 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		// Index 0 in field sometimes represents the placeholder value (not selected)
 		val trueIndex = -1 max ((-1 max newIndex) + indexMod) min (this.count - 1)
 		field.setSelectedIndex(trueIndex)
+		
+		// Doesn't show selection onption once a selection is made
+		if (isShowingSelectOption && trueIndex >= indexMod)
+			content = _content
 	}
 	
 	/**

@@ -23,6 +23,44 @@ object Insets
       * @return A new set of insets
       */
     def symmetric(w: Double, h: Double) = Insets(w, w, h , h)
+    
+    /**
+      * Creates a horizontal set of insets
+      * @param left Left side
+      * @param right Right side
+      * @return New insets
+      */
+    def horizontal(left: Double, right: Double) = Insets(left, right, 0, 0)
+    
+    /**
+      * Creates a horizontal set of insets
+      * @param w left / right side
+      * @return New insets
+      */
+    def horizontal(w: Double): Insets = horizontal(w, w)
+    
+    /**
+      * Creates a vertical set of insets
+      * @param top Top side
+      * @param bottom Bottom side
+      * @return New insets
+      */
+    def vertical(top: Double, bottom: Double) = Insets(0, 0, top, bottom)
+    
+    /**
+      * Creates a vertical set of insets
+      * @param h Top / bottom side
+      * @return New insets
+      */
+    def vertical(h: Double): Insets = vertical(h, h)
+    
+    def left(amount: Double) = Insets(amount, 0, 0, 0)
+    
+    def right(amount: Double) = Insets(0, amount, 0, 0)
+    
+    def top(amount: Double) = Insets(0, 0, amount, 0)
+    
+    def bottom(amount: Double) = Insets(0, 0, 0, amount)
 }
 
 /**
