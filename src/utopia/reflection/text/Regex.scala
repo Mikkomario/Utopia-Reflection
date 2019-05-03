@@ -1,24 +1,36 @@
 package utopia.reflection.text
 
+import java.util.regex.Pattern
+
+import scala.collection.immutable.VectorBuilder
 import scala.language.implicitConversions
 
 object Regex
 {
 	implicit def stringToRegex(s: String): Regex = Regex(s)
 	
+	val anySingle = Regex(".")
+	val any = anySingle.zeroOrMoreTimes
 	val digit = Regex("\\d")
 	val nonDigit = Regex("\\D")
 	val whiteSpace = Regex("\\s")
 	val nonWhiteSpace = Regex("\\S")
+	/**
+	  * Contains alpha-numeric (ASCII) words with underscores
+	  */
 	val word = Regex("\\w")
 	val wordBoundary = Regex("\\b")
 	val newLine = Regex("\\n")
 	
 	val alpha = Regex("[a-zA-ZåäöÅÄÖ]")
-	val numeric = digit || "-"
-	val alphaNumeric = alpha || numeric
-	val decimal = numeric || "[.,]"
-	val decimalPositive = digit || "[.,]"
+	val numeric = Regex("\\-").noneOrOnce + digit.oneOrMoreTimes
+	val alphaNumeric = alpha || digit
+	val decimalPositive = digit.oneOrMoreTimes + (Regex("[.,]") + digit.oneOrMoreTimes).withinParenthesis.noneOrOnce
+	val decimal = Regex("\\-").noneOrOnce + decimalPositive
+	
+	val decimalParts = Regex("[-\\d,\\.]")
+	val decimalPositiveParts = Regex("[\\d,\\.]")
+	val numericParts = Regex("[-\\d]")
 	
 	/**
 	  * Creates a regex that accepts any of the specified characters. You don't need to worry about regular expressions
@@ -37,6 +49,11 @@ object Regex
   */
 case class Regex(string: String)
 {
+	// ATTRIBUTES	----------------
+	
+	private lazy val pattern = Pattern.compile(string)
+	
+	
 	// COMPUTED	--------------------
 	
 	/**
@@ -52,9 +69,9 @@ case class Regex(string: String)
 	/**
 	  * @return Whether this regex is inside braces [...]
 	  */
-	def hasBraces =
+	def hasBrackets =
 	{
-		if (isDefined && string.startsWith("\\[") && string.endsWith("\\]"))
+		if (isDefined && string.startsWith("[") && string.endsWith("]"))
 		{
 			// Makes sure the regex is not just a group of braced groups
 			val inside = string.substring(1, string.length - 1)
@@ -71,27 +88,32 @@ case class Regex(string: String)
 	/**
 	  * @return A copy of this regex without outside braces
 	  */
-	def withoutBraces = if (hasBraces) Regex(string.substring(1, string.length - 1)) else this
+	def withoutBrackets = if (hasBrackets) Regex(string.substring(1, string.length - 1)) else this
 	
 	/**
 	  * @return A copy of this regex with outside braces
 	  */
-	def withBraces = if (hasBraces) this else Regex(s"[$string]")
+	def withBraces = if (hasBrackets) this else Regex(s"[$string]")
+	
+	/**
+	  * @return A version of this regex wrapped within parenthesis
+	  */
+	def withinParenthesis = Regex("(" + string + ")")
 	
 	/**
 	  * @return This regex in sequence 0 or more times
 	  */
-	def zeroOrMoreTimes = if (isEmpty || string.endsWith("\\*")) this else Regex(string + "*")
+	def zeroOrMoreTimes = if (isEmpty || string.endsWith("*")) this else Regex(string + "*")
 	
 	/**
 	  * @return This regex in sequence one or more times
 	  */
-	def oneOrMoreTimes = if (isEmpty || string.endsWith("\\+")) this else Regex(string + "+")
+	def oneOrMoreTimes = if (isEmpty || string.endsWith("+")) this else Regex(string + "+")
 	
 	/**
 	  * @return This regex either 0 or exactly 1 times
 	  */
-	def noneOrOnce = if (isEmpty || string.endsWith("\\?")) this else Regex(string + "?")
+	def noneOrOnce = if (isEmpty || string.endsWith("?")) this else Regex(string + "?")
 	
 	
 	// IMPLEMENTED	----------------
@@ -104,8 +126,24 @@ case class Regex(string: String)
 	/**
 	  * @return Inverted version of this regex
 	  */
-	def unary_- = if (string.startsWith("[^")) Regex("[" + string.substring(2)) else
-		Regex(s"[^$withoutBraces]")
+	def unary_! =
+	{
+		if (string.startsWith("(?!") && string.endsWith(")"))
+			Regex(string.substring(3, string.length - 1))
+		else if (string.startsWith("(?!") && string.endsWith("$).*"))
+			Regex(string.substring(3, string.length - 4))
+		else if (hasBrackets)
+		{
+			if (string.startsWith(Pattern.quote("[^")))
+				Regex("[" + string.substring(2))
+			else
+				Regex("[^" + string.substring(1))
+		}
+		else if (string.endsWith("}") || string.endsWith("*") || string.endsWith("?") || string.endsWith("+"))
+			Regex("(?!" + string + "$).*")
+		else
+			Regex("[^" + string + "]")
+	}
 	
 	/**
 	  * @param another Another regex
@@ -123,10 +161,58 @@ case class Regex(string: String)
 			this
 		else if (isEmpty)
 			more
-		else if (hasBraces || more.hasBraces)
-			(withoutBraces + more.withBraces).withBraces
+		else if (hasBrackets || more.hasBrackets)
+			(withoutBrackets + more.withoutBrackets).withBraces
 		else
 			Regex(string + "|" + more.string)
+	}
+	
+	/**
+	  * @param str A string
+	  * @return Whether the string matches this regex
+	  */
+	def apply(str: String) = str.matches(string)
+	
+	/**
+	  * @param str A string
+	  * @return A version of the string that only contains items NOT accepted by this regex
+	  */
+	def filterNot(str: String) = str.replaceAll(string, "")
+	
+	/**
+	  * @param str A string
+	  * @return A version of the string that only contains items accepted by this regex
+	  */
+	def filter(str: String) = findAllFrom(str).reduceOption { _ + _ } getOrElse ""
+	
+	/**
+	  * Finds the first match for this regex from the specified string
+	  * @param str A string
+	  * @return The first match from the string
+	  */
+	def findFirstFrom(str: String) =
+	{
+		val matcher = pattern.matcher(str)
+		if (matcher.find())
+			Some(matcher.group())
+		else
+			None
+	}
+	
+	/**
+	  * Finds all matches of this regex from a string
+	  * @param str A string
+	  * @return All matches for this regex
+	  */
+	def findAllFrom(str: String) =
+	{
+		val matcher = pattern.matcher(str)
+		val builder = new VectorBuilder[String]()
+		while (matcher.find())
+		{
+			builder += matcher.group()
+		}
+		builder.result()
 	}
 	
 	

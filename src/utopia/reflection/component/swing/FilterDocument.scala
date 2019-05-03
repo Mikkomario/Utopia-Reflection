@@ -3,6 +3,33 @@ package utopia.reflection.component.swing
 import javax.swing.text.{AttributeSet, PlainDocument}
 import utopia.reflection.text.TextFilter
 
+object FilterDocument
+{
+	/**
+	  * @return A new document with no filtering and no maximum length
+	  */
+	def noFilter() = new FilterDocument(None, None)
+	
+	/**
+	  * @param filter Filter
+	  * @param maxLength Maximum length
+	  * @return A new document with both filter and maximum length
+	  */
+	def apply(filter: TextFilter, maxLength: Int): FilterDocument = new FilterDocument(Some(filter), Some(maxLength))
+	
+	/**
+	  * @param filter A filter
+	  * @return A document with filter and no maximum length
+	  */
+	def apply(filter: TextFilter): FilterDocument = new FilterDocument(Some(filter), None)
+	
+	/**
+	  * @param maxLength Maximum length
+	  * @return A document with no filter but a maximum length
+	  */
+	def withMaxLength(maxLength: Int): FilterDocument = new FilterDocument(None, Some(maxLength))
+}
+
 /**
   * This document limits the available characters and/or string length
   * @author Mikko Hilpinen

@@ -1,8 +1,68 @@
 package utopia.reflection.component.stack
 
+import utopia.genesis.shape.{Axis2D, X, Y}
 import utopia.reflection.component.ComponentLike
-import utopia.reflection.container.stack.StackHierarchyManager
-import utopia.reflection.shape.StackSize
+import utopia.reflection.component.swing.AwtComponentRelated
+import utopia.reflection.container.stack.StackLayout.Fit
+import utopia.reflection.container.stack.{StackHierarchyManager, StackLayout}
+import utopia.reflection.container.swing.{Framing, Stack}
+import utopia.reflection.shape.{StackLength, StackSize}
+
+object Stackable
+{
+	// AwtComponent stackables can be stacked & framed easily
+	implicit class AwtStackable[S <: Stackable with AwtComponentRelated](val s: S) extends AnyVal
+	{
+		/**
+		  * Creates a stack with this item along with some others
+		  * @param elements Other elements
+		  * @param axis Stack axis
+		  * @param layout The stack layout
+		  * @param margin The margin between items
+		  * @param cap The cap at each end of stack (default = fixed to 0)
+		  * @tparam S2 Stack element type
+		  * @return A new stack
+		  */
+		def stackWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], axis: Axis2D, layout: StackLayout,
+																	 margin: StackLength, cap: StackLength = StackLength.fixed(0)) =
+			Stack.withItems(axis, layout, margin, cap, s +: elements)
+		
+		/**
+		  * Creates a horizontal stack with this item along with some others
+		  * @param elements Other elements
+		  * @param margin Margin between elements
+		  * @param cap Cap at each end of the stack (default = fixed to 0)
+		  * @param layout Stack layout (default = Fit)
+		  * @tparam S2 Stack element type
+		  * @return A new stack with these items
+		  */
+		def rowWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], margin: StackLength,
+																   cap: StackLength = StackLength.fixed(0),
+																   layout: StackLayout = Fit) =
+			s.stackWith(elements, X, layout, margin, cap)
+		
+		/**
+		  * Creates a vertical stack with this item along with some others
+		  * @param elements Other elements
+		  * @param margin margin between elements
+		  * @param cap Cap at each end of the stack (default = fixed to 0)
+		  * @param layout Stack layout (default = Fit)
+		  * @tparam S2 Stack element type
+		  * @return A new stack with these items
+		  */
+		def columnWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], margin: StackLength,
+																   cap: StackLength = StackLength.fixed(0),
+																   layout: StackLayout = Fit) =
+			s.stackWith(elements, Y, layout, margin, cap)
+		
+		/**
+		  * Frames this item
+		  * @param margins The margins placed around this item
+		  * @return A framing with this item inside it
+		  */
+		def framed(margins: StackSize) = new Framing(s, margins)
+	}
+}
 
 /**
 * This trait is inherited by component classes that can be placed in stacks

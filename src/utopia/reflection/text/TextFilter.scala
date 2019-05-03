@@ -1,12 +1,27 @@
 package utopia.reflection.text
 
+import scala.language.implicitConversions
+
 object TextFilter
 {
+	/**
+	  * A filter that makes all text uppercase
+	  */
 	val upperCase = TextFilter(None, true)
 	
+	/**
+	  * @param regex A regex
+	  * @return A filter based on regex
+	  */
 	def apply(regex: Regex): TextFilter = TextFilter(Some(regex), false)
 	
+	/**
+	  * @param regex A regex
+	  * @return A filter based on regex that makes items uppercase
+	  */
 	def upperCase(regex: Regex) = TextFilter(Some(regex), true)
+	
+	implicit def regexToFilter(regex: Regex): TextFilter = apply(regex)
 }
 
 /**
@@ -16,11 +31,6 @@ object TextFilter
   */
 case class TextFilter(regex: Option[Regex], isOnlyUpperCase: Boolean)
 {
-	// ATTRIBUTES	--------------------
-	
-	private val negative = regex.map { -_ }
-	
-	
 	// OPERATORS	--------------------
 	
 	// Null checks because you never know about swing components
@@ -42,10 +52,11 @@ case class TextFilter(regex: Option[Regex], isOnlyUpperCase: Boolean)
 			""
 		else
 		{
-			// Deletes all sequences NOT included in the regex
-			val replaced = negative.map { r => s.replaceAll(r.string, "") } getOrElse s
+			// Only keeps the sequences included in the regex
+			val remaining = regex.map { _.filter(s) } getOrElse s
+			
 			// May convert all chars to upper case
-			if (isOnlyUpperCase) replaced.toUpperCase else replaced
+			if (isOnlyUpperCase) remaining.toUpperCase else remaining
 		}
 	}
 }

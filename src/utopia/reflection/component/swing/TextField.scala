@@ -1,10 +1,10 @@
 package utopia.reflection.component.swing
 
-import java.awt.event.{ActionEvent, FocusEvent, FocusListener}
+import java.awt.event.{ActionEvent, ActionListener, FocusEvent, FocusListener}
 
 import utopia.reflection.shape.LengthExtensions._
 import utopia.flow.generic.ValueConversions._
-import javax.swing.{AbstractAction, JTextField}
+import javax.swing.JTextField
 import javax.swing.event.{DocumentEvent, DocumentListener}
 import javax.swing.text.{Document, PlainDocument}
 import utopia.genesis.color.Color
@@ -12,7 +12,7 @@ import utopia.reflection.component.{Alignable, Alignment}
 import utopia.reflection.component.input.InteractionWithEvents
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.shape.{Border, Insets, StackLength, StackSize}
-import utopia.reflection.text.{Font, Prompt}
+import utopia.reflection.text.{Font, Prompt, Regex}
 
 /**
   * Text fields are used for collecting text input from user
@@ -28,8 +28,9 @@ import utopia.reflection.text.{Font, Prompt}
   */
 class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Font,
 				val document: Document = new PlainDocument(), initialText: String = "",
-				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack) extends JWrapper
-	with CachingStackable with InteractionWithEvents[Option[String]] with Alignable
+				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,
+				resultFilter: Option[Regex] = None)
+	extends JWrapper with CachingStackable with InteractionWithEvents[Option[String]] with Alignable
 {
 	// ATTRIBUTES	----------------------
 	
@@ -38,6 +39,8 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	
 	private lazy val promptDocument = new PlainDocument()
 	private var isDisplayingPrompt = false
+	private var enterListeners = Vector[Option[String] => Unit]()
+	private var resultListeners = Vector[Option[String] => Unit]()
 	
 	
 	// INITIAL CODE	----------------------
@@ -50,6 +53,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	text = initialText
 	
 	field.getDocument.addDocumentListener(listener)
+	field.addActionListener(new EnterListener())
 	if (prompt.isDefined)
 		field.addFocusListener(new PromptFocusListener())
 	
@@ -69,7 +73,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 			if (t == null) "" else t
 		}
 	}
-	def text_=(newText: String) =
+	def text_=(newText: String): Unit =
 	{
 		if (prompt.isEmpty)
 			field.setText(newText)
@@ -77,7 +81,10 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 		{
 			// On empty text, may display prompt instead
 			if (newText.isEmpty)
+			{
+				field.setText(newText)
 				showPrompt()
+			}
 			else
 			{
 				// May disable a prompt if one is shown
@@ -116,10 +123,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	override def value =
 	{
 		val raw = text.trim
-		if (raw.isEmpty)
-			None
-		else
-			Some(raw)
+		resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
 	}
 	
 	override def component = field
@@ -141,19 +145,6 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	def clear() = text = ""
 	
 	/**
-	  * Adds a new ation that will be called when user presses enter inside this field
-	  * @param action The action that will be performed. Takes current input value.
-	  */
-	def addActionForEnter(action: Option[String] => Unit) =
-	{
-		val a = new AbstractAction()
-		{
-			override def actionPerformed(e: ActionEvent) = action(value)
-		}
-		field.addActionListener(a)
-	}
-	
-	/**
 	  * Aligns this field to the left and adds margin
 	  * @param margin The amount of margin
 	  */
@@ -161,6 +152,39 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	{
 		alignLeft()
 		setBorder(Border(Insets.left(margin), None))
+	}
+	
+	/**
+	  * Requests focus within this window
+	  * @return Whether this field is likely to gain focus
+	  */
+	def requestFocus() = field.requestFocusInWindow()
+	
+	/**
+	  * Adds a listener that will be informed when user presses enter inside this text field. Informs listener
+	  * of the processed value of this text field
+	  * @param listener A listener
+	  */
+	def addEnterListener(listener: Option[String] => Unit) = enterListeners :+= listener
+	/**
+	  * Adds a listener that will be informed when this field loses focus or the user presses enter inside this field.
+	  * Informs the listener of the processed value of this field.
+	  * @param listener A listener
+	  */
+	def addResultListener(listener: Option[String] => Unit) = resultListeners :+= listener
+	
+	private def filter() =
+	{
+		val original = text
+		val filtered = resultFilter.map { _.findFirstFrom(original.trim) } getOrElse Some(original.trim)
+		val changed = filtered.filter { _ != original }
+		
+		changed.foreach
+		{
+			c =>
+				field.setText(c)
+				informListeners()
+		}
 	}
 	
 	private def hidePrompt() =
@@ -189,6 +213,21 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	
 	// NESTED CLASSES	----------------------
 	
+	private class EnterListener extends ActionListener
+	{
+		// When enter is pressed, filters field value and informs listeners
+		override def actionPerformed(e: ActionEvent) =
+		{
+			filter()
+			if (enterListeners.nonEmpty || resultListeners.nonEmpty)
+			{
+				val result = value
+				enterListeners.foreach { _(result) }
+				resultListeners.foreach { _(result) }
+			}
+		}
+	}
+	
 	private class InputListener extends DocumentListener
 	{
 		override def insertUpdate(e: DocumentEvent) = informListeners()
@@ -202,6 +241,17 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	{
 		override def focusGained(e: FocusEvent) = hidePrompt()
 		
-		override def focusLost(e: FocusEvent) = if (value.isEmpty) showPrompt()
+		override def focusLost(e: FocusEvent) =
+		{
+			filter()
+			// May show prompt when focus is lost
+			if (text.isEmpty) showPrompt()
+			// Informs results listeners
+			if (resultListeners.nonEmpty)
+			{
+				val result = value
+				resultListeners.foreach { _(result) }
+			}
+		}
 	}
 }
