@@ -22,4 +22,6 @@ trait CustomDrawableWrapper extends CustomDrawable
 	override def customDrawers_=(drawers: Vector[CustomDrawer]) = drawable.customDrawers = drawers
 	
 	override def drawBounds = drawable.drawBounds
+	
+	override def repaint() = drawable.repaint()
 }

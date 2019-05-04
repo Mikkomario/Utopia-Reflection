@@ -25,6 +25,10 @@ trait CustomDrawable
 	  * @return The area where this drawable does custom drawing
 	  */
 	def drawBounds: Bounds
+	/**
+	  * Redraws this drawable item
+	  */
+	def repaint(): Unit
 	
 	
 	// OTHER	----------------
