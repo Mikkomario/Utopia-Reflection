@@ -14,6 +14,77 @@ import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.shape.{Border, Insets, StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt, Regex}
 
+object TextField
+{
+	/**
+	  * Creates a new text field that is used for writing positive integers
+	  * @param targetWidth Target width of the field
+	  * @param vMargin Vertical margin placed on each side of text
+	  * @param font Font used within this field
+	  * @param initialValue The initial value displayed (default = None)
+	  * @param prompt A prompt displayed when this field is empty (default = None)
+	  * @param textColor The text color used (default = 88% opacity black)
+	  * @return A new text field that formats values to positive integers
+	  */
+	def forPositiveInts(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Int] = None,
+						prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	{
+		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.digit, 10),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numericPositive))
+	}
+	
+	/**
+	  * Creates a new text field that is used for writing integers
+	  * @param targetWidth Target width of the field
+	  * @param vMargin Vertical margin placed on each side of text
+	  * @param font Font used within this field
+	  * @param initialValue The initial value displayed (default = None)
+	  * @param prompt A prompt displayed when this field is empty (default = None)
+	  * @param textColor The text color used (default = 88% opacity black)
+	  * @return A new text field that formats values to integers
+	  */
+	def forInts(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Int] = None,
+				prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	{
+		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.numericParts, 11),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numeric))
+	}
+	
+	/**
+	  * Creates a new text field that is used for writing positive doubles
+	  * @param targetWidth Target width of the field
+	  * @param vMargin Vertical margin placed on each side of text
+	  * @param font Font used within this field
+	  * @param initialValue The initial value displayed (default = None)
+	  * @param prompt A prompt displayed when this field is empty (default = None)
+	  * @param textColor The text color used (default = 88% opacity black)
+	  * @return A new text field that formats values to positive doubles
+	  */
+	def forPositiveDoubles(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Double] = None,
+						   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	{
+		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.decimalPositiveParts, 24),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimalPositive))
+	}
+	
+	/**
+	  * Creates a new text field that is used for writing doubles
+	  * @param targetWidth Target width of the field
+	  * @param vMargin Vertical margin placed on each side of text
+	  * @param font Font used within this field
+	  * @param initialValue The initial value displayed (default = None)
+	  * @param prompt A prompt displayed when this field is empty (default = None)
+	  * @param textColor The text color used (default = 88% opacity black)
+	  * @return A new text field that formats values to doubles
+	  */
+	def forDoubles(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Double] = None,
+				   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	{
+		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.decimalParts, 24),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimal))
+	}
+}
+
 /**
   * Text fields are used for collecting text input from user
   * @author Mikko Hilpinen
@@ -36,6 +107,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	
 	private val field = new JTextField()
 	private val listener = new InputListener()
+	private val defaultBorder = Border.square(1, textColor.timesAlpha(0.625))
 	
 	private lazy val promptDocument = new PlainDocument()
 	private var isDisplayingPrompt = false
@@ -50,6 +122,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	field.setDocument(document)
 	alignCenter()
 	
+	setBorder(defaultBorder)
 	text = initialText
 	
 	field.getDocument.addDocumentListener(listener)
@@ -151,7 +224,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	def alignLeft(margin: Double): Unit =
 	{
 		alignLeft()
-		setBorder(Border(Insets.left(margin), None))
+		setBorder(defaultBorder + Border(Insets.left(margin), None))
 	}
 	
 	/**

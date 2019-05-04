@@ -7,7 +7,7 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.X
-import utopia.reflection.component.swing.{FilterDocument, TextField}
+import utopia.reflection.component.swing.TextField
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.stack.StackLayout.Fit
@@ -16,7 +16,7 @@ import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
-import utopia.reflection.text.{Font, Prompt, Regex}
+import utopia.reflection.text.{Font, Prompt}
 import utopia.reflection.text.FontStyle.Plain
 
 import scala.concurrent.ExecutionContext
@@ -48,15 +48,13 @@ object TextFieldTest extends App
 	// Creates three text fields
 	val productPrompt = Prompt("Describe product", basicFont)
 	val productField = new TextField(320.downTo(128), 4.upTo(8), basicFont, prompt = Some(productPrompt))
+	productField.alignLeft(16)
 	
-	val amountDoc = FilterDocument(Regex.digit, 3)
 	val amountPrompt = Prompt("1-999", basicFont)
-	val amountField = new TextField(128.downTo(64), 4.upTo(8), basicFont, prompt = Some(amountPrompt), document = amountDoc)
+	val amountField = TextField.forPositiveInts(128.downTo(64), 4.upTo(8), basicFont, prompt = Some(amountPrompt))
 	
-	val priceDoc = FilterDocument(Regex.decimalPositiveParts, 5)
 	val pricePrompt = Prompt("€", basicFont)
-	val priceField = new TextField(160.downTo(64), 4.upTo(8), basicFont, prompt = Some(pricePrompt),
-		document = priceDoc, resultFilter = Some(Regex.decimalPositive))
+	val priceField = TextField.forPositiveDoubles(160.downTo(64), 4.upTo(8), basicFont, prompt = Some(pricePrompt))
 	
 	// Creates the stacks
 	def combine(label: TextLabel, field: TextField) = label.columnWith(Vector(field), 4.downscaling)

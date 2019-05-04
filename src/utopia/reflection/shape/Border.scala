@@ -36,6 +36,14 @@ object Border
 	def apply(sizes: Insets, color: Color, inner: Border): Border = Border(sizes, Some(color), Some(inner))
 	
 	/**
+	  * Creates a new border where each side is equal
+	  * @param side The width of each side
+	  * @param color Color of this border
+	  * @return A new border
+	  */
+	def square(side: Double, color: Color) = Border(Insets(side, side, side, side), color)
+	
+	/**
 	  * Creates a symmetric border
 	  * @param hBorder Left & right insets
 	  * @param vBorder Top & bottom insets

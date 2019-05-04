@@ -23,7 +23,8 @@ object Regex
 	val newLine = Regex("\\n")
 	
 	val alpha = Regex("[a-zA-ZåäöÅÄÖ]")
-	val numeric = Regex("\\-").noneOrOnce + digit.oneOrMoreTimes
+	val numericPositive = digit.oneOrMoreTimes
+	val numeric = Regex("\\-").noneOrOnce + numericPositive
 	val alphaNumeric = alpha || digit
 	val decimalPositive = digit.oneOrMoreTimes + (Regex("[.,]") + digit.oneOrMoreTimes).withinParenthesis.noneOrOnce
 	val decimal = Regex("\\-").noneOrOnce + decimalPositive
