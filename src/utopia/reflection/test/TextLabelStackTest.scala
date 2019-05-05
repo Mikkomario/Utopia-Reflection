@@ -10,7 +10,7 @@ import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Y
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.DrawLevel.Normal
+import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.swing.label.{Button, TextLabel}
 import utopia.reflection.container.stack.StackLayout.Leading
 import utopia.reflection.container.stack.StackHierarchyManager

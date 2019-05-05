@@ -1,6 +1,6 @@
-package utopia.reflection.component
+package utopia.reflection.component.drawing
 
-import utopia.genesis.shape.shape2D.{Bounds, Size}
+import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 
 /**

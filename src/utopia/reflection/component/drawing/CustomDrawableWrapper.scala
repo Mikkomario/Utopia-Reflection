@@ -1,4 +1,4 @@
-package utopia.reflection.component
+package utopia.reflection.component.drawing
 
 /**
   * These components don't perform custom drawing themselves, but wrap another component that does

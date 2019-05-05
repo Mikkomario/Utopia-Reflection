@@ -6,6 +6,7 @@ import utopia.genesis.handling.MouseButtonStateListener
 import utopia.genesis.shape.X
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Refreshable
+import utopia.reflection.component.drawing.{BorderDrawer, CustomDrawableWrapper}
 import utopia.reflection.component.input.Selectable
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackLayout.Fit
@@ -21,10 +22,10 @@ import utopia.reflection.text.Font
   * @since 4.5.2019, v1+
   */
 class TabSelection[A](val font: Font, val color: Color, val optimalHMargin: Int, val vMargin: StackLength,
-					  val borderWidth: Double = 4.0, val displayFunction: DisplayFunction[A] = DisplayFunction.raw,
+					  val borderWidth: Double = 2.0, val displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 					  initialChoices: Seq[A] = Vector())
 	extends StackableAwtComponentWrapperWrapper with SwingComponentRelated
-	with AwtContainerRelated with Selectable[Option[A], Seq[A]] with Refreshable[Seq[A]]
+	with AwtContainerRelated with Selectable[Option[A], Seq[A]] with Refreshable[Seq[A]] with CustomDrawableWrapper
 {
 	// ATTRIBUTES	-------------------
 	
@@ -38,9 +39,12 @@ class TabSelection[A](val font: Font, val color: Color, val optimalHMargin: Int,
 	// INITIAL CODE	-------------------
 	
 	content = initialChoices
+	addCustomDrawer(new BorderDrawer(Border.symmetric(borderWidth, borderWidth, color)))
 	
 	
 	// IMPLEMENTED	-------------------
+	
+	override def drawable = stack
 	
 	override def component = stack.component
 	
@@ -76,8 +80,7 @@ class TabSelection[A](val font: Font, val color: Color, val optimalHMargin: Int,
 					val label = new TextLabel(LocalizedString.empty, font, textMargin, false)
 					styleNotSelected(label)
 					label.alignCenter()
-					// TODO: Border should be different at the edges
-					label.setBorder(Border.symmetric(borderWidth / 2, borderWidth, color))
+					label.setBorder(Border.horizontal(borderWidth / 2, color))
 					label.addMouseButtonListener(new LabelMouseListener(label))
 					label
 				}

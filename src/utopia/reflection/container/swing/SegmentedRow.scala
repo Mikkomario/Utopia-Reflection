@@ -2,7 +2,7 @@ package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
-import utopia.reflection.component.CustomDrawableWrapper
+import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.StackableWrapper
 import utopia.reflection.component.swing.{AwtComponentRelated, SwingComponentRelated}
 import utopia.reflection.container.stack.StackLayout

@@ -9,9 +9,9 @@ import utopia.genesis.handling.{Actor, MouseButtonStateListener, MouseMoveListen
 import utopia.genesis.shape.{Axis2D, X, Y}
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.inception.handling.immutable.Handleable
-import utopia.reflection.component.DrawLevel.Foreground
+import utopia.reflection.component.drawing.CustomDrawer
+import utopia.reflection.component.drawing.DrawLevel.Foreground
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
-import utopia.reflection.component.CustomDrawer
 import utopia.reflection.shape.{StackLength, StackSize}
 
 /**

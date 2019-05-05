@@ -10,8 +10,8 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.{Bounds, Circle, Point}
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.{HandlerType, Mortal}
-import utopia.reflection.component.DrawLevel.Normal
-import utopia.reflection.component.{CustomDrawableWrapper, CustomDrawer}
+import utopia.reflection.component.drawing.DrawLevel.Normal
+import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
 import utopia.reflection.component.input.InteractionWithEvents
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.label.EmptyLabel

@@ -1,8 +1,9 @@
-package utopia.reflection.component
+package utopia.reflection.component.drawing
 
-import scala.language.implicitConversions
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
+
+import scala.language.implicitConversions
 
 object CustomDrawer
 {
