@@ -19,7 +19,8 @@ object AwtComponentWrapper
     /**
      * Wraps a component
      */
-    def apply(component: Component): AwtComponentWrapper = new SimpleAwtComponentWrapper(component)
+    // TODO: Consider wrapping the whole hierarchy
+    def apply(component: Component): AwtComponentWrapper = new SimpleAwtComponentWrapper(component, Vector())
 }
 
 /**
@@ -96,7 +97,7 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
     /**
       * @return The parent component of this component (wrapped)
       */
-    override def parent: Option[AwtComponentWrapper] =  component.getParent.toOption.map { new SimpleAwtComponentWrapper(_) }
+    override def parent: Option[AwtComponentWrapper] =  component.getParent.toOption.map { new SimpleAwtComponentWrapper(_, Vector(this)) }
     
     /**
       * @return Whether this component is currently visible
@@ -197,7 +198,7 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
     }
 }
 
-private class SimpleAwtComponentWrapper(val component: Component) extends AwtComponentWrapper
+private class SimpleAwtComponentWrapper(val component: Component, override val children: Seq[ComponentLike]) extends AwtComponentWrapper
 
 private class AwtComponentWrapperWrapperWithStackable(override val wrapped: AwtComponentWrapper, getSize: () => StackSize, update: () => Unit)
     extends AwtComponentWrapperWrapper with CachingStackable

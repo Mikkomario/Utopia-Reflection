@@ -1,6 +1,6 @@
 package utopia.reflection.component.swing
 
-import utopia.reflection.component.stack.StackableWrapper
+import utopia.reflection.component.stack.{Stackable, StackableWrapper}
 
 /**
   * This wrapper wraps a stackable wrapper
@@ -11,5 +11,5 @@ trait StackableAwtComponentWrapperWrapper extends AwtComponentWrapperWrapper wit
 {
 	// ABSTRACT	---------------------
 	
-	override def wrapped: StackableAwtComponentWrapper
+	override protected def wrapped: Stackable with AwtComponentRelated
 }

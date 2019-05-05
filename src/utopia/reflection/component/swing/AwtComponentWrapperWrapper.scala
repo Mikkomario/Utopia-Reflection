@@ -1,6 +1,6 @@
 package utopia.reflection.component.swing
 
-import utopia.reflection.component.ComponentWrapper
+import utopia.reflection.component.{ComponentLike, ComponentWrapper}
 
 /**
   * This wrapper wraps another wrapper
@@ -11,7 +11,7 @@ trait AwtComponentWrapperWrapper extends ComponentWrapper with AwtComponentRelat
 {
 	// ABSTRACT	----------------------
 	
-	protected def wrapped: AwtComponentWrapper
+	protected def wrapped: ComponentLike with AwtComponentRelated
 	
 	
 	// IMPLEMENTED	------------------

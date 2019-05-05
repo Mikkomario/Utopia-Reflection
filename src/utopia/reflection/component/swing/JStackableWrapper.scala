@@ -33,4 +33,6 @@ private class JStackWrapper(val component: JComponent, val getSize: () => StackS
     def calculatedStackSize = getSize()
     
     override def updateLayout() = update()
+    
+    override def children = Vector()
 }

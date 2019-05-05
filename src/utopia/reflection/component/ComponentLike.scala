@@ -9,7 +9,6 @@ import utopia.genesis.event.{KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent
 import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.handling.mutable.{KeyStateHandler, KeyTypedHandler, MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
 import utopia.inception.handling.Handleable
-import utopia.reflection.container.Container
 
 /**
 * This trait describes basic component features without any implementation
@@ -60,6 +59,11 @@ trait ComponentLike extends Area
     
     def keyStateHandler: KeyStateHandler
     def keyTypedHandler: KeyTypedHandler
+    
+    /**
+      * @return The components under this component
+      */
+    def children: Seq[ComponentLike] = Vector()
     
     
     // OTHER    ---------------------------
@@ -148,7 +152,7 @@ trait ComponentLike extends Area
     def distributeKeyStateEvent(event: KeyStateEvent): Unit =
     {
         keyStateHandler.onKeyState(event)
-        forChildren { _.distributeKeyStateEvent(event) }
+        children.foreach { _.distributeKeyStateEvent(event) }
     }
     
     /**
@@ -159,7 +163,7 @@ trait ComponentLike extends Area
     def distributeKeyTypedEvent(event: KeyTypedEvent): Unit =
     {
         keyTypedHandler.onKeyTyped(event)
-        forChildren { _.distributeKeyTypedEvent(event) }
+        children.foreach { _.distributeKeyTypedEvent(event) }
     }
     
     /**
@@ -226,13 +230,7 @@ trait ComponentLike extends Area
     private def forMeAndChildren[U](operation: ComponentLike => U): Unit =
     {
         operation(this)
-        forChildren(operation)
-    }
-    
-    private def forChildren[U](operation: ComponentLike => U): Unit = this match
-    {
-        case c: Container[_] => c.components.foreach { operation(_) }
-        case _ => Unit
+        children.foreach(operation)
     }
     
     private def distributeDefaultMouseEvent[E <: MouseEvent](event: E, withPosition: (E, Point) => E,
@@ -249,7 +247,7 @@ trait ComponentLike extends Area
         {
             val translated = translateEvent(event, myBounds.position)
             // Only visible children are informed of events
-            forChildren { c => if (c.isVisible) childAccept(c, translated) }
+            children.foreach { c => if (c.isVisible) childAccept(c, translated) }
         }
     }
     

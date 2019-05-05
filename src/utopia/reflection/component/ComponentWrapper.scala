@@ -47,4 +47,6 @@ trait ComponentWrapper extends ComponentLike
 	
 	override def size = wrapped.size
 	override def size_=(s: Size) = wrapped.size = s
+	
+	override def children = wrapped.children
 }

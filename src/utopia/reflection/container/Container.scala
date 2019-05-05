@@ -43,4 +43,6 @@ trait Container[C <: ComponentLike] extends ComponentLike
 	// IMPLEMENTED	----------------
 	
 	override def toString = s"[${ components.mkString(", ") }]"
+	
+	override def children: Seq[ComponentLike] = components
 }

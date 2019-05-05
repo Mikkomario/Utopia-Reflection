@@ -7,15 +7,16 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.X
-import utopia.reflection.component.swing.TextField
+import utopia.reflection.component.swing.{TabSelection, TextField}
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
-import utopia.reflection.container.swing.Stack
+import utopia.reflection.container.swing.{Framing, Stack}
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
+import utopia.reflection.shape.StackLength
 import utopia.reflection.text.{Font, Prompt}
 import utopia.reflection.text.FontStyle.Plain
 
@@ -84,14 +85,25 @@ object TextFieldTest extends App
 				println("Please select product + amount + price")
 	}
 	
+	// Also creates a tab selection because testing
+	val color = Color.magenta
+	val tab = new TabSelection[String](basicFont, color, 16, StackLength(0, 4, 8),
+		initialChoices = Vector("Goods", "for", "Purchase"))
+	tab.addListener { s => println(s.getOrElse("No item") + " selected") }
+	
+	val framing1 = new Framing(stack, 8.downscaling x 8.downscaling)
+	framing1.background = color
+	
+	val stack2 = tab.columnWith(Vector(framing1), 0.fixed)
+	
 	// Creates the frame and displays it
 	val actorHandler = ActorHandler()
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val framing = stack.framed(16.any x 8.any)
-	framing.background = Color.yellow
-	val frame = Frame.windowed(framing, "TextLabel Stack Test", User)
+	val framing2 = stack2.framed(16.any x 8.any)
+	framing2.background = Color.white
+	val frame = Frame.windowed(framing2, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	
 	actionLoop.registerToStopOnceJVMCloses()

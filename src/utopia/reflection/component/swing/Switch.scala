@@ -131,7 +131,7 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 			val circle = Circle(Point(minX + x * (maxX - minX), areaBounds.position.y + height / 2), r)
 			
 			// Determines the draw color
-			val baseColor = if (isEnabled) color.timesSaturation(x) else color.timesSaturation(0.0).timesAlpha(0.55)
+			val baseColor = if (isEnabled) color.timesSaturation(x) else color.timesSaturation(x).timesAlpha(0.55)
 			val knobColor = if (isEnabled) Color.white else Color.white.timesAlpha(0.55)
 			
 			// Performs the actual drawing

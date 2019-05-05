@@ -66,10 +66,10 @@ class TextLabel(initialText: LocalizedString, override val font: Font, override 
 	
 	override def align(alignment: Alignment) =
 	{
-		if (alignment.isVertical)
-			label.setVerticalAlignment(alignment.toSwingAlignment)
-		else
+		if (alignment.isHorizontal)
 			label.setHorizontalAlignment(alignment.toSwingAlignment)
+		else
+			label.setVerticalAlignment(alignment.toSwingAlignment)
 		
 		revalidate()
 	}
