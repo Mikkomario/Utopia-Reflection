@@ -31,8 +31,6 @@ class Framing[C <: Stackable with AwtComponentRelated](initialComponent: C, val 
 	
 	override def drawable = panel
 	
-	override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
-	
 	override protected def container = panel
 	
 	override def component = panel.component

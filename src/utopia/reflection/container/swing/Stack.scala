@@ -1,6 +1,5 @@
 package utopia.reflection.container.swing
 
-import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
 import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
@@ -55,8 +54,6 @@ class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override va
     // IMPLEMENTED    -------------------
     
     override def drawable = panel
-    
-    override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
     
     override def component = panel.component
     

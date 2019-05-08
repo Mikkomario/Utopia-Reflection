@@ -22,12 +22,6 @@ trait SwingComponentRelated extends AwtComponentRelated
 	
 	def isTransparent_=(isTransparent: Boolean) = component.setOpaque(!isTransparent)
 	
-	def background_=(color: Color) =
-	{
-		component.setBackground(color.toAwt)
-		isTransparent_=(false)
-	}
-	
 	/**
 	  * Changes the border of this component
 	  * @param border A new border

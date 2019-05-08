@@ -246,6 +246,13 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	  */
 	def addResultListener(listener: Option[String] => Unit) = resultListeners :+= listener
 	
+	/**
+	  * Adds focus highlighting to this text field. The highlighting will change text field background color when
+	  * it gains focus
+	  * @param color The background color used when focused
+	  */
+	def addFocusHighlight(color: Color) = component.addFocusListener(new FocusHighlighter(background, color))
+	
 	private def filter() =
 	{
 		val original = text
@@ -326,5 +333,12 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 				resultListeners.foreach { _(result) }
 			}
 		}
+	}
+	
+	private class FocusHighlighter(val defaultBackground: Color, val highlightBackground: Color) extends FocusListener
+	{
+		override def focusGained(e: FocusEvent) = background = highlightBackground
+		
+		override def focusLost(e: FocusEvent) = background = defaultBackground
 	}
 }

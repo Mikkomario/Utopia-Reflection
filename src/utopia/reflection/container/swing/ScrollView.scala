@@ -1,6 +1,5 @@
 package utopia.reflection.container.swing
 
-import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.Bounds
@@ -49,6 +48,4 @@ class ScrollView[C <: Stackable with AwtComponentRelated](override val content: 
 	override def drawable = panel
 	
 	override protected def updateVisibility(visible: Boolean) = super[AwtComponentWrapperWrapper].isVisible_=(visible)
-	
-	override def background_=(color: Color) = super[SwingComponentRelated].background_=(color)
 }
