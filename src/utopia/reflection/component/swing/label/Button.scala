@@ -1,10 +1,12 @@
 package utopia.reflection.component.swing.label
 
+import java.awt.event.{FocusEvent, FocusListener, KeyEvent}
+
 import javax.swing.SwingUtilities
 import utopia.flow.collection.VolatileList
 import utopia.genesis.color.Color
-import utopia.genesis.event.{MouseButton, MouseButtonStateEvent, MouseMoveEvent}
-import utopia.genesis.handling.{MouseButtonStateListener, MouseMoveListener}
+import utopia.genesis.event.{KeyStateEvent, MouseButton, MouseButtonStateEvent, MouseMoveEvent}
+import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener, MouseMoveListener}
 import utopia.inception.handling.HandlerType
 import utopia.reflection.component.Alignment
 import utopia.reflection.component.Alignment.Center
@@ -24,11 +26,13 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	// ATTRIBUTES	------------------
 	
 	private val colorHistory = VolatileList(color)
+	private var _isInFocus = false
 	
 	
 	// INITIAL CODE	------------------
 	
 	label.setFont(font.toAwt)
+	label.setFocusable(true)
 	setHandCursor()
 	label.setText(text.string)
 	background = color
@@ -39,6 +43,12 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 		val listener = new ButtonMouseListener()
 		addMouseMoveListener(listener)
 		addMouseButtonListener(listener)
+		
+		// Adds key listening
+		addKeyStateListener(new ButtonKeyListener())
+		
+		// Adds focus listening
+		label.addFocusListener(new ButtonFocusListener())
 	}
 	
 	
@@ -64,6 +74,11 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 		}
 		label.setEnabled(newEnabled)
 	}
+	
+	/**
+	  * @return Whether this button is currently in focus
+	  */
+	def isInFocus = _isInFocus
 	
 	
 	// IMPLEMENTED	------------------
@@ -91,6 +106,12 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	  */
 	def trigger() = if (isEnabled) action()
 	
+	/**
+	  * Makes this button request focus within the current window
+	  * @return Whether this button is likely to gain focus
+	  */
+	def requestFocus() = label.requestFocusInWindow()
+	
 	private def updateBorder(baseColor: Color) = setBorder(Border.raised(borderWidth, baseColor, 0.5))
 	
 	private def pushColor(newColor: Color) =
@@ -106,6 +127,41 @@ class Button(override val text: LocalizedString, override val font: Font, color:
 	
 	
 	// NESTED CLASSES	--------------
+	
+	private class ButtonFocusListener extends FocusListener
+	{
+		override def focusGained(e: FocusEvent) =
+		{
+			if (!_isInFocus)
+			{
+				_isInFocus = true
+				pushColor(background.lightened(1.5))
+			}
+		}
+		
+		override def focusLost(e: FocusEvent) =
+		{
+			if (_isInFocus)
+			{
+				_isInFocus = false
+				returnColor()
+			}
+		}
+	}
+	
+	private class ButtonKeyListener extends KeyStateListener
+	{
+		// Only accepts enter & space presses
+		override val keyStateEventFilter = KeyStateEvent.wasPressedFilter &&
+			(KeyStateEvent.keyFilter(KeyEvent.VK_SPACE) || KeyStateEvent.keyFilter(KeyEvent.VK_ENTER))
+		
+		override def onKeyState(event: KeyStateEvent) = trigger()
+		
+		override def parent = None
+		
+		// Only allows handling while in focus
+		override def allowsHandlingFrom(handlerType: HandlerType) = _isInFocus
+	}
 	
 	private class ButtonMouseListener extends MouseButtonStateListener with MouseMoveListener
 	{

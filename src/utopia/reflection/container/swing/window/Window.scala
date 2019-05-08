@@ -11,6 +11,7 @@ import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.AwtComponentRelated
+import utopia.reflection.component.swing.label.Button
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.Insets
@@ -146,10 +147,18 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
 			// Starts key listening
 			val keyStateListener = KeyStateListener { content.distributeKeyStateEvent(_) }
 			val keyTypedListener = KeyTypedListener { content.distributeKeyTypedEvent(_) }
-			
-			component.addKeyListener(new ConvertingKeyListener(keyStateListener, keyTypedListener))
+    
+            new ConvertingKeyListener(keyStateListener, keyTypedListener).register()
         }
     }
+    
+    /**
+      * Registers the buttons used in this window so that the default button will be triggered on enter
+      * @param defaultButton The default button for this window
+      * @param moreButtons More buttons for this window
+      */
+    def registerButtons(defaultButton: Button, moreButtons: Button*) =
+        addKeyStateListener(DefaultButtonHandler(defaultButton, moreButtons: _*))
     
     /**
       * Updates the bounds of this window's contents to match those of this window

@@ -4,7 +4,7 @@ import utopia.flow.generic.ValueConversions._
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
-import utopia.genesis.handling.ActorLoop
+import utopia.genesis.handling.{ActorLoop, KeyStateListener}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
 import utopia.reflection.component.swing.{TabSelection, TextField}
@@ -37,6 +37,7 @@ object TextFieldTest extends App
 	
 	// Creates the hint labels
 	val basicFont = Font("Arial", 12, Plain, 2)
+	val focusColor = Color.yellow
 	val labels = Vector("Product", "Amount", "Price").map { s => TextLabel(s, basicFont, 8.any x 0.any) }
 	labels.foreach
 	{
@@ -50,12 +51,15 @@ object TextFieldTest extends App
 	val productPrompt = Prompt("Describe product", basicFont)
 	val productField = new TextField(320.downTo(128), 4.upTo(8), basicFont, prompt = Some(productPrompt))
 	productField.alignLeft(16)
+	productField.addFocusHighlight(focusColor)
 	
 	val amountPrompt = Prompt("1-999", basicFont)
 	val amountField = TextField.forPositiveInts(128.downTo(64), 4.upTo(8), basicFont, prompt = Some(amountPrompt))
+	amountField.addFocusHighlight(focusColor)
 	
 	val pricePrompt = Prompt("€", basicFont)
 	val priceField = TextField.forPositiveDoubles(160.downTo(64), 4.upTo(8), basicFont, prompt = Some(pricePrompt))
+	priceField.addFocusHighlight(focusColor)
 	
 	// Creates the stacks
 	def combine(label: TextLabel, field: TextField) = label.columnWith(Vector(field), 4.downscaling)
@@ -89,6 +93,7 @@ object TextFieldTest extends App
 	val color = Color.magenta
 	val tab = new TabSelection[String](basicFont, color, 16, StackLength(0, 4, 8),
 		initialChoices = Vector("Goods", "for", "Purchase"))
+	tab.selectOne("Goods")
 	tab.addListener { s => println(s.getOrElse("No item") + " selected") }
 	
 	val framing1 = new Framing(stack, 8.downscaling x 8.downscaling)
@@ -105,6 +110,8 @@ object TextFieldTest extends App
 	framing2.background = Color.white
 	val frame = Frame.windowed(framing2, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
+	
+	frame.addKeyStateListener(KeyStateListener {e => println(e)})
 	
 	actionLoop.registerToStopOnceJVMCloses()
 	actionLoop.startAsync()
