@@ -6,7 +6,8 @@ import utopia.flow.util.TimeExtensions._
 import utopia.genesis.event.{MouseButton, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling.{Actor, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
-import utopia.genesis.shape.{Axis2D, X, Y}
+import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.drawing.CustomDrawer

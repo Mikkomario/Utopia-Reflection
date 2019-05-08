@@ -5,7 +5,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.{X, Y}
+import utopia.genesis.shape.Axis._
 import utopia.reflection.component.swing.label.{Button, TextLabel}
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.segmented.SegmentedGroup

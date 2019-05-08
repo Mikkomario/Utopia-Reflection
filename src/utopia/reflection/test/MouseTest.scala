@@ -7,7 +7,7 @@ import utopia.flow.generic.DataType
 import utopia.genesis.event.{MouseEvent, MouseMoveEvent}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling.{ActorLoop, KeyStateListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
-import utopia.genesis.shape.X
+import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Size
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Area

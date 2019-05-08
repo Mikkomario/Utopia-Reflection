@@ -1,13 +1,12 @@
 package utopia.reflection.test
 
 import utopia.flow.async.ThreadPool
-import utopia.flow.generic.ValueConversions._
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.{X, Y}
-import utopia.reflection.component.swing.{Switch, TextField}
+import utopia.genesis.shape.Axis._
+import utopia.reflection.component.swing.Switch
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.stack.StackLayout.Fit
@@ -17,9 +16,8 @@ import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
-import utopia.reflection.shape.StackLength
 import utopia.reflection.text.FontStyle.Plain
-import utopia.reflection.text.{Font, Prompt}
+import utopia.reflection.text.Font
 
 import scala.concurrent.ExecutionContext
 

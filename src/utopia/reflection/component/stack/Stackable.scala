@@ -1,12 +1,13 @@
 package utopia.reflection.component.stack
 
-import utopia.genesis.shape.{Axis2D, X, Y}
+import utopia.genesis.shape.Axis2D
 import utopia.reflection.component.ComponentLike
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.{StackHierarchyManager, StackLayout}
 import utopia.reflection.container.swing.{Framing, Stack}
 import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.genesis.shape.Axis._
 
 object Stackable
 {

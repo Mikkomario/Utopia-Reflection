@@ -8,7 +8,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.Y
+import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.swing.label.{Button, TextLabel}

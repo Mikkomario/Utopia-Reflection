@@ -4,7 +4,7 @@ import utopia.reflection.shape.StackSize
 import utopia.genesis.shape.shape2D.Size
 import java.awt.Color
 
-import utopia.genesis.shape.X
+import utopia.genesis.shape.Axis._
 import utopia.reflection.shape.StackLength
 import utopia.flow.generic.DataType
 import utopia.reflection.component.swing.label.EmptyLabel

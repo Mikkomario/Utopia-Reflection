@@ -3,7 +3,7 @@ package utopia.reflection.component.swing
 import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.MouseButtonStateListener
-import utopia.genesis.shape.X
+import utopia.genesis.shape.Axis._
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Refreshable
 import utopia.reflection.component.drawing.{BorderDrawer, CustomDrawableWrapper}

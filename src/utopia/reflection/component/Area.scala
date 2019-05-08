@@ -4,8 +4,7 @@ import utopia.genesis.shape.shape2D.Point
 import utopia.genesis.shape.shape2D.Size
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.shape.Axis2D
-import utopia.genesis.shape.X
-import utopia.genesis.shape.Y
+import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.Vector3D
 
 /**

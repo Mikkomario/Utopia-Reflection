@@ -1,7 +1,8 @@
 package utopia.reflection.component
 
 import javax.swing.SwingConstants
-import utopia.genesis.shape.{Axis2D, X, Y}
+import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.Axis._
 import utopia.reflection.component.Alignment.Center
 
 object Alignment

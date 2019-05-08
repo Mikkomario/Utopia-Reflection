@@ -2,8 +2,7 @@ package utopia.reflection.shape
 
 import utopia.genesis.shape.shape2D.Size
 import utopia.genesis.shape.Axis2D
-import utopia.genesis.shape.X
-import utopia.genesis.shape.Y
+import utopia.genesis.shape.Axis._
 
 object StackSize
 {
