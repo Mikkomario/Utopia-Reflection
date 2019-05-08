@@ -65,8 +65,8 @@ case class LocalString(override val string: String, override val languageCode: O
 	
 	override def split(regex: String) = string.split(regex).toVector.map { LocalString(_, languageCode) }
 	
-	override def interpolate(firstArg: Any, moreArgs: Any*) = LocalString(parseArguments(string, firstArg +: moreArgs),
-		languageCode)
+	override def interpolate(args: Seq[Any]) = LocalString(parseArguments(string, args), languageCode)
+	
 	
 	// OPERATORS	----------------------
 	

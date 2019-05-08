@@ -35,7 +35,7 @@ object ScrollViewTest extends App
 	// Creates the labels
 	val basicFont = Font("Arial", 12, Plain, 2)
 	val labels = (1 to 50).toVector.map { i => new ItemLabel(i,
-		DisplayFunction.noLocalization[Int] { n => s"Label number $n" }, basicFont, 16.any x 4.fixed) }
+		DisplayFunction.interpolating("Label number %i"), basicFont, 16.any x 4.fixed) }
 	labels.foreach { _.background = Color.yellow }
 	labels.foreach { _.alignCenter() }
 	

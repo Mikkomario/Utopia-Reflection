@@ -38,11 +38,20 @@ trait LocalStringLike[Repr <: LocalStringLike[Repr]]
 	  * Creates an interpolated version of this string where segments marked with %s, %S, %i or %d are replaced with
 	  * provided arguments parsed into correct format. %s means raw string format. %S means uppercase string format.
 	  * %i means integer format. %d means decimal format.
+	  * @param args The parsed arguments
+	  * @return A version of this string with parameter segments replaced with provided values
+	  */
+	def interpolate(args: Seq[Any]): Repr
+	
+	/**
+	  * Creates an interpolated version of this string where segments marked with %s, %S, %i or %d are replaced with
+	  * provided arguments parsed into correct format. %s means raw string format. %S means uppercase string format.
+	  * %i means integer format. %d means decimal format.
 	  * @param firstArg The first parsed argument
 	  * @param moreArgs More parsed arguments
 	  * @return A version of this string with parameter segments replaced with provided values
 	  */
-	def interpolate(firstArg: Any, moreArgs: Any*): Repr
+	def interpolate(firstArg: Any, moreArgs: Any*): Repr = interpolate(firstArg +: moreArgs)
 	
 	
 	// COMPUTED	--------------
