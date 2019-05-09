@@ -230,7 +230,8 @@ trait ScrollViewLike extends CachingStackable
 	  * @return A custom drawer based on the scroll bar drawer
 	  */
 	protected def scrollBarDrawerToCustomDrawer(barDrawer: ScrollBarDrawer) = CustomDrawer(Foreground,
-		(d, _) => if (scrollBarAreaBounds != Bounds.zero) barDrawer.draw(d, scrollBarAreaBounds, scrollBarBounds, axis))
+		(d, _) => if (scrollBarAreaBounds != Bounds.zero && (!scrollBarIsInsideContent || length > contentLength))
+			barDrawer.draw(d, scrollBarAreaBounds, scrollBarBounds, axis))
 	
 	/**
 	  * Sets up mouse handling for this view
