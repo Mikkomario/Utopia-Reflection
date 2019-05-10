@@ -306,7 +306,8 @@ trait ScrollViewLike extends CachingStackable
 		// IMPLEMENTED	-----------------------
 		
 		// Listens to left mouse presses & releases
-		override def mouseButtonStateEventFilter = MouseButtonStateEvent.buttonFilter(MouseButton.Left)
+		override def mouseButtonStateEventFilter = Consumable.notConsumedFilter &&
+			MouseButtonStateEvent.buttonFilter(MouseButton.Left)
 		
 		// Only listens to wheel events inside component bounds
 		override def mouseWheelEventFilter = Consumable.notConsumedFilter && MouseEvent.isOverAreaFilter(bounds)
