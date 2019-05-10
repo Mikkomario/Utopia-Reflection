@@ -5,7 +5,7 @@ import java.awt.FontMetrics
 
 import utopia.reflection.event.ResizeListener
 import utopia.genesis.color.Color
-import utopia.genesis.event.{KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
+import utopia.genesis.event.{Consumable, KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.handling.mutable.{KeyStateHandler, KeyTypedHandler, MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
 import utopia.inception.handling.Handleable
@@ -105,13 +105,14 @@ trait ComponentLike extends Area
       *              (origin should be at the parent component's position). Events outside parent context shouldn't be
       *              distributed.
       */
-    def distributeMouseButtonEvent(event: MouseButtonStateEvent): Unit =
+    def distributeMouseButtonEvent(event: MouseButtonStateEvent): Boolean =
     {
-        // Informs own listeners first
-        mouseButtonHandler.onMouseButtonState(event)
-        
-        distributeDefaultMouseEvent[MouseButtonStateEvent](event, (e, p) => e.copy(mousePosition = p),
+        // Informs children first
+        val isConsumed = distributeConsumableMouseEvent[MouseButtonStateEvent](event, (e, p) => e.copy(mousePosition = p),
             _.distributeMouseButtonEvent(_))
+        
+        // Then informs own handler
+        mouseButtonHandler.onMouseButtonState(if (isConsumed) event.consumed else event)
     }
     
     /**
@@ -136,12 +137,14 @@ trait ComponentLike extends Area
       *              (origin should be at the parent component's position). Events outside parent context shouldn't be
       *              distributed.
       */
-    def distributeMouseWheelEvent(event: MouseWheelEvent): Unit =
+    def distributeMouseWheelEvent(event: MouseWheelEvent): Boolean =
     {
-        // Informs own listeners
-        mouseWheelHandler.onMouseWheelRotated(event)
-        // Then continues with child components
-        distributeDefaultMouseEvent[MouseWheelEvent](event, (e, p) => e.copy(mousePosition = p), _.distributeMouseWheelEvent(_))
+        // Informs children first
+        val isConsumed = distributeConsumableMouseEvent[MouseWheelEvent](event, (e, p) =>  e.copy(mousePosition = p),
+            _.distributeMouseWheelEvent(_))
+        
+        // Then informs own handler
+        mouseWheelHandler.onMouseWheelRotated(if (isConsumed) event.consumed else event)
     }
     
     /**
@@ -233,10 +236,6 @@ trait ComponentLike extends Area
         children.foreach(operation)
     }
     
-    private def distributeDefaultMouseEvent[E <: MouseEvent](event: E, withPosition: (E, Point) => E,
-                                                             childAccept: (ComponentLike, E) => Unit) =
-        distributeEvent[E](event, e => Vector(e.mousePosition), (e, t) => withPosition(e, e.mousePosition - t), childAccept)
-    
     private def distributeEvent[E](event: E, positionsFromEvent: E => Traversable[Point],
                                    translateEvent: (E, Point) => E, childAccept: (ComponentLike, E) => Unit) =
     {
@@ -249,6 +248,36 @@ trait ComponentLike extends Area
             // Only visible children are informed of events
             children.foreach { c => if (c.isVisible) childAccept(c, translated) }
         }
+    }
+    
+    private def distributeConsumableMouseEvent[E <: MouseEvent with Consumable[E]](event: E, withPosition: (E, Point) => E,
+                                                                                   childAccept: (ComponentLike, E) => Boolean) =
+    {
+        val myBounds = bounds
+        if (myBounds.contains(event.mousePosition))
+        {
+            val translatedEvent = withPosition(event, event.mousePosition - myBounds.position)
+            val visibleChildren = children.filter { _.isVisible }
+            if (translatedEvent.isConsumed)
+            {
+                visibleChildren.foreach { childAccept(_, translatedEvent) }
+                true
+            }
+            else
+            {
+                val consumedAtIndex = visibleChildren.indexWhere { childAccept(_, translatedEvent) }
+                if (consumedAtIndex >= 0)
+                {
+                    val consumedEvent = translatedEvent.consumed
+                    visibleChildren.drop(consumedAtIndex + 1).foreach { childAccept(_, consumedEvent) }
+                    true
+                }
+                else
+                    false
+            }
+        }
+        else
+            event.isConsumed
     }
     
     

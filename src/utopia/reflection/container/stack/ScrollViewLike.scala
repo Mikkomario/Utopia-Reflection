@@ -3,7 +3,7 @@ package utopia.reflection.container.stack
 import java.time.{Duration, Instant}
 
 import utopia.flow.util.TimeExtensions._
-import utopia.genesis.event.{MouseButton, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
+import utopia.genesis.event.{Consumable, MouseButton, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling.{Actor, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.shape.Axis2D
@@ -230,7 +230,7 @@ trait ScrollViewLike extends CachingStackable
 	  * @return A custom drawer based on the scroll bar drawer
 	  */
 	protected def scrollBarDrawerToCustomDrawer(barDrawer: ScrollBarDrawer) = CustomDrawer(Foreground,
-		(d, _) => if (scrollBarAreaBounds != Bounds.zero && (!scrollBarIsInsideContent || length > contentLength))
+		(d, _) => if (scrollBarAreaBounds != Bounds.zero && (!scrollBarIsInsideContent || length < contentLength))
 			barDrawer.draw(d, scrollBarAreaBounds, scrollBarBounds, axis))
 	
 	/**
@@ -309,7 +309,7 @@ trait ScrollViewLike extends CachingStackable
 		override def mouseButtonStateEventFilter = MouseButtonStateEvent.buttonFilter(MouseButton.Left)
 		
 		// Only listens to wheel events inside component bounds
-		override def mouseWheelEventFilter = MouseEvent.isOverAreaFilter(bounds)
+		override def mouseWheelEventFilter = Consumable.notConsumedFilter && MouseEvent.isOverAreaFilter(bounds)
 		
 		override def onMouseButtonState(event: MouseButtonStateEvent) =
 		{
@@ -374,7 +374,11 @@ trait ScrollViewLike extends CachingStackable
 		}
 		
 		// When wheel is rotated inside component bounds, scrolls
-		override def onMouseWheelRotated(event: MouseWheelEvent) = scroll(-event.wheelTurn * scrollPerWheelClick)
+		override def onMouseWheelRotated(event: MouseWheelEvent) =
+		{
+			scroll(-event.wheelTurn * scrollPerWheelClick)
+			true
+		}
 		
 		override def act(duration: Duration) =
 		{
