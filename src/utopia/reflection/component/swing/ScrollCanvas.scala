@@ -45,7 +45,6 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 {
 	// ATTRIBUTES	------------------------
 	
-	// TODO: Change how scroll views (and components in general) handle mouse events. Should only drag scroll & wheel when not consumed
 	private val canvas = new Canvas()
 	private val xScroll = new ScrollView(canvas, X, actorHandler, scrollPerWheelClick, scrollBarDrawer, scrollBarWidth,
 		scrollBarIsInsideContent, maxOptimalLength = maxOptimalSize.map { _.width.toInt }, limitsToContentSize = true)
