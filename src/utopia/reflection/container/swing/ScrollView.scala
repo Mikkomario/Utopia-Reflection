@@ -7,6 +7,7 @@ import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.{ScrollBarDrawer, ScrollViewLike}
+import utopia.reflection.shape.StackLengthLimit
 
 /**
   * This is a scroll view implemented with swing components
@@ -17,10 +18,7 @@ class ScrollView[C <: Stackable with AwtComponentRelated](override val content: 
 														  actorHandler: ActorHandler, scrollPerWheelClick: Double,
 														  scrollBarDrawer: ScrollBarDrawer, override val scrollBarWidth: Int,
 														  override val scrollBarIsInsideContent: Boolean = false,
-														  override val minLength: Int = 0,
-														  override val minOptimalLength: Option[Int] = None,
-														  override val maxOptimalLength: Option[Int] = None,
-														  override val maxLength: Option[Int] = None,
+														  override val lengthLimit: StackLengthLimit = StackLengthLimit.noLimit,
 														  override val limitsToContentSize: Boolean = false)
 	extends ScrollViewLike with AwtComponentWrapperWrapper with CustomDrawableWrapper with AwtContainerRelated with SwingComponentRelated
 {

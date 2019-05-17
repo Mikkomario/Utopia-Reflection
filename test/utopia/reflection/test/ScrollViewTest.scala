@@ -14,6 +14,7 @@ import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.{ScrollView, Stack}
 import utopia.reflection.localization.{DisplayFunction, Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
+import utopia.reflection.shape.StackLengthLimit
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -48,7 +49,7 @@ object ScrollViewTest extends App
 	// Creates the scroll view
 	val barDrawer = BoxScrollBarDrawer.roundedBarOnly(Color.black.withAlpha(0.55))
 	val scrollView = new ScrollView(stack, Y, actorHandler, 16, barDrawer, 16,
-		true, maxOptimalLength = Some(480))
+		true, StackLengthLimit(maxOptimal =  Some(480)))
 	
 	// Creates the frame and displays it
 	val actionLoop = new ActorLoop(actorHandler)

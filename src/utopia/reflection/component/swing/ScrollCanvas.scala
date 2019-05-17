@@ -16,7 +16,7 @@ import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.container.stack.ScrollBarDrawer
 import utopia.reflection.container.swing.{Panel, ScrollView}
-import utopia.reflection.shape.StackSize
+import utopia.reflection.shape.{StackLengthLimit, StackSize}
 
 import scala.concurrent.ExecutionContext
 
@@ -47,9 +47,9 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 	
 	private val canvas = new Canvas()
 	private val xScroll = new ScrollView(canvas, X, actorHandler, scrollPerWheelClick, scrollBarDrawer, scrollBarWidth,
-		scrollBarIsInsideContent, maxOptimalLength = maxOptimalSize.map { _.width.toInt }, limitsToContentSize = true)
+		scrollBarIsInsideContent, StackLengthLimit(maxOptimal = maxOptimalSize.map { _.width.toInt }), limitsToContentSize = true)
 	private val yScroll = new ScrollView(xScroll, Y, actorHandler, scrollPerWheelClick, scrollBarDrawer, scrollBarWidth,
-		scrollBarIsInsideContent, maxOptimalLength = maxOptimalSize.map { _.height.toInt }, limitsToContentSize = true)
+		scrollBarIsInsideContent, StackLengthLimit(maxOptimal = maxOptimalSize.map { _.height.toInt }), limitsToContentSize = true)
 	
 	private val started = new VolatileFlag()
 	

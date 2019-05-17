@@ -128,7 +128,7 @@ trait ScrollAreaLike extends CachingStackable
 					val raw = contentSize.along(axis)
 					val limit = lengthLimits.get(axis)
 					val limited = limit.map(raw.within) getOrElse raw
-					axis -> (if (limitsToContentSize) limited else if (limited.max.isDefined) limited else limited.noMax).withLowPriority
+					axis -> (if (limitsToContentSize) limited else if (limited.max.isDefined) limited else limited.noMax).withLowPriority.noMin
 				}
 				else
 					axis -> contentSize.along(axis)

@@ -304,7 +304,10 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  */
 	def within(limits: StackLengthLimit) =
 	{
+		// Minimum size is limited both from minimum and maximum side (cannot be larger than specified max or max optimal)
 		val newMin = min max limits.min
+		val minUnderMax = limits.maxOptimal.orElse(limits.max).map { newMin min _ } getOrElse newMin
+		
 		val newMax =
 		{
 			if (max.isEmpty)
@@ -316,11 +319,11 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 		}
 		val newOptimal =
 		{
-			val minLimited = optimal max (limits.minOptimal getOrElse limits.min)
+			val minLimited = optimal max (limits.minOptimal getOrElse minUnderMax)
 			(limits.maxOptimal orElse limits.max).map { minLimited min _ } getOrElse minLimited
 		}
 		
-		StackLength(newMin, newOptimal, newMax, isLowPriority)
+		StackLength(minUnderMax, newOptimal, newMax, isLowPriority)
 	}
 	
 	/**
