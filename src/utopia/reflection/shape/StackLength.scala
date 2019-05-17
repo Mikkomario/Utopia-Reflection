@@ -298,6 +298,32 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	}
 	
 	/**
+	  * Creates a new stack length that is within the specified limits
+	  * @param limits The limits applied to this length
+	  * @return A stack length with limited min, max and optimal value
+	  */
+	def within(limits: StackLengthLimit) =
+	{
+		val newMin = min max limits.min
+		val newMax =
+		{
+			if (max.isEmpty)
+				limits.max
+			else if (limits.max.isEmpty)
+				max
+			else
+				Some(max.get min limits.max.get)
+		}
+		val newOptimal =
+		{
+			val minLimited = optimal max (limits.minOptimal getOrElse limits.min)
+			(limits.maxOptimal orElse limits.max).map { minLimited min _ } getOrElse minLimited
+		}
+		
+		StackLength(newMin, newOptimal, newMax, isLowPriority)
+	}
+	
+	/**
 	  * @param map A mapping function
 	  * @return A new length with mapped min
 	  */

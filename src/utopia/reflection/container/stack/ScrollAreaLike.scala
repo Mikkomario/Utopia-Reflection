@@ -3,29 +3,31 @@ package utopia.reflection.container.stack
 import java.time.{Duration, Instant}
 
 import utopia.flow.util.TimeExtensions._
-import utopia.genesis.event.{Consumable, MouseButton, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
+import utopia.genesis.event._
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling.{Actor, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
-import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.Axis._
+import utopia.genesis.shape.{Axis2D, VectorLike}
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Foreground
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
-import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.shape.{StackLength, StackLengthLimit, StackSize}
+import utopia.reflection.util.ScrollBarBounds
+
+import scala.collection.immutable.HashMap
 
 /**
-  * Scroll views are containers that allow horizontal or vertical content scrolling
+  * Scroll areas are containers that allow horizontal and / or vertical content scrolling
   * @author Mikko Hilpinen
-  * @since 30.4.2019, v1+
+  * @since 15.5.2019, v1+
   */
-trait ScrollViewLike extends CachingStackable
+trait ScrollAreaLike extends CachingStackable
 {
 	// ATTRIBUTES	----------------
 	
-	private var scrollBarAreaBounds = Bounds.zero
-	private var scrollBarBounds = Bounds.zero
+	private var barBounds = HashMap[Axis2D, ScrollBarBounds]()
 	
 	
 	// ABSTRACT	--------------------
@@ -35,26 +37,13 @@ trait ScrollViewLike extends CachingStackable
 	  */
 	def content: Stackable
 	/**
-	  * @return The scrolling axis of this scroll view
+	  * @return The scrolling axis / axes of this scroll view
 	  */
-	def axis: Axis2D
-	
+	def axes: Seq[Axis2D]
 	/**
-	  * @return The minimum length of this scroll view
+	  * @return Limits applied to this area's stack lengths
 	  */
-	def minLength: Int
-	/**
-	  * @return The smallest optimum length for this scroll view. None if optimal length doesn't have a minimum
-	  */
-	def minOptimalLength: Option[Int]
-	/**
-	  * @return The largest optimum length for this scroll view. None if optimal length doesn't have a maximum
-	  */
-	def maxOptimalLength: Option[Int]
-	/**
-	  * @return Maximum length of this scroll view
-	  */
-	def maxLength: Option[Int]
+	def lengthLimits: Map[Axis2D, StackLengthLimit]
 	/**
 	  * @return Whether this scroll view's maximum length should be limited to content length
 	  */
@@ -79,65 +68,42 @@ trait ScrollViewLike extends CachingStackable
 	// COMPUTED	--------------------
 	
 	/**
-	  * @return The length of this scroll view
-	  */
-	def length = lengthAlong(axis)
-	def length_=(newLength: Double) = setLength(newLength, axis)
-	/**
-	  * @return The breadth of this scroll view
-	  */
-	def breadth = lengthAlong(axis.perpendicular)
-	def breadth_=(newBreadth: Double) = setLength(newBreadth, axis.perpendicular)
-	
-	/**
 	  * @return The size of this view's contents
 	  */
 	def contentSize = content.size
 	/**
-	  * @return The length of this view's contents
-	  */
-	def contentLength = contentSize.along(axis)
-	/**
-	  * @return The breadth of this view's contents
-	  */
-	def contentBreadth = contentSize.perpendicularTo(axis)
-	
-	/**
 	  * @return The current position of this view's contents (negative)
 	  */
-	def contentPosition = content.position.along(axis)
-	def contentPosition_=(pos: Double) =
+	def contentOrigin = content.position
+	def contentOrigin_=(pos: Point) =
 	{
-		content.setCoordinate(minContentPosition max pos min 0, axis)
+		content.position = minContentOrigin.bottomRight(pos).topLeft(Point.origin)
 		updateScrollBarBounds()
 	}
 	
 	/**
-	  * @return The smallest possible content position (= position when scrolled at bottom)
+	  * @return The smallest possible content position (= position when scrolled at bottom right corner)
 	  */
-	def minContentPosition = length - contentLength
+	def minContentOrigin = (size - contentSize).toPoint
 	
 	/**
 	  * @return The current scroll modifier / percentage [0, 1]
 	  */
-	def scrollPercent = -contentPosition / contentLength
-	def scrollPercent_=(newPercent: Double) = scrollTo(newPercent)
-	
-	/**
-	  * @return Whether the content is currently scrolled to the top
-	  */
-	def isAtTop = contentPosition >= 0
-	/**
-	  * @return Whether the content is currently scrolled to the bottom
-	  */
-	def isAtBottom = contentPosition + contentLength <= length
+	def scrollPercents = -contentOrigin / contentSize
+	def scrollPercents_=(newPercents: VectorLike[_]) = scrollTo(newPercents)
 	
 	/**
 	  * @return The currently visible area inside the content
 	  */
 	def visibleContentArea = Bounds(-content.position, size - scrollBarContentOverlap)
 	
-	private def scrollBarContentOverlap = if (scrollBarIsInsideContent) Size(scrollBarWidth, 0, axis.perpendicular) else Size.zero
+	private def scrollBarContentOverlap =
+	{
+		if (scrollBarIsInsideContent)
+			axes.map { Size(0, scrollBarWidth, _) } reduceOption { _ + _ } getOrElse Size.zero
+		else
+			Size.zero
+	}
 	
 	
 	// IMPLEMENTED	----------------
@@ -145,72 +111,63 @@ trait ScrollViewLike extends CachingStackable
 	override protected def calculatedStackSize =
 	{
 		val contentSize = content.stackSize
-		val breadth = contentSize.perpendicularTo(axis)
-		val length = contentSize.along(axis)
-		
-		// Max length may be limited by a) specified value or b) content length
-		val max = maxLength.orElse { if (limitsToContentSize) length.max else None }
-		
-		// Optimal length is based on content optimal, but may be altered by specified limits
-		val optimal =
+		val lengths = Axis2D.values.map
 		{
-			if (minOptimalLength.exists { length.optimal < _ })
-				minOptimalLength.get
-			else if (maxOptimalLength.exists { length.optimal > _ })
-				maxOptimalLength.get
-			else
-				length.optimal
-		}
+			axis =>
+				// Handles scrollable & non-scrollable axes differently
+				if (axes.contains(axis))
+				{
+					// Uses content size but may limit it in process
+					val raw = contentSize.along(axis)
+					val limit = lengthLimits.get(axis)
+					val limited = limit.map(raw.within) getOrElse raw
+					axis -> (if (limitsToContentSize) limited else if (limit.max.isDefined) limited else limited.noMax).withLowPriority
+				}
+				else
+					axis -> contentSize.along(axis)
+		}.toMap
 		
-		// Length is always low priority
-		val l = StackLength(minLength, optimal, max, true)
-		
-		// Scroll bar may affect breadth
-		val b = if (scrollBarIsInsideContent) breadth else breadth + scrollBarWidth
-		
-		StackSize(l, b, axis)
+		StackSize(lengths(X), lengths(Y))
 	}
 	
 	// Updates content size & position
 	override def updateLayout() =
 	{
-		// Content breadth is dependent from this component's breadth while length is always set to optimal
+		// Non-scrollable content side is dependent from this component's side while scrollable side(s) are always set to optimal
 		val contentSize = content.stackSize
-		val b = if (scrollBarIsInsideContent) breadth else breadth - scrollBarWidth
-		val l = contentSize.along(axis).optimal
+		val lengths = Axis2D.values.map
+		{
+			axis =>
+				if (axes.contains(axis))
+					axis -> contentSize.along(axis).optimal
+				else
+					axis -> lengthAlong(axis)
+		}.toMap
 		
-		content.size = Size(l, b, axis)
+		content.size = Size(lengths(X), lengths(Y))
 		
 		// May scroll on content size change
-		if (isAtBottom)
-			scrollToBottom()
-		else if (isAtTop)
-			scrollToTop()
-		else
-			updateScrollBarBounds()
+		if (content.x + content.width < width)
+			content.x = width - content.width
+		if (content.y + content.height < height)
+			content.y = height - content.height
+		
+		updateScrollBarBounds()
 	}
 	
 	
 	// OTHER	----------------------
 	
 	/**
-	  * Scrolls this scroll view to display content top
-	  */
-	def scrollToTop() = contentPosition = 0
-	/**
-	  * Scrolls this scroll view to display content bottom
-	  */
-	def scrollToBottom() = contentPosition = minContentPosition
-	/**
 	  * Scrolls to a specific percentage
-	  * @param abovePercent The portion of the content that should be above the view [0, 1]
+	  * @param abovePercents The portion of the content that should be above the view [0, 1]
 	  */
-	def scrollTo(abovePercent: Double) = contentPosition = -contentLength * abovePercent
+	def scrollTo(abovePercents: VectorLike[_]) = contentOrigin = -contentSize.toPoint * abovePercents
 	/**
 	  * Scrolls this view a certain amount
-	  * @param amount The amount of pixels scrolled
+	  * @param amounts The scroll vector
 	  */
-	def scroll(amount: Double) = contentPosition += amount
+	def scroll(amounts: VectorLike[_]) = contentOrigin += amounts
 	
 	/**
 	  * Makes sure the specified area is (fully) visible in this scroll view
@@ -218,10 +175,17 @@ trait ScrollViewLike extends CachingStackable
 	  */
 	def ensureAreaIsVisible(area: Bounds) =
 	{
-		if (contentPosition + area.position.along(axis) < 0)
-			contentPosition = -area.position.along(axis)
-		else if (contentPosition + area.position.along(axis) + area.size.along(axis) > length)
-			contentPosition = length - area.position.along(axis) - area.size.along(axis)
+		val areaWithinContent = area + contentOrigin
+		
+		if (areaWithinContent.x < 0)
+			content.x = -area.position.x
+		else if (areaWithinContent.rightX > width)
+			content.x = width - areaWithinContent.rightX
+		
+		if (areaWithinContent.y < 0)
+			content.y = -area.position.y
+		else if (areaWithinContent.bottomY > height)
+			content.y = height - areaWithinContent.bottomY
 	}
 	
 	/**
@@ -230,9 +194,13 @@ trait ScrollViewLike extends CachingStackable
 	  * @return A custom drawer based on the scroll bar drawer
 	  */
 	protected def scrollBarDrawerToCustomDrawer(barDrawer: ScrollBarDrawer) = CustomDrawer(Foreground,
-		(d, _) => if (scrollBarAreaBounds != Bounds.zero && (!scrollBarIsInsideContent || length < contentLength))
-			barDrawer.draw(d, scrollBarAreaBounds, scrollBarBounds, axis))
-	
+		(d, _) => Axis2D.values.foreach
+		{
+			axis =>
+				if (!scrollBarIsInsideContent || lengthAlong(axis) < contentSize.along(axis))
+					barBounds.get(axis).foreach { barDrawer.draw(d, _, axis) }
+		})
+		
 	/**
 	  * Sets up mouse handling for this view
 	  * @param actorHandler Actor handler that will allow velocity handling

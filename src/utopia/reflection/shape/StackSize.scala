@@ -289,6 +289,13 @@ case class StackSize(width: StackLength, height: StackLength)
     }
     
     /**
+      * Maps both sides of this stack size
+      * @param map A mapping function
+      * @return A new size
+      */
+    def mapSides(map: StackLength => StackLength) = StackSize(map(width), map(height))
+    
+    /**
       * @param axis Target axis
       * @return A copy of this size with low priority for specified axis
       */
