@@ -14,6 +14,7 @@ import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Foreground
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.util.ScrollBarBounds
 
 /**
   * Scroll views are containers that allow horizontal or vertical content scrolling
@@ -231,7 +232,7 @@ trait ScrollViewLike extends CachingStackable
 	  */
 	protected def scrollBarDrawerToCustomDrawer(barDrawer: ScrollBarDrawer) = CustomDrawer(Foreground,
 		(d, _) => if (scrollBarAreaBounds != Bounds.zero && (!scrollBarIsInsideContent || length < contentLength))
-			barDrawer.draw(d, scrollBarAreaBounds, scrollBarBounds, axis))
+			barDrawer.draw(d, ScrollBarBounds(scrollBarAreaBounds, scrollBarBounds), axis))
 	
 	/**
 	  * Sets up mouse handling for this view

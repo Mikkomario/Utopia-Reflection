@@ -1,19 +1,21 @@
 package utopia.reflection.container.stack
 
+import java.awt.event.KeyEvent
 import java.time.{Duration, Instant}
 
+import utopia.flow.util.CollectionExtensions._
 import utopia.flow.util.TimeExtensions._
 import utopia.genesis.event._
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.handling.{Actor, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
+import utopia.genesis.handling.{Actor, KeyStateListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.shape.Axis._
-import utopia.genesis.shape.{Axis2D, VectorLike}
+import utopia.genesis.shape.{Axis2D, Vector3D, VectorLike}
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Foreground
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
-import utopia.reflection.shape.{StackLength, StackLengthLimit, StackSize}
+import utopia.reflection.shape.{StackLengthLimit, StackSize}
 import utopia.reflection.util.ScrollBarBounds
 
 import scala.collection.immutable.HashMap
@@ -27,7 +29,7 @@ trait ScrollAreaLike extends CachingStackable
 {
 	// ATTRIBUTES	----------------
 	
-	private var barBounds = HashMap[Axis2D, ScrollBarBounds]()
+	private var barBounds: Map[Axis2D, ScrollBarBounds] = HashMap()
 	
 	
 	// ABSTRACT	--------------------
@@ -97,6 +99,11 @@ trait ScrollAreaLike extends CachingStackable
 	  */
 	def visibleContentArea = Bounds(-content.position, size - scrollBarContentOverlap)
 	
+	/**
+	  * @return Whether this scroll view allows 2-dimensional scrolling
+	  */
+	def allows2DScrolling = Axis2D.values.forall(axes.contains)
+	
 	private def scrollBarContentOverlap =
 	{
 		if (scrollBarIsInsideContent)
@@ -121,7 +128,7 @@ trait ScrollAreaLike extends CachingStackable
 					val raw = contentSize.along(axis)
 					val limit = lengthLimits.get(axis)
 					val limited = limit.map(raw.within) getOrElse raw
-					axis -> (if (limitsToContentSize) limited else if (limit.max.isDefined) limited else limited.noMax).withLowPriority
+					axis -> (if (limitsToContentSize) limited else if (limited.max.isDefined) limited else limited.noMax).withLowPriority
 				}
 				else
 					axis -> contentSize.along(axis)
@@ -135,11 +142,11 @@ trait ScrollAreaLike extends CachingStackable
 	{
 		// Non-scrollable content side is dependent from this component's side while scrollable side(s) are always set to optimal
 		val contentSize = content.stackSize
-		val lengths = Axis2D.values.map
+		val lengths: Map[Axis2D, Double] = Axis2D.values.map
 		{
 			axis =>
 				if (axes.contains(axis))
-					axis -> contentSize.along(axis).optimal
+					axis -> contentSize.along(axis).optimal.toDouble
 				else
 					axis -> lengthAlong(axis)
 		}.toMap
@@ -160,9 +167,16 @@ trait ScrollAreaLike extends CachingStackable
 	
 	/**
 	  * Scrolls to a specific percentage
-	  * @param abovePercents The portion of the content that should be above the view [0, 1]
+	  * @param abovePercents The portion of the content that should be above this view [0, 1]
 	  */
 	def scrollTo(abovePercents: VectorLike[_]) = contentOrigin = -contentSize.toPoint * abovePercents
+	/**
+	  * Scrolls to a specific percentage on a single axis
+	  * @param abovePercent The portion of the content that should be above this view [0, 1]
+	  * @param axis The axis on which the scrolling is applied
+	  */
+	def scrollTo(abovePercent: Double, axis: Axis2D) = contentOrigin =
+		contentOrigin.withCoordinate(-contentSize.along(axis) * abovePercent, axis)
 	/**
 	  * Scrolls this view a certain amount
 	  * @param amounts The scroll vector
@@ -218,37 +232,43 @@ trait ScrollAreaLike extends CachingStackable
 		addMouseButtonListener(listener)
 		addMouseMoveListener(listener)
 		addMouseWheelListener(listener)
+		addKeyStateListener(listener)
 		actorHandler += listener
 	}
 	
 	private def updateScrollBarBounds() =
 	{
-		if (contentSize.area == 0)
-		{
-			scrollBarAreaBounds = Bounds.zero
-			scrollBarBounds = Bounds.zero
-		}
+		if (contentSize.area == 0 && barBounds.nonEmpty)
+			barBounds = HashMap()
 		else
 		{
-			// Calculates the size of the scroll area
-			val barAreaSize = axis match
+			barBounds = axes.map
 			{
-				case X => Size(width, scrollBarWidth)
-				case Y => Size(scrollBarWidth, height)
-			}
+				axis =>
+					// Calculates the size of the scroll area
+					val barAreaSize = axis match
+					{
+						case X => Size(width, scrollBarWidth)
+						case Y => Size(scrollBarWidth, height)
+					}
+					
+					val length = lengthAlong(axis)
+					val contentLength = content.lengthAlong(axis)
+					val contentBreadth = content.lengthAlong(axis.perpendicular)
+					
+					// Calculates scroll bar size
+					val barLengthMod = (length / contentLength) min 1.0
+					val barSize = barAreaSize * (barLengthMod, axis)
+					
+					// Calculates the positions of scroll bar area + bar itself
+					val barAreaPosition = Point(if (scrollBarIsInsideContent) contentBreadth - scrollBarWidth else
+						contentBreadth, 0, axis.perpendicular)
+					
+					axis -> ScrollBarBounds(Bounds(barAreaPosition + (barAreaSize.along(axis) * scrollPercents.along(axis),
+						axis), barSize), Bounds(barAreaPosition, barAreaSize))
+			}.toMap
 			
-			// Calculates scroll bar size
-			val barLengthMod = (length / contentLength) min 1.0
-			val barSize = barAreaSize * (barLengthMod, axis)
-			
-			// Calculates the positions of scroll bar area + bar itself
-			val barAreaPosition = Point(if (scrollBarIsInsideContent) contentBreadth - scrollBarWidth else
-				contentBreadth, 0, axis.perpendicular)
-			
-			scrollBarAreaBounds = Bounds(barAreaPosition, barAreaSize)
-			scrollBarBounds = Bounds(barAreaPosition + (barAreaSize.along(axis) * scrollPercent, axis), barSize)
-			
-			repaint(scrollBarAreaBounds)
+			repaint(Bounds.around(barBounds.values.map { _.area }))
 		}
 	}
 	
@@ -257,18 +277,21 @@ trait ScrollAreaLike extends CachingStackable
 	
 	private class MouseListener(val scrollPerWheelClick: Double, val dragDuration: Duration, val friction: Double,
 								val velocityMod: Double) extends MouseButtonStateListener with MouseMoveListener
-		with MouseWheelListener with Handleable with Actor
+		with MouseWheelListener with Handleable with Actor with KeyStateListener
 	{
 		// ATTRIBUTES	-----------------------
 		
 		private var isDraggingBar = false
 		private var barDragPosition = Point.origin
+		private var barDragAxis: Axis2D = X
 		
 		private var isDraggingContent = false
 		private var contentDragPosition = Point.origin
 		
-		private var velocities = Vector[(Instant, Double, Duration)]()
-		private var currentVelocity = 0.0
+		private var velocities = Vector[(Instant, Vector3D, Duration)]()
+		private var currentVelocity = Vector3D.zero
+		
+		private var keyState = KeyStatus.empty
 		
 		
 		// IMPLEMENTED	-----------------------
@@ -285,19 +308,24 @@ trait ScrollAreaLike extends CachingStackable
 			if (event.wasPressed)
 			{
 				// If mouse was pressed inside inside scroll bar, starts dragging the bar
-				val barBounds = scrollBarBounds + position
-				if (event.isOverArea(barBounds))
+				val barUnderEvent = axes.findMap { axis => barBounds.get(axis).filter {
+					b => event.isOverArea(b.bar) }.map { axis -> _.bar } }
+				
+				if (barUnderEvent.isDefined)
 				{
-					barDragPosition = event.positionOverArea(barBounds)
+					isDraggingContent = false
+					barDragAxis = barUnderEvent.get._1
+					barDragPosition = event.positionOverArea(barUnderEvent.get._2)
 					isDraggingBar = true
-					currentVelocity = 0
+					currentVelocity = Vector3D.zero
 				}
 				// if outside, starts drag scrolling
 				else if (event.isOverArea(bounds))
 				{
+					isDraggingBar = false
 					contentDragPosition = event.mousePosition
 					isDraggingContent = true
-					currentVelocity = 0
+					currentVelocity = Vector3D.zero
 				}
 			}
 			else
@@ -316,7 +344,8 @@ trait ScrollAreaLike extends CachingStackable
 					if (velocityData.nonEmpty)
 					{
 						val actualDragDutationMillis = (now - velocityData.head._1).toPreciseMillis
-						val averageVelocity = velocityData.map { v => v._2 * v._3.toPreciseMillis }.sum / actualDragDutationMillis
+						val averageVelocity = velocityData.map { v => v._2 * v._3.toPreciseMillis }.reduce { _ + _ } /
+							actualDragDutationMillis
 						currentVelocity += averageVelocity * velocityMod
 					}
 				}
@@ -330,40 +359,65 @@ trait ScrollAreaLike extends CachingStackable
 			if (isDraggingBar)
 			{
 				val newBarOrigin = event.positionOverArea(bounds) - barDragPosition
-				scrollTo(newBarOrigin.along(axis) / length)
+				// Handles scrolling differently when scrolling is enabled in both directions
+				if (allows2DScrolling)
+					scrollTo(newBarOrigin / size)
+				else
+					axes.foreach { axis => scrollTo(newBarOrigin.along(axis) / lengthAlong(axis), axis) }
 			}
 			// If dragging content, updates scrolling and remembers velocity
 			else if (isDraggingContent)
 			{
-				scroll(event.transition.along(axis))
+				// Drag scrolling is different when both axes are being scrolled
+				if (allows2DScrolling)
+					scroll(event.transition)
+				else
+					axes.foreach { axis => scroll(event.transition.projectedOver(axis)) }
+				
 				val now = Instant.now
-				velocities = velocities.dropWhile { _._1 < now - dragDuration } :+ (now, event.velocity.along(axis),
-					event.duration)
+				velocities = velocities.dropWhile { _._1 < now - dragDuration } :+ (now, event.velocity, event.duration)
 			}
 		}
 		
 		// When wheel is rotated inside component bounds, scrolls
 		override def onMouseWheelRotated(event: MouseWheelEvent) =
 		{
-			scroll(-event.wheelTurn * scrollPerWheelClick)
+			// in 2D scroll views, X-scrolling is applied only if shift is being held
+			val scrollAxis =
+			{
+				if (allows2DScrolling)
+				{
+					if (keyState(KeyEvent.VK_SHIFT))
+						X
+					else
+						Y
+				}
+				else
+					axes.headOption getOrElse Y
+			}
+			
+			scroll(scrollAxis(-event.wheelTurn * scrollPerWheelClick))
 			true
 		}
 		
 		override def act(duration: Duration) =
 		{
-			if (currentVelocity != 0)
+			if (currentVelocity != Vector3D.zero)
 			{
 				// Applies velocity
-				scroll(currentVelocity * duration.toPreciseMillis)
+				if (allows2DScrolling)
+					scroll(currentVelocity * duration.toPreciseMillis)
+				else
+					axes.foreach { axis => scroll(currentVelocity.projectedOver(axis) * duration.toPreciseMillis) }
 				
 				// Applies friction to velocity
-				if (currentVelocity.abs <= friction)
-					currentVelocity = 0
-				else if (currentVelocity > 0)
-					currentVelocity -= friction
+				if (currentVelocity.length <= friction)
+					currentVelocity = Vector3D.zero
 				else
-					currentVelocity += friction
+					currentVelocity -= friction
 			}
 		}
+		
+		override def onKeyState(event: KeyStateEvent) = keyState = event.keyStatus
 	}
 }
