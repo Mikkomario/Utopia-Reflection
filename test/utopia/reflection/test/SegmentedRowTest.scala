@@ -7,7 +7,6 @@ import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
 import utopia.reflection.component.swing.label.{Button, TextLabel}
-import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.{SegmentedRow, Stack}
@@ -47,18 +46,18 @@ object SegmentedRowTest extends App
 	
 	// Creates the rows
 	val hGroup = new SegmentedGroup(X)
-	val row1 = SegmentedRow.partOfGroupWithItems(hGroup, Fit, 8.fixed, 0.fixed, Vector(labels(0), labels(1)))
-	val row2 = SegmentedRow.partOfGroupWithItems(hGroup, Fit, 16.fixed, 4.fixed, Vector(labels(2), labels(3)))
+	val row1 = SegmentedRow.partOfGroupWithItems(hGroup, Vector(labels(0), labels(1)), 8.fixed)
+	val row2 = SegmentedRow.partOfGroupWithItems(hGroup, Vector(labels(2), labels(3)), 16.fixed, 4.fixed)
 	row1.background = Color.cyan
 	row2.background = Color.green
 	
 	// Creates the columns
 	val vGroup = new SegmentedGroup(Y)
-	val column1 = SegmentedRow.partOfGroupWithItems(vGroup, Fit, 4.any, 0.fixed, Vector(row1, row2))
-	val column2 = SegmentedRow.partOfGroupWithItems(vGroup, Fit, 2.upscaling, 2.upscaling, Vector(button1, button2))
+	val column1 = SegmentedRow.partOfGroupWithItems(vGroup, Vector(row1, row2), 4.any)
+	val column2 = SegmentedRow.partOfGroupWithItems(vGroup, Vector(button1, button2), 2.upscaling, 2.upscaling)
 	
 	// Creates the main stack
-	val stack = Stack.withItems(X, Fit, 16.any, 0.fixed, Vector(column1, column2))
+	val stack = Stack.rowWithItems(Vector(column1, column2), 16.any)
 	
 	// val stack = Stack.withItems(Y, Fit, 16.any, 0.fixed, Vector(row1, row2))
 	stack.background = Color.black

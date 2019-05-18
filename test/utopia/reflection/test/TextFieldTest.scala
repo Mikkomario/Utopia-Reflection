@@ -4,13 +4,11 @@ import utopia.flow.generic.ValueConversions._
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
-import utopia.genesis.handling.{ActorLoop, KeyStateListener}
+import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.Axis._
 import utopia.reflection.component.swing.{TabSelection, TextField}
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackHierarchyManager
-import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.{Framing, Stack}
@@ -67,7 +65,7 @@ object TextFieldTest extends App
 	val amountStack = combine(labels(1), amountField)
 	val priceStack = combine(labels(2), priceField)
 	
-	val stack = Stack.withItems(X, Fit, 8.downscaling, 0.fixed, Vector(productStack, amountStack, priceStack))
+	val stack = Stack.rowWithItems(Vector(productStack, amountStack, priceStack), 8.downscaling)
 	
 	// Adds listening to field(s)
 	priceField.addEnterListener
@@ -110,8 +108,6 @@ object TextFieldTest extends App
 	framing2.background = Color.white
 	val frame = Frame.windowed(framing2, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
-	
-	frame.addKeyStateListener(KeyStateListener {e => println(e)})
 	
 	actionLoop.registerToStopOnceJVMCloses()
 	actionLoop.startAsync()

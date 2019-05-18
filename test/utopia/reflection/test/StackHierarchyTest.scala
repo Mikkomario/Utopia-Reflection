@@ -6,10 +6,8 @@ import java.time.Duration
 import javax.swing.JLabel
 import utopia.flow.async.{Loop, ThreadPool}
 import utopia.flow.generic.DataType
-import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.swing.{JStackableWrapper, JWrapper}
-import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.container.swing.window.Frame
@@ -79,7 +77,7 @@ object StackHierarchyTest extends App
     // Creates the stack
     private val item = new ChangingWrapper()
     val items = Vector.fill(3)(makeItem()) :+ item
-    val stack = Stack.withItems(X, Fit, StackLength.fixed(16), StackLength.fixed(16), items)
+    val stack = Stack.rowWithItems(items, StackLength.fixed(16), StackLength.fixed(16))
     
     stack.background = Color.ORANGE
     

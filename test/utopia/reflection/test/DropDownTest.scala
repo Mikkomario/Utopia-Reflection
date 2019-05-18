@@ -5,9 +5,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.Axis._
 import utopia.reflection.component.swing.DropDown
-import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
@@ -47,7 +45,7 @@ object DropDownTest extends App
 	categorySelect.component.setFont(basicFont.toAwt)
 	
 	// Creates the main stack
-	val stack = Stack.withItems(Y, Fit, 8.downscaling, 4.fixed, Vector(categorySelect, characterSelect))
+	val stack = Stack.columnWithItems(Vector(categorySelect, characterSelect), 8.downscaling, 4.fixed)
 	// stack.background = Color.yellow.minusHue(33).darkened(1.2)
 	stack.background = Color.black
 	

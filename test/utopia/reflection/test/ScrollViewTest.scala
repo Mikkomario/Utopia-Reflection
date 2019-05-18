@@ -8,7 +8,6 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
 import utopia.reflection.component.swing.label.ItemLabel
 import utopia.reflection.container.stack.{BoxScrollBarDrawer, StackHierarchyManager}
-import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.{ScrollView, Stack}
@@ -41,7 +40,7 @@ object ScrollViewTest extends App
 	labels.foreach { _.alignCenter() }
 	
 	// Creates the main stack
-	val stack = Stack.withItems(Y, Fit, 8.fixed, 4.fixed, labels)
+	val stack = Stack.columnWithItems(labels, 8.fixed, 4.fixed)
 	stack.background = Color.yellow.minusHue(33).darkened(1.2)
 	
 	val actorHandler = ActorHandler()

@@ -51,13 +51,13 @@ object SwitchTest extends App
 	
 	// Creates the stacks
 	val group = new SegmentedGroup(X)
-	def combine(label: TextLabel, field: Switch) = SegmentedRow.partOfGroupWithItems(group, Fit,
-		8.downscaling, 8.downscaling, Vector(label, field))
+	def combine(label: TextLabel, field: Switch) = SegmentedRow.partOfGroupWithItems(group,
+		Vector(label, field), 8.downscaling, 8.downscaling)
 	val enabledStack = combine(labels(0), enabledSwitch)
 	val disabledStack = combine(labels(1), disabledSwitch)
 	val disabledStack2 = combine(labels(2), disabledSwitch2)
 	
-	val stack = Stack.withItems(Y, Fit, 8.downscaling, 0.fixed, Vector(enabledStack, disabledStack, disabledStack2))
+	val stack = Stack.columnWithItems(Vector(enabledStack, disabledStack, disabledStack2), 8.downscaling)
 	
 	// Creates the frame and displays it
 	val actionLoop = new ActorLoop(actorHandler)

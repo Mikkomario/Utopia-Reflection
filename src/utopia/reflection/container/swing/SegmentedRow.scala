@@ -1,11 +1,13 @@
 package utopia.reflection.container.swing
 
 import utopia.genesis.color.Color
+import utopia.genesis.shape.Axis.X
 import utopia.genesis.shape.Axis2D
 import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.StackableWrapper
 import utopia.reflection.component.swing.{AwtComponentRelated, SwingComponentRelated}
 import utopia.reflection.container.stack.StackLayout
+import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.segmented.{Segmented, SegmentedGroup, SegmentedRowLike}
 import utopia.reflection.container.swing.SegmentedRow.RowSegment
 import utopia.reflection.container.swing.Stack.AwtStackable
@@ -18,31 +20,34 @@ object SegmentedRow
 	/**
 	  * Creates a new row that becomes a part of the specified group
 	  * @param group A group
-	  * @param layout Row layout
 	  * @param margin Margin between row components
 	  * @param cap Cap at each end of the row
+	  * @param layout Row layout
 	  * @return A new row, already registered to the specified group
 	  */
-	def partOfGroup[C <: AwtStackable](group: SegmentedGroup, layout: StackLayout, margin: StackLength, cap: StackLength) =
+	def partOfGroup[C <: AwtStackable](group: SegmentedGroup, margin: StackLength = StackLength.any,
+									   cap: StackLength = StackLength.fixed(0), layout: StackLayout = Fit) =
 	{
-		val row = new SegmentedRow[C](group.direction, layout, margin, cap, group)
+		val row = new SegmentedRow[C](group, group.direction, margin, cap, layout)
 		group.register(row)
 		row
 	}
 	
 	/**
 	  * Creates a new row with items
-	  * @param direction Row direction
-	  * @param layout Row layout
-	  * @param margin Margin between row components
-	  * @param cap Cap at each end of the row
-	  * @param items The items for the new row
+	  * @param master The segmented item that determines the proportions of this row
+	  * @param items The items for this new row
+	  * @param direction Row direction (default = X)
+	  * @param margin Margin between row components (default = prefers no margin)
+	  * @param cap Cap at each end of the row (default = no cap)
+	  * @param layout Row layout (default = Fit)
 	  * @return A new row
 	  */
-	def withItems[C <: AwtStackable](direction: Axis2D, layout: StackLayout, margin: StackLength, cap: StackLength,
-									 master: Segmented, items: TraversableOnce[C]) =
+	def withItems[C <: AwtStackable](master: Segmented, items: TraversableOnce[C], direction: Axis2D = X,
+									 margin: StackLength = StackLength.any, cap: StackLength = StackLength.fixed(0),
+									 layout: StackLayout = Fit) =
 	{
-		val row = new SegmentedRow[C](direction, layout, margin, cap, master)
+		val row = new SegmentedRow[C](master, direction, margin, cap, layout)
 		row ++= items
 		row
 	}
@@ -50,16 +55,16 @@ object SegmentedRow
 	/**
 	  * Creates a new row that becomes a part of the specified group
 	  * @param group A group
-	  * @param layout Row layout
-	  * @param margin Margin between row components
-	  * @param cap Cap at each end of the row
 	  * @param items The items for the new row
+	  * @param margin Margin between row components (default = prefers no margin)
+	  * @param cap Cap at each end of the row (default = no cap)
+	  * @param layout Row layout (default = Fit)
 	  * @return A new row, already registered to the specified group
 	  */
-	def partOfGroupWithItems[C <: AwtStackable](group: SegmentedGroup, layout: StackLayout, margin: StackLength,
-												cap: StackLength, items: TraversableOnce[C]) =
+	def partOfGroupWithItems[C <: AwtStackable](group: SegmentedGroup, items: TraversableOnce[C], margin: StackLength = StackLength.any,
+												cap: StackLength = StackLength.fixed(0), layout: StackLayout = Fit) =
 	{
-		val row = withItems(group.direction, layout, margin, cap, group, items)
+		val row = withItems(group, items, group.direction, margin, cap, layout)
 		group.register(row)
 		row
 	}
@@ -71,14 +76,20 @@ object SegmentedRow
   * register this row as part of it
   * @author Mikko Hilpinen
   * @since 28.4.2019, v1+
+  * @param master The segmented item that determines this row's proportions
+  * @param direction The direction of this row (X = horizontal row, Y = vertical column) (default = X)
+  * @param margin The margin placed between items (default = prefers no margin)
+  * @param cap The cap at each end of this row (default = no cap)
+  * @param layout The layout used perpendicular to 'direction' (default = Fit)
   */
-class SegmentedRow[C <: AwtStackable](override val direction: Axis2D, layout: StackLayout, margin: StackLength,
-									  cap: StackLength, val master: Segmented)
+class SegmentedRow[C <: AwtStackable](val master: Segmented, override val direction: Axis2D = X,
+									  margin: StackLength = StackLength.any, cap: StackLength = StackLength.fixed(0),
+									  layout: StackLayout = Fit)
 	extends SegmentedRowLike[C, RowSegment] with SwingComponentRelated with CustomDrawableWrapper
 {
 	// ATTRIBUTES	-----------------
 	
-	override protected val stack = new Stack[RowSegment](direction, layout, margin, cap)
+	override protected val stack = new Stack[RowSegment](direction, margin, cap, layout)
 	
 	
 	// INITIAL CODE	----------------

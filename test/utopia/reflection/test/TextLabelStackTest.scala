@@ -8,7 +8,6 @@ import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.swing.label.{Button, TextLabel}
@@ -46,7 +45,7 @@ object TextLabelStackTest extends App
 		() => println("The Button was pressed"))
 	
 	// Creates the stack
-	val stack = Stack.withItems(Y, Leading, 8.any, 16.any, labels :+ button)
+	val stack = Stack.columnWithItems(labels :+ button, 8.any, 16.any, Leading)
 	stack.background = Color.black
 	
 	// Tests custom drawing

@@ -18,15 +18,16 @@ object Stackable
 		  * Creates a stack with this item along with some others
 		  * @param elements Other elements
 		  * @param axis Stack axis
-		  * @param layout The stack layout
 		  * @param margin The margin between items
-		  * @param cap The cap at each end of stack (default = fixed to 0)
+		  * @param cap The cap at each end of stack (default = no cap = fixed to 0)
+		  * @param layout The stack layout (default = Fit)
 		  * @tparam S2 Stack element type
 		  * @return A new stack
 		  */
-		def stackWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], axis: Axis2D, layout: StackLayout,
-																	 margin: StackLength, cap: StackLength = StackLength.fixed(0)) =
-			Stack.withItems(axis, layout, margin, cap, s +: elements)
+		def stackWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], axis: Axis2D, margin: StackLength,
+																	 cap: StackLength = StackLength.fixed(0),
+																	 layout: StackLayout = Fit) =
+			Stack.withItems(s +: elements, axis, margin, cap, layout)
 		
 		/**
 		  * Creates a horizontal stack with this item along with some others
@@ -40,7 +41,7 @@ object Stackable
 		def rowWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], margin: StackLength,
 																   cap: StackLength = StackLength.fixed(0),
 																   layout: StackLayout = Fit) =
-			s.stackWith(elements, X, layout, margin, cap)
+			s.stackWith(elements, X, margin, cap, layout)
 		
 		/**
 		  * Creates a vertical stack with this item along with some others
@@ -54,7 +55,7 @@ object Stackable
 		def columnWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], margin: StackLength,
 																   cap: StackLength = StackLength.fixed(0),
 																   layout: StackLayout = Fit) =
-			s.stackWith(elements, Y, layout, margin, cap)
+			s.stackWith(elements, Y, margin, cap, layout)
 		
 		/**
 		  * Frames this item

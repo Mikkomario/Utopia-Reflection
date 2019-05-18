@@ -7,12 +7,10 @@ import utopia.flow.generic.DataType
 import utopia.genesis.event.{MouseEvent, MouseMoveEvent}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling.{ActorLoop, KeyStateListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
-import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Size
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Area
 import utopia.reflection.component.swing.label.Label
-import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.shape.{StackLength, StackSize}
@@ -49,7 +47,7 @@ object MouseTest extends App
 	
 	// Creates the stack
 	val items = Vector.fill(3)(makeItem())
-	val stack = Stack.withItems(X, Fit, StackLength.fixed(16), StackLength.fixed(16), items)
+	val stack = Stack.rowWithItems(items, StackLength.fixed(16), StackLength.fixed(16))
 	stack.background = Color.ORANGE
 	
 	// Creates the frame

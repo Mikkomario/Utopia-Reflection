@@ -3,13 +3,11 @@ package utopia.reflection.component.swing
 import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.MouseButtonStateListener
-import utopia.genesis.shape.Axis._
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Refreshable
 import utopia.reflection.component.drawing.{BorderDrawer, CustomDrawableWrapper}
 import utopia.reflection.component.input.Selectable
 import utopia.reflection.component.swing.label.TextLabel
-import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.{AwtContainerRelated, Stack}
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.LengthExtensions._
@@ -29,7 +27,7 @@ class TabSelection[A](val font: Font, val color: Color, val optimalHMargin: Int,
 {
 	// ATTRIBUTES	-------------------
 	
-	private val stack = new Stack[TextLabel](X, Fit, 0.fixed, 0.fixed)
+	private val stack = Stack.row[TextLabel](0.fixed)
 	private val textMargin = StackSize(StackLength(0, optimalHMargin), vMargin)
 	
 	private var options: Seq[(A, TextLabel)] = Vector()
