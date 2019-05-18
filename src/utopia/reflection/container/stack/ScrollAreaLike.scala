@@ -238,8 +238,11 @@ trait ScrollAreaLike extends CachingStackable
 	
 	private def updateScrollBarBounds() =
 	{
-		if (contentSize.area == 0 && barBounds.nonEmpty)
-			barBounds = HashMap()
+		if (contentSize.area == 0)
+		{
+			if (barBounds.nonEmpty)
+				barBounds = HashMap()
+		}
 		else
 		{
 			barBounds = axes.map
@@ -254,15 +257,15 @@ trait ScrollAreaLike extends CachingStackable
 					
 					val length = lengthAlong(axis)
 					val contentLength = content.lengthAlong(axis)
-					val contentBreadth = content.lengthAlong(axis.perpendicular)
+					val myBreadth = lengthAlong(axis.perpendicular)
 					
 					// Calculates scroll bar size
 					val barLengthMod = (length / contentLength) min 1.0
 					val barSize = barAreaSize * (barLengthMod, axis)
 					
 					// Calculates the positions of scroll bar area + bar itself
-					val barAreaPosition = Point(if (scrollBarIsInsideContent) contentBreadth - scrollBarWidth else
-						contentBreadth, 0, axis.perpendicular)
+					val barAreaPosition = Point(if (scrollBarIsInsideContent) myBreadth - scrollBarWidth else
+						myBreadth, 0, axis.perpendicular)
 					
 					axis -> ScrollBarBounds(Bounds(barAreaPosition + (barAreaSize.along(axis) * scrollPercents.along(axis),
 						axis), barSize), Bounds(barAreaPosition, barAreaSize))
@@ -359,11 +362,7 @@ trait ScrollAreaLike extends CachingStackable
 			if (isDraggingBar)
 			{
 				val newBarOrigin = event.positionOverArea(bounds) - barDragPosition
-				// Handles scrolling differently when scrolling is enabled in both directions
-				if (allows2DScrolling)
-					scrollTo(newBarOrigin / size)
-				else
-					axes.foreach { axis => scrollTo(newBarOrigin.along(axis) / lengthAlong(axis), axis) }
+				scrollTo(newBarOrigin.along(barDragAxis) / lengthAlong(barDragAxis), barDragAxis)
 			}
 			// If dragging content, updates scrolling and remembers velocity
 			else if (isDraggingContent)

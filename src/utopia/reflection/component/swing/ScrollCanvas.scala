@@ -1,7 +1,6 @@
 package utopia.reflection.component.swing
 
 import utopia.flow.async.VolatileFlag
-import utopia.genesis.shape.Axis._
 import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButtonStateEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.{DrawableHandler, MouseButtonStateHandler, MouseButtonStateListener, MouseMoveHandler, MouseMoveListener, MouseWheelHandler, MouseWheelListener}
@@ -15,7 +14,7 @@ import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.container.stack.ScrollBarDrawer
-import utopia.reflection.container.swing.{Panel, ScrollView}
+import utopia.reflection.container.swing.{Panel, ScrollArea}
 import utopia.reflection.shape.{StackLengthLimit, StackSize}
 
 import scala.concurrent.ExecutionContext
@@ -46,10 +45,8 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 	// ATTRIBUTES	------------------------
 	
 	private val canvas = new Canvas()
-	private val xScroll = new ScrollView(canvas, X, actorHandler, scrollPerWheelClick, scrollBarDrawer, scrollBarWidth,
-		scrollBarIsInsideContent, StackLengthLimit(maxOptimal = maxOptimalSize.map { _.width.toInt }), limitsToContentSize = true)
-	private val yScroll = new ScrollView(xScroll, Y, actorHandler, scrollPerWheelClick, scrollBarDrawer, scrollBarWidth,
-		scrollBarIsInsideContent, StackLengthLimit(maxOptimal = maxOptimalSize.map { _.height.toInt }), limitsToContentSize = true)
+	private val scrollArea = new ScrollArea(canvas, actorHandler, scrollPerWheelClick, scrollBarDrawer, scrollBarWidth,
+		scrollBarIsInsideContent, StackLengthLimit.sizeLimit(maxOptimal = maxOptimalSize), limitsToContentSize = true)
 	
 	private val started = new VolatileFlag()
 	
@@ -93,7 +90,7 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 	
 	// IMPLEMENTED	------------------------
 	
-	override protected def wrapped: Stackable with AwtComponentRelated = yScroll
+	override protected def wrapped: Stackable with AwtComponentRelated = scrollArea
 	
 	
 	// OTHER	----------------------------

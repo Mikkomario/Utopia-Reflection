@@ -1,11 +1,34 @@
 package utopia.reflection.shape
 
+import utopia.genesis.shape.Axis._
+import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.shape2D.Size
+
+import scala.collection.immutable.HashMap
+
 object StackLengthLimit
 {
 	/**
 	  * A stack length limit that doesn't actually limit stack lengths
 	  */
 	val noLimit = StackLengthLimit()
+	
+	/**
+	  * Creates a set of stack length limits from 2D sizes
+	  * @param min Minimum size (default = zero size)
+	  * @param minOptimal Minimum optimal size (default = None)
+	  * @param maxOptimal Maximum optimal size (default = None)
+	  * @param max Maximum size (default = None)
+	  * @return A map that contains limits for both X and Y axes
+	  */
+	def sizeLimit(min: Size = Size.zero, minOptimal: Option[Size] = None, maxOptimal: Option[Size] = None,
+				  max: Option[Size] = None) = HashMap[Axis2D, StackLengthLimit](
+		X -> limitsFromSizes(X, min, minOptimal, maxOptimal, max),
+		Y -> limitsFromSizes(Y, min, minOptimal, maxOptimal, max))
+	
+	private def limitsFromSizes(axis: Axis2D, min: Size, minOptimal: Option[Size], maxOptimal: Option[Size], max: Option[Size]) =
+		StackLengthLimit(min.along(axis).toInt, minOptimal.map { _.along(axis).toInt },
+			maxOptimal.map { _.along(axis).toInt }, max.map { _.along(axis).toInt })
 }
 
 /**
