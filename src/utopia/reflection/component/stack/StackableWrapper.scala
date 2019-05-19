@@ -21,4 +21,6 @@ trait StackableWrapper extends ComponentWrapper with Stackable
 	override def stackSize = wrapped.stackSize
 	
 	override def resetCachedSize() = wrapped.resetCachedSize()
+	
+	override def stackId = wrapped.stackId
 }

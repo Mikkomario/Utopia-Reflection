@@ -74,7 +74,7 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 	def worldSize_=(newSize: Size) =
 	{
 		_worldSize = newSize
-		revalidate()
+		canvas.revalidate()
 	}
 	
 	/**
@@ -84,7 +84,7 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 	def scaling_=(newScaling: Double) =
 	{
 		_scaling = newScaling
-		revalidate()
+		canvas.revalidate()
 	}
 	
 	
@@ -123,8 +123,11 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 			mousePosition = convertMousePosition(event.mousePosition),
 			previousMousePosition = convertMousePosition(event.previousMousePosition)))
 		
-		override def onMouseWheelRotated(event: MouseWheelEvent) = contentMouseWheelHandler.onMouseWheelRotated(
-			event.copy(mousePosition = convertMousePosition(event.mousePosition)))
+		override def onMouseWheelRotated(event: MouseWheelEvent) =
+		{
+			contentMouseWheelHandler.onMouseWheelRotated(
+				event.copy(mousePosition = convertMousePosition(event.mousePosition)))
+		}
 		
 		
 		// OTHER	------------------------
@@ -167,7 +170,7 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 		
 		override protected def updateVisibility(visible: Boolean) = super[AwtComponentWrapperWrapper].isVisible_=(visible)
 		
-		override protected def calculatedStackSize = StackSize.any(_worldSize * scaling)
+		override protected def calculatedStackSize = StackSize.fixed(_worldSize * scaling)
 		
 		override def updateLayout() = Unit
 	}

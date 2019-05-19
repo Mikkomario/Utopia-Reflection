@@ -6,7 +6,7 @@ import utopia.genesis.shape.shape2D.Bounds
 import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
-import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer, ScrollViewLike}
+import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer, StackHierarchyManager}
 import utopia.reflection.shape.StackLengthLimit
 
 import scala.collection.immutable.HashMap
@@ -35,6 +35,7 @@ class ScrollArea[C <: Stackable with AwtComponentRelated](override val content: 
 	addResizeListener(updateLayout())
 	addCustomDrawer(scrollBarDrawerToCustomDrawer(scrollBarDrawer))
 	setupMouseHandling(actorHandler, scrollPerWheelClick)
+	StackHierarchyManager.registerConnection(this, content)
 	
 	
 	// IMPLEMENTED	----------------------

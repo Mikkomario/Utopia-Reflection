@@ -32,7 +32,7 @@ object StackHierarchyManager
 	
 	private val indexCounter = new Counter(1)
 	// Stakable -> id, used for finding parents
-	private val ids = mutable.HashMap[Stackable, StackId]()
+	private val ids = mutable.HashMap[Int, StackId]()
 	// Id -> Node -> Children, used for finding children
 	private val graph = mutable.HashMap[Int, Node]()
 	
@@ -47,6 +47,30 @@ object StackHierarchyManager
 	  * @return Whether this hierarchy manager expects to be revalidated in the near future
 	  */
 	def waitsRevalidation = validationQueue.nonEmpty
+	
+	/**
+	  * @return A string description of the stack hierarchy
+	  */
+	def description =
+	{
+		s"[${graph.values.map(nodeToString).mkString(", ")}]"
+	}
+	
+	private def nodeToString(node: Node): String =
+	{
+		val children = node.endNodes
+		if (children.isEmpty)
+			node.content.toString
+		else if (children.size == 1)
+			s"${node.content.toString} -> ${nodeToString(children.head)}"
+		else
+			s"${node.content.toString} -> [${children.map(nodeToString).mkString(", ")}]"
+	}
+	
+	
+	// IMPLEMENTED	----------------------
+	
+	override def toString = description
 	
 	
 	// OTHER	-------------------------
@@ -90,7 +114,7 @@ object StackHierarchyManager
 		if (waitsRevalidation)
 		{
 			val items = validationQueue.getAndSet(Vector()).toSet
-			val itemIds = items.flatMap(ids.get)
+			val itemIds = items.map { _.stackId }.flatMap(ids.get)
 			
 			// First resets stack sizes for all revalidating hierarchies
 			resetStackSizesFor(itemIds)
@@ -157,10 +181,10 @@ object StackHierarchyManager
 	def unregister(item: Stackable) =
 	{
 		// Removes the provided item and each child from both ids and graph
-		if (ids.contains(item))
+		if (ids.contains(item.stackId))
 		{
 			// Finds correct id and node
-			val itemId = ids(item)
+			val itemId = ids(item.stackId)
 			val node = nodeForId(itemId)
 			
 			// Removes the node from graph
@@ -170,7 +194,7 @@ object StackHierarchyManager
 				graphForId(itemId).disconnectAll(node)
 			
 			// Removes any child nodes
-			node.foreach { ids -= _.content }
+			node.foreach { ids -= _.content.stackId }
 		}
 	}
 	
@@ -182,9 +206,9 @@ object StackHierarchyManager
 	def registerConnection(parent: Stackable, child: Stackable) =
 	{
 		// If the child already had a parent, makes the child a master (top level component) first
-		if (ids.contains(child))
+		if (ids.contains(child.stackId))
 		{
-			val childId = ids(child)
+			val childId = ids(child.stackId)
 			childId.parentId.foreach
 			{
 				parentId =>
@@ -195,7 +219,7 @@ object StackHierarchyManager
 					val childNode = (parentNode / childIndex).head
 					
 					parentNode.disconnectDirect(childNode)
-					childNode.foreach { c => ids(c.content) = ids(c.content).dropUntil(childIndex) }
+					childNode.foreach { c => ids(c.content.stackId) = ids(c.content.stackId).dropUntil(childIndex) }
 					
 					// Makes the child a master
 					graph(childIndex) = childNode
@@ -207,14 +231,14 @@ object StackHierarchyManager
 		val newParentNode = nodeForId(newParentId)
 		
 		// If the child (master) already exists, attaches it to the new parent
-		if (ids.contains(child))
+		if (ids.contains(child.stackId))
 		{
-			val oldChildId = ids(child)
+			val oldChildId = ids(child.stackId)
 			val childIndex = oldChildId.last
 			val childNode = graph(childIndex)
 			
 			// Updates all child ids
-			childNode.foreach { n => ids(n.content) = newParentId + ids(n.content) }
+			childNode.foreach { n => ids(n.content.stackId) = newParentId + ids(n.content.stackId) }
 			
 			// Removes the child from master nodes and attaches it to the new parent
 			graph -= childIndex
@@ -224,7 +248,7 @@ object StackHierarchyManager
 		else
 		{
 			val newChildId = newParentId + indexCounter.next()
-			ids(child) = newChildId
+			ids(child.stackId) = newChildId
 			newParentNode.connect(new Node(child), newChildId.last)
 		}
 	}
@@ -245,7 +269,7 @@ object StackHierarchyManager
 	
 	private def parentId(item: Stackable) =
 	{
-		val existing = ids.get(item)
+		val existing = ids.get(item.stackId)
 		if (existing.isDefined)
 			existing.get
 		else
@@ -253,7 +277,7 @@ object StackHierarchyManager
 			// If there isn't an id, creates one
 			val newId = StackId.root(indexCounter.next())
 			// Adds the new id to id map as well as graph
-			ids += (item -> newId)
+			ids += (item.stackId -> newId)
 			graph(newId.masterId) = new Node(item)
 			newId
 		}

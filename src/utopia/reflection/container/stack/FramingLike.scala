@@ -38,6 +38,7 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 	
 	override def components = container.components
 	
+	// TODO: This doesn't get called correctly (maybe a problem with the stack hierarchy)?
 	override def updateLayout() =
 	{
 		val c = content

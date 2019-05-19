@@ -135,6 +135,8 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 			super.size_=(s)
 		}
 		
+		override def stackId = item.stackId
+		
 		override def updateLayout() = item.updateLayout()
 		
 		override protected def wrapped = item

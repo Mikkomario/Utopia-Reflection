@@ -47,6 +47,8 @@ object ScrollCanvasTest extends App
 		mouseWheelHandler, 16, BoxScrollBarDrawer(Color.black, Color.gray(0.5)),
 		16, false, Some(Size(480, 480)))
 	
+	println(canvas.stackSize)
+	
 	// Adds mouse wheel handling (zoom)
 	private val zoomer = new Zoomer(canvas)
 	canvas.addKeyStateListener(zoomer)
@@ -67,6 +69,8 @@ object ScrollCanvasTest extends App
 	frame.startEventGenerators(actorHandler)
 	canvas.startDrawing(FPS(15))
 	frame.isVisible = true
+	
+	println(StackHierarchyManager.description)
 }
 
 private class TestCircle(val position: Point) extends Drawable with Handleable with MouseButtonStateListener

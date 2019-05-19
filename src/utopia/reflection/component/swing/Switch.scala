@@ -39,6 +39,8 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 	private var _value = false
 	private var _isEnabled = true
 	
+	override val stackSize = StackSize(targetWidth, targetWidth.noMax * Switch.maxHeightRatio)
+	
 	
 	// INITIAL CODE	-----------------
 	
@@ -71,13 +73,13 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 	
 	// IMPLEMENTED	-----------------
 	
+	override def stackId = hashCode()
+	
 	override protected def wrapped = label
 	
 	override def drawable = label
 	
 	override def updateLayout() = Unit
-	
-	override def stackSize = StackSize(targetWidth, targetWidth.noMax * Switch.maxHeightRatio)
 	
 	override def resetCachedSize() = Unit
 	

@@ -70,6 +70,8 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     
     // IMPLEMENTED    --------------
     
+    override def stackId = hashCode()
+    
     override def stackSize = cachedStackSize.get
     
     override def resetCachedSize() = cachedStackSize.reset()

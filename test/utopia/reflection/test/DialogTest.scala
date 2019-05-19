@@ -20,6 +20,8 @@ object DialogTest extends App
 	{
 		background = Color.white
 		
+		override def stackId = hashCode()
+		
 		override def updateLayout() = Unit
 		override def resetCachedSize() = Unit
 	}

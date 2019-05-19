@@ -128,7 +128,8 @@ trait ScrollAreaLike extends CachingStackable
 					val raw = contentSize.along(axis)
 					val limit = lengthLimits.get(axis)
 					val limited = limit.map(raw.within) getOrElse raw
-					axis -> (if (limitsToContentSize) limited else if (limited.max.isDefined) limited else limited.noMax).withLowPriority.noMin
+					axis -> (if (limitsToContentSize) limited else if (limit.exists { _.max.isDefined }) limited else
+						limited.noMax).withLowPriority.noMin
 				}
 				else
 					axis -> contentSize.along(axis)
@@ -144,6 +145,8 @@ trait ScrollAreaLike extends CachingStackable
 		val contentSize = content.stackSize
 		val contentAreaSize = size - scrollBarContentOverlap
 		
+		// TODO: Doesn't work properly if scroll area is larger than content
+		// TODO: If limited to content size, content size should be scaled to at least length of this area
 		val lengths: Map[Axis2D, Double] = Axis2D.values.map
 		{
 			axis =>

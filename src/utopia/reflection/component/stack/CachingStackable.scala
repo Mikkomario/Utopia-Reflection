@@ -36,4 +36,6 @@ trait CachingStackable extends Stackable with StackSizeCalculating
 	override def stackSize = if (isVisible) cachedStackSize.get else StackSize.any
 	
 	override def resetCachedSize() = cachedStackSize.reset()
+	
+	override def stackId = hashCode()
 }
