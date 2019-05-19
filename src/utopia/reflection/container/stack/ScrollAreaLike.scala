@@ -107,9 +107,9 @@ trait ScrollAreaLike extends CachingStackable
 	private def scrollBarContentOverlap =
 	{
 		if (scrollBarIsInsideContent)
-			axes.map { Size(0, scrollBarWidth, _) } reduceOption { _ + _ } getOrElse Size.zero
-		else
 			Size.zero
+		else
+			axes.map { Size(0, scrollBarWidth, _) } reduceOption { _ + _ } getOrElse Size.zero
 	}
 	
 	
@@ -142,22 +142,24 @@ trait ScrollAreaLike extends CachingStackable
 	{
 		// Non-scrollable content side is dependent from this component's side while scrollable side(s) are always set to optimal
 		val contentSize = content.stackSize
+		val contentAreaSize = size - scrollBarContentOverlap
+		
 		val lengths: Map[Axis2D, Double] = Axis2D.values.map
 		{
 			axis =>
 				if (axes.contains(axis))
 					axis -> contentSize.along(axis).optimal.toDouble
 				else
-					axis -> lengthAlong(axis)
+					axis -> contentAreaSize.along(axis)
 		}.toMap
 		
 		content.size = Size(lengths(X), lengths(Y))
 		
 		// May scroll on content size change
-		if (content.x + content.width < width)
-			content.x = width - content.width
-		if (content.y + content.height < height)
-			content.y = height - content.height
+		if (content.x + content.width < contentAreaSize.width)
+			content.x = contentAreaSize.width - content.width
+		if (content.y + content.height < contentAreaSize.height)
+			content.y = contentAreaSize.height - content.height
 		
 		updateScrollBarBounds()
 	}
@@ -211,7 +213,7 @@ trait ScrollAreaLike extends CachingStackable
 		(d, _) => Axis2D.values.foreach
 		{
 			axis =>
-				if (!scrollBarIsInsideContent || lengthAlong(axis) < contentSize.along(axis))
+				if ((!scrollBarIsInsideContent) || lengthAlong(axis) < contentSize.along(axis))
 					barBounds.get(axis).foreach { barDrawer.draw(d, _, axis) }
 		})
 		
@@ -264,14 +266,14 @@ trait ScrollAreaLike extends CachingStackable
 					val barSize = barAreaSize * (barLengthMod, axis)
 					
 					// Calculates the positions of scroll bar area + bar itself
-					val barAreaPosition = Point(if (scrollBarIsInsideContent) myBreadth - scrollBarWidth else
-						myBreadth, 0, axis.perpendicular)
+					val barAreaPosition = Point(myBreadth - scrollBarWidth, 0, axis.perpendicular)
 					
 					axis -> ScrollBarBounds(Bounds(barAreaPosition + (barAreaSize.along(axis) * scrollPercents.along(axis),
 						axis), barSize), Bounds(barAreaPosition, barAreaSize))
 			}.toMap
 			
-			repaint(Bounds.around(barBounds.values.map { _.area }))
+			val repaintBounds = Bounds.around(barBounds.values.map { _.area })
+			repaint(repaintBounds)
 		}
 	}
 	

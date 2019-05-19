@@ -46,9 +46,9 @@ object ScrollViewTest extends App
 	val actorHandler = ActorHandler()
 	
 	// Creates the scroll view
-	val barDrawer = BoxScrollBarDrawer.roundedBarOnly(Color.black.withAlpha(0.55))
+	val barDrawer = BoxScrollBarDrawer(Color.black.withAlpha(0.55), Color.red)
 	val scrollView = new ScrollView(stack, Y, actorHandler, 16, barDrawer, 16,
-		true, StackLengthLimit(maxOptimal =  Some(480)))
+		false, StackLengthLimit(maxOptimal =  Some(480)))
 	
 	// Creates the frame and displays it
 	val actionLoop = new ActorLoop(actorHandler)
