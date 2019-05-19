@@ -59,9 +59,9 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 	{
 		// Adds mouse event handling
 		val mouseListener = new MouseEventHandler()
-		addMouseButtonListener(mouseListener)
-		addMouseMoveListener(mouseListener)
-		addMouseWheelListener(mouseListener)
+		canvas.addMouseButtonListener(mouseListener)
+		canvas.addMouseMoveListener(mouseListener)
+		canvas.addMouseWheelListener(mouseListener)
 	}
 	
 	
@@ -116,8 +116,11 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 	{
 		// IMPLEMENTED	--------------------
 		
-		override def onMouseButtonState(event: MouseButtonStateEvent) = contentMouseButtonHandler.onMouseButtonState(
-			event.copy(mousePosition = convertMousePosition(event.mousePosition)))
+		override def onMouseButtonState(event: MouseButtonStateEvent) =
+		{
+			contentMouseButtonHandler.onMouseButtonState(
+				event.copy(mousePosition = convertMousePosition(event.mousePosition)))
+		}
 		
 		override def onMouseMove(event: MouseMoveEvent) = contentMouseMoveHandler.onMouseMove(event.copy(
 			mousePosition = convertMousePosition(event.mousePosition),
@@ -133,7 +136,7 @@ class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, ac
 		// OTHER	------------------------
 		
 		// Origin is at canvas origin. Scaling is also applied.
-		private def convertMousePosition(original: Point) = (original - position) / scaling
+		private def convertMousePosition(original: Point) = (original - canvas.position) / scaling
 	}
 	
 	private class CustomDraw extends CustomDrawer

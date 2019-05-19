@@ -45,7 +45,7 @@ object ScrollCanvasTest extends App
 	// Creates the canvas
 	val canvas = new ScrollCanvas(worldSize, drawHandler, actorHandler, mouseButtonHandler, mouseMoveHandler,
 		mouseWheelHandler, 16, BoxScrollBarDrawer(Color.black, Color.gray(0.5)),
-		16, false, Some(Size(480, 480)))
+		16, false, None)
 	
 	println(canvas.stackSize)
 	

@@ -86,7 +86,7 @@ trait ScrollAreaLike extends CachingStackable
 	/**
 	  * @return The smallest possible content position (= position when scrolled at bottom right corner)
 	  */
-	def minContentOrigin = (size - contentSize).toPoint
+	def minContentOrigin = (size - contentSize).toPoint.topLeft(Point.origin)
 	
 	/**
 	  * @return The current scroll modifier / percentage [0, 1]
@@ -145,13 +145,18 @@ trait ScrollAreaLike extends CachingStackable
 		val contentSize = content.stackSize
 		val contentAreaSize = size - scrollBarContentOverlap
 		
-		// TODO: Doesn't work properly if scroll area is larger than content
-		// TODO: If limited to content size, content size should be scaled to at least length of this area
 		val lengths: Map[Axis2D, Double] = Axis2D.values.map
 		{
 			axis =>
 				if (axes.contains(axis))
-					axis -> contentSize.along(axis).optimal.toDouble
+				{
+					// If this area's maximum size is tied to that of the content, will not allow the content to
+					// be smaller than this area
+					if (limitsToContentSize)
+						axis -> (contentSize.along(axis).optimal.toDouble max contentAreaSize.along(axis))
+					else
+						axis -> contentSize.along(axis).optimal.toDouble
+				}
 				else
 					axis -> contentAreaSize.along(axis)
 		}.toMap
@@ -159,10 +164,16 @@ trait ScrollAreaLike extends CachingStackable
 		content.size = Size(lengths(X), lengths(Y))
 		
 		// May scroll on content size change
-		if (content.x + content.width < contentAreaSize.width)
-			content.x = contentAreaSize.width - content.width
-		if (content.y + content.height < contentAreaSize.height)
-			content.y = contentAreaSize.height - content.height
+		if (content.width >= contentAreaSize.width)
+		{
+			if (content.x + content.width < contentAreaSize.width)
+				content.x = contentAreaSize.width - content.width
+		}
+		if (content.height >= contentAreaSize.height)
+		{
+			if (content.y + content.height < contentAreaSize.height)
+				content.y = contentAreaSize.height - content.height
+		}
 		
 		updateScrollBarBounds()
 	}
@@ -305,8 +316,7 @@ trait ScrollAreaLike extends CachingStackable
 		// IMPLEMENTED	-----------------------
 		
 		// Listens to left mouse presses & releases
-		override def mouseButtonStateEventFilter = Consumable.notConsumedFilter &&
-			MouseButtonStateEvent.buttonFilter(MouseButton.Left)
+		override def mouseButtonStateEventFilter = MouseButtonStateEvent.buttonFilter(MouseButton.Left)
 		
 		// Only listens to wheel events inside component bounds
 		override def mouseWheelEventFilter = Consumable.notConsumedFilter && MouseEvent.isOverAreaFilter(bounds)
@@ -315,29 +325,41 @@ trait ScrollAreaLike extends CachingStackable
 		{
 			if (event.wasPressed)
 			{
-				// If mouse was pressed inside inside scroll bar, starts dragging the bar
-				val barUnderEvent = axes.findMap { axis => barBounds.get(axis).filter {
-					b => event.isOverArea(b.bar) }.map { axis -> _.bar } }
-				
-				if (barUnderEvent.isDefined)
+				// Consumed pressed events are ignored
+				if (!event.isConsumed)
 				{
-					isDraggingContent = false
-					barDragAxis = barUnderEvent.get._1
-					barDragPosition = event.positionOverArea(barUnderEvent.get._2)
-					isDraggingBar = true
-					currentVelocity = Vector3D.zero
+					// If mouse was pressed inside inside scroll bar, starts dragging the bar
+					val barUnderEvent = axes.findMap
+					{ axis =>
+						barBounds.get(axis).filter
+						{
+							b => event.isOverArea(b.bar)
+						}.map
+						{ axis -> _.bar }
+					}
+					
+					if (barUnderEvent.isDefined)
+					{
+						isDraggingContent = false
+						barDragAxis = barUnderEvent.get._1
+						barDragPosition = event.positionOverArea(barUnderEvent.get._2)
+						isDraggingBar = true
+						currentVelocity = Vector3D.zero
+					}
+					// if outside, starts drag scrolling
+					else if (event.isOverArea(bounds))
+					{
+						isDraggingBar = false
+						contentDragPosition = event.mousePosition
+						isDraggingContent = true
+						currentVelocity = Vector3D.zero
+					}
 				}
-				// if outside, starts drag scrolling
-				else if (event.isOverArea(bounds))
-				{
-					isDraggingBar = false
-					contentDragPosition = event.mousePosition
-					isDraggingContent = true
-					currentVelocity = Vector3D.zero
-				}
+				true
 			}
 			else
 			{
+				// TODO: Handle mouse releases on a global scale (use root mouse event handler)
 				// When mouse is released, stops dragging. May apply scrolling velocity
 				isDraggingBar = false
 				if (isDraggingContent)
@@ -357,8 +379,8 @@ trait ScrollAreaLike extends CachingStackable
 						currentVelocity += averageVelocity * velocityMod
 					}
 				}
+				false
 			}
-			false
 		}
 		
 		override def onMouseMove(event: MouseMoveEvent) =
