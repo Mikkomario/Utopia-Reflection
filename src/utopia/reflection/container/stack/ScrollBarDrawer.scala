@@ -2,7 +2,7 @@ package utopia.reflection.container.stack
 
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.util.Drawer
-import utopia.reflection.util.ScrollBarBounds
+import utopia.reflection.shape.ScrollBarBounds
 
 /**
   * These drawers draw scroll bars

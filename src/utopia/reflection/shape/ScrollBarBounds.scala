@@ -1,4 +1,4 @@
-package utopia.reflection.util
+package utopia.reflection.shape
 
 import utopia.genesis.shape.shape2D.Bounds
 

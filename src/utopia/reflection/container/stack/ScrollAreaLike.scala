@@ -15,8 +15,7 @@ import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Foreground
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
-import utopia.reflection.shape.{StackLengthLimit, StackSize}
-import utopia.reflection.util.ScrollBarBounds
+import utopia.reflection.shape.{ScrollBarBounds, StackLengthLimit, StackSize}
 
 import scala.collection.immutable.HashMap
 
