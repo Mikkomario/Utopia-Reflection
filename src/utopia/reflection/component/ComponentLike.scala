@@ -258,23 +258,8 @@ trait ComponentLike extends Area
         {
             val translatedEvent = withPosition(event, event.mousePosition - myBounds.position)
             val visibleChildren = children.filter { _.isVisible }
-            if (translatedEvent.isConsumed)
-            {
-                visibleChildren.foreach { childAccept(_, translatedEvent) }
-                true
-            }
-            else
-            {
-                val consumedAtIndex = visibleChildren.indexWhere { childAccept(_, translatedEvent) }
-                if (consumedAtIndex >= 0)
-                {
-                    val consumedEvent = translatedEvent.consumed
-                    visibleChildren.drop(consumedAtIndex + 1).foreach { childAccept(_, consumedEvent) }
-                    true
-                }
-                else
-                    false
-            }
+            
+            translatedEvent.distributeAmong(visibleChildren)(childAccept)
         }
         else
             event.isConsumed

@@ -199,6 +199,21 @@ object StackHierarchyManager
 	}
 	
 	/**
+	  * Registers an individual component to this stack hierarchy. If the component was already registered, removes
+	  * it from under another item. This method should be used only for items that user their own stack hierarchy
+	  * @param component A component
+	  */
+	def registerIndividual(component: Stackable): Unit =
+	{
+		// Only registers the component if it hasn't been registered yet
+		if (!ids.contains(component.stackId))
+			addRoot(component)
+		// If the component was already registered, detaches it from under its parent
+		else
+			detach(component)
+	}
+	
+	/**
 	  * Registers a parent-child combo to this hierarchy
 	  * @param parent A parent element
 	  * @param child A child element
@@ -273,14 +288,38 @@ object StackHierarchyManager
 		if (existing.isDefined)
 			existing.get
 		else
+			addRoot(item)
+	}
+	
+	private def detach(item: Stackable): Unit =
+	{
+		val childId = ids(item.stackId)
+		childId.parentId.foreach
 		{
-			// If there isn't an id, creates one
-			val newId = StackId.root(indexCounter.next())
-			// Adds the new id to id map as well as graph
-			ids += (item.stackId -> newId)
-			graph(newId.masterId) = new Node(item)
-			newId
+			parentId =>
+				
+				// Disconnects the child from the parent, also updates all id numbers
+				val parentNode = nodeForId(parentId)
+				val childIndex = childId.last
+				val childNode = (parentNode / childIndex).head
+				
+				parentNode.disconnectDirect(childNode)
+				childNode.foreach { c => ids(c.content.stackId) = ids(c.content.stackId).dropUntil(childIndex) }
+				
+				// Makes the child a master
+				graph(childIndex) = childNode
 		}
+	}
+	
+	private def addRoot(item: Stackable) =
+	{
+		// Creates a new id
+		val newId = StackId.root(indexCounter.next())
+		// Adds the new id to id map as well as graph
+		ids += (item.stackId -> newId)
+		graph(newId.masterId) = new Node(item)
+		
+		newId
 	}
 }
 

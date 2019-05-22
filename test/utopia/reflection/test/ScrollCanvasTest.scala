@@ -67,7 +67,7 @@ object ScrollCanvasTest extends App
 	actionLoop.startAsync()
 	StackHierarchyManager.startRevalidationLoop()
 	frame.startEventGenerators(actorHandler)
-	canvas.startDrawing(FPS(15))
+	canvas.startDrawing(FPS(30))
 	frame.isVisible = true
 	
 	println(StackHierarchyManager.description)
@@ -82,7 +82,10 @@ private class TestCircle(val position: Point) extends Drawable with Handleable w
 	
 	// IMPLEMENTED	---------------------
 	
-	override def draw(drawer: Drawer) = drawer.withFillColor(Color.yellow).noEdges.draw(circle)
+	override def draw(drawer: Drawer) =
+	{
+		drawer.withFillColor(Color.yellow).noEdges.draw(circle)
+	}
 	
 	override def mouseButtonStateEventFilter = Consumable.notConsumedFilter &&
 		MouseButtonStateEvent.leftPressedFilter && MouseEvent.isOverAreaFilter(circle)
