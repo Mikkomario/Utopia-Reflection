@@ -50,8 +50,8 @@ object StringArgumentType
 		private def doubleToString(d: Double) =
 		{
 			// Cuts the unnecessary decimals
-			val roundInt = (d * 100).toInt
-			(roundInt / 100.0).toString
+			val roundLong = (d * 100).round
+			(roundLong / 100.0).toString
 		}
 	}
 	
