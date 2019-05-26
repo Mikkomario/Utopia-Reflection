@@ -224,8 +224,23 @@ trait StackLike[C <: Stackable] extends MultiStackContainer[C] with StackSizeCal
     }
     
     
-    // OTHERS    -----------------------
+    // OTHER    -----------------------
     
+    /**
+      * Inserts an item at a specific index in this stack
+      * @param component The new component to be added
+      * @param index The index where the component will be added
+      */
+    def insert(component: C, index: Int) =
+    {
+        _components = (_components.take(index) :+ new StackItem(component)) ++ _components.drop(index)
+        super.+=(component)
+    }
+    
+    /**
+      * Drops the last n items from this stack
+      * @param amount The amount of items to remove from this stack
+      */
     def dropLast(amount: Int) = _components dropRight amount map { _.source } foreach { -= }
     
     private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
