@@ -51,4 +51,6 @@ class ScrollArea[C <: Stackable with AwtComponentRelated](override val content: 
 	override def drawable = panel
 	
 	override protected def updateVisibility(visible: Boolean) = super[AwtComponentWrapperWrapper].isVisible_=(visible)
+	
+	override def contentStackSize = content.stackSize
 }

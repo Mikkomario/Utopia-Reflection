@@ -7,10 +7,10 @@ import utopia.flow.util.CollectionExtensions._
 import utopia.flow.util.TimeExtensions._
 import utopia.genesis.event._
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.handling.{Actor, KeyStateListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
+import utopia.genesis.handling._
 import utopia.genesis.shape.Axis._
-import utopia.genesis.shape.{Axis2D, Vector3D, VectorLike}
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
+import utopia.genesis.shape.{Axis2D, Vector3D, VectorLike}
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Area
@@ -22,11 +22,12 @@ import utopia.reflection.shape.{ScrollBarBounds, StackLengthLimit, StackSize}
 import scala.collection.immutable.HashMap
 
 /**
-  * Scroll areas are containers that allow horizontal and / or vertical content scrolling
+  * This is a more general super trait for scrollable component classes, which doesn't require the content to be
+  * a component. Suitable for non-swing implementations
   * @author Mikko Hilpinen
-  * @since 15.5.2019, v1+
+  * @since 4.6.2019, v1+
   */
-trait ScrollAreaLike extends CachingStackable
+trait Scrollable extends CachingStackable
 {
 	// ATTRIBUTES	----------------
 	
@@ -239,7 +240,7 @@ trait ScrollAreaLike extends CachingStackable
 	  */
 	protected def scrollBarDrawerToCustomDrawer(barDrawer: ScrollBarDrawer) = CustomDrawer(Foreground,
 		(d, _) => drawWith(barDrawer, d))
-	
+		
 	/**
 	  * Sets up mouse handling for this view
 	  * @param actorHandler Actor handler that will allow velocity handling
