@@ -15,7 +15,7 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 {
 	// ATTRIBUTES	-------------------
 	
-	private var selectedDisplay: Option[C] = None
+	private var _selectedDisplay: Option[C] = None
 	
 	
 	// ABSTRACT	-----------------------
@@ -28,6 +28,14 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 	protected def updateSelectionDisplay(oldSelected: Option[C], newSelected: Option[C]): Unit
 	
 	
+	// COMPUTED	-----------------------
+	
+	/**
+	  * @return The currently selected display. None if no item is currently selected
+	  */
+	def selectedDisplay = _selectedDisplay
+	
+	
 	// IMPLEMENTED	-------------------
 	
 	override def content_=(newContent: Vector[A]) =
@@ -38,7 +46,7 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 		
 		if (oldSelected.isDefined)
 		{
-			setValueNoEvents(oldSelected)
+			updateSelection(oldSelected)
 			
 			// Informs listeners if selection was lost
 			val newSelected = selected
@@ -50,15 +58,11 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 	override def setValueNoEvents(newValue: Option[A]) =
 	{
 		// Will not select the item again
-		if (selectedDisplay.forall { d => !newValue.contains(d.content)} )
-		{
-			val oldSelected = selectedDisplay
-			selectedDisplay = newValue.flatMap { v => displays.find { _.content == v } }
-			updateSelectionDisplay(oldSelected, selectedDisplay)
-		}
+		if (_selectedDisplay.forall { d => !newValue.contains(d.content)} )
+			updateSelection(newValue)
 	}
 	
-	override def value = selectedDisplay.map { _.content }
+	override def value = _selectedDisplay.map { _.content }
 	
 	
 	// OTHER	-------------------
@@ -83,7 +87,7 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 			
 			if (transition != 0)
 			{
-				val oldIndex = selectedDisplay.flatMap { displays.optionIndexOf(_) }
+				val oldIndex = _selectedDisplay.flatMap { displays.optionIndexOf(_) }
 				
 				if (oldIndex.isDefined)
 				{
@@ -104,13 +108,23 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 		}
 	}
 	
+	private def updateSelection(newValue: Option[A]): Unit =
+	{
+		val oldSelected = _selectedDisplay
+		_selectedDisplay = newValue.flatMap { v => displays.find { _.content == v } }
+		
+		if (oldSelected != _selectedDisplay)
+			updateSelectionDisplay(oldSelected, _selectedDisplay)
+	}
+	
 	private def selectDisplay(display: C) =
 	{
-		if (!selectedDisplay.contains(display))
+		if (!_selectedDisplay.contains(display))
 		{
-			val oldSelected = selectedDisplay
-			selectedDisplay = Some(display)
-			updateSelectionDisplay(oldSelected, selectedDisplay)
+			val oldSelected = _selectedDisplay
+			_selectedDisplay = Some(display)
+			updateSelectionDisplay(oldSelected, _selectedDisplay)
+			informListeners()
 		}
 	}
 }

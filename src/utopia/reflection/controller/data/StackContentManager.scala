@@ -13,7 +13,7 @@ import utopia.reflection.container.stack.StackLike
   * @param stack The stack managed through this manager
   * @param makeItem A function for producing new displays
   */
-class StackContentManager[A, C <: Stackable with Refreshable[A]](private val stack: StackLike[C],
+class StackContentManager[A, C <: Stackable with Refreshable[A]](protected val stack: StackLike[C],
 																 private val makeItem: A => C) extends ContentManager[A, C]
 {
 	// IMPLEMENTED	-----------------------

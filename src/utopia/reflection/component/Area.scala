@@ -58,6 +58,9 @@ trait Area
         size = b.size
     }
     
+    def rightX = x + width
+    def bottomY = y + height
+    
     
     // OTHER    ------------------------
     
@@ -68,6 +71,16 @@ trait Area
     {
         case X => x
         case Y => y
+    }
+    
+    /**
+      * @param axis Target axis
+      * @return The right side x-coordinate or the bottom y-coordinate, depending on target axis
+      */
+    def maxCoordinateAlong(axis: Axis2D) = axis match
+    {
+        case X => rightX
+        case Y => bottomY
     }
     
     /**

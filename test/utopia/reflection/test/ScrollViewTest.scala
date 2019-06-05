@@ -8,13 +8,15 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
+import utopia.genesis.util.Drawer
 import utopia.reflection.component.Refreshable
+import utopia.reflection.component.drawing.{CustomDrawer, DrawLevel}
 import utopia.reflection.component.swing.label.ItemLabel
 import utopia.reflection.container.stack.{BoxScrollBarDrawer, StackHierarchyManager}
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.{ScrollView, Stack}
-import utopia.reflection.controller.data.StackContentManager
+import utopia.reflection.controller.data.StackSelectionManager
 import utopia.reflection.localization.{DisplayFunction, Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.shape.StackLengthLimit
@@ -54,7 +56,15 @@ object ScrollViewTest extends App
 	stack.background = Color.yellow.minusHue(33).darkened(1.2)
 	
 	// Adds content management
-	val contentManager = new StackContentManager[Int, ItemLabel[Int]](stack, makeLabel)
+	val selectionDrawer = CustomDrawer(DrawLevel.Foreground, (d, b) =>
+	{
+		d.withColor(Color.black.withAlpha(0.33), Color.black.withAlpha(0.8)).withStroke(2).draw(b)
+	})
+	
+	val contentManager = new StackSelectionManager[Int, ItemLabel[Int]](stack, makeLabel, selectionDrawer)
+	contentManager.addListener(i => println("Selected " + i))
+	contentManager.enableKeyHandling()
+	contentManager.enableMouseHandling(false)
 	private val contentUpdateLoop = new ContentUpdateLoop(contentManager)
 	
 	val actorHandler = ActorHandler()
