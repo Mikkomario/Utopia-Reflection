@@ -119,21 +119,11 @@ object StackHierarchyManager
 			resetStackSizesFor(itemIds)
 			
 			// Validates the necessary master items
-			val masterNodes = itemIds.map
-			{
-				_.masterId
-			}.flatMap
-			{ index => graph.get(index) }
-			masterNodes.foreach
-			{
-				_.content.updateLayout()
-			}
+			val masterNodes = itemIds.map { _.masterId }.flatMap { index => graph.get(index) }
+			masterNodes.foreach { _.content.updateLayout() }
 			
 			// Validates the deeper levels
-			val nextIds = itemIds.flatMap
-			{
-				_.tail
-			}
+			val nextIds = itemIds.flatMap { _.tail }
 			revalidate(nextIds, masterNodes)
 		}
 	}

@@ -1,7 +1,5 @@
 package utopia.reflection.test
 
-import java.util.concurrent.TimeUnit
-
 import utopia.flow.util.TimeExtensions._
 import utopia.flow.async.{Loop, ThreadPool}
 import utopia.flow.util.WaitTarget
@@ -24,7 +22,7 @@ import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.{Duration, FiniteDuration}
+import scala.concurrent.duration.Duration
 
 /**
   * This is a simple test implementation of scroll view
@@ -64,7 +62,7 @@ object ScrollViewTest extends App
 	// Creates the scroll view
 	val barDrawer = BoxScrollBarDrawer(Color.black.withAlpha(0.55), Color.red)
 	val scrollView = new ScrollView(stack, Y, actorHandler, 16, barDrawer, 16,
-		false, StackLengthLimit(maxOptimal =  Some(480)))
+		false, StackLengthLimit(min = 128, maxOptimal =  Some(480)))
 	
 	// Creates the frame and displays it
 	val actionLoop = new ActorLoop(actorHandler)
@@ -86,8 +84,8 @@ private class ContentUpdateLoop(val target: Refreshable[Vector[Int]]) extends Lo
 {
 	// ATTRIBUTES	---------------------
 	
-	private val maxLength = 50
-	private var nextWait: Duration = 5.seconds
+	private val maxLength = 10
+	private var nextWait: Duration = 3.seconds
 	private var increasing = true
 	
 	
@@ -122,10 +120,10 @@ private class ContentUpdateLoop(val target: Refreshable[Vector[Int]]) extends Lo
 		if (turnAround)
 		{
 			increasing = !increasing
-			nextWait = Duration(10, TimeUnit.SECONDS)
+			nextWait = 3.seconds
 		}
 		else
-			nextWait = nextWait * 0.8
+			nextWait = nextWait * 0.9
 	}
 	
 	override protected def nextWaitTarget = WaitTarget.WaitDuration(nextWait)

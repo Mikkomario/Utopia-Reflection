@@ -35,6 +35,8 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	
 	// IMPLEMENTED	--------------------
 	
+	override def toString = s"Label($text)"
+	
 	override def content = _content
 	override def content_=(newContent: A) =
 	{

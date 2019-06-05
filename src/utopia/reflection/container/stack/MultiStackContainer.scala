@@ -29,10 +29,6 @@ trait MultiStackContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 		super.-=(component)
 		StackHierarchyManager.unregister(component)
 		
-		// If this container was left empty, unregisters it as well
-		if (isEmpty)
-			StackHierarchyManager.unregister(this)
-		
 		// Revalidates component hierarchy
 		revalidate()
 	}
