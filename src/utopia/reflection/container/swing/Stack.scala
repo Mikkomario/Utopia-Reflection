@@ -1,8 +1,12 @@
 package utopia.reflection.container.swing
 
+import utopia.flow.util.CollectionExtensions._
+import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.Axis2D
-import utopia.reflection.component.drawing.CustomDrawableWrapper
+import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
+import utopia.genesis.util.Drawer
+import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer, DrawLevel}
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.StackLayout.Fit
@@ -118,4 +122,57 @@ class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override va
     protected def add(component: C) = panel += component
     
     protected def remove(component: C) = panel -= component
+    
+    
+    // OTHER    -----------------------
+    
+    /**
+      * Adds alterating row colors to this stack
+      * @param firstColor The color of the first row
+      * @param secondColor The color of the second row
+      */
+    def addAlternatingRowBackground(firstColor: Color, secondColor: Color) = addCustomDrawer(
+        new AlternatingRowBackgroundDrawer(Vector(firstColor, secondColor)))
+    
+    
+    // NESTED CLASSES   ---------------
+    
+    private class AlternatingRowBackgroundDrawer(val colors: Seq[Color]) extends CustomDrawer
+    {
+        override def drawLevel = DrawLevel.Background
+    
+        override def draw(drawer: Drawer, bounds: Bounds) =
+        {
+            if (count > 1)
+            {
+                val baseDrawer = drawer.noEdges
+                val drawers = colors.map(baseDrawer.withFillColor).repeatingIterator()
+    
+                val b = bounds.size.perpendicularTo(direction)
+                var lastStart = 0.0
+                var lastComponentBottom = components.head.maxCoordinateAlong(direction)
+                components.tail.foreach
+                {
+                    c =>
+                        val componentPosition = c.coordinateAlong(direction)
+            
+                        val margin = (componentPosition - lastComponentBottom) / 2
+                        val lastSegmentLength = lastComponentBottom - lastStart + margin
+            
+                        // Draws the previous segment area
+                        drawers.next().draw(Bounds(Point(lastStart, 0, direction) + bounds.position,
+                            Size(lastSegmentLength, b, direction)))
+            
+                        // Prepares for the next segment
+                        lastStart = componentPosition - margin
+                        lastComponentBottom = componentPosition + c.lengthAlong(direction)
+                }
+    
+                // Draws the last segment
+                drawers.next().draw(Bounds.between(Point(lastStart, 0, direction) + bounds.position, bounds.bottomRight))
+            }
+            else
+                drawer.noEdges.withFillColor(colors.head).draw(bounds)
+        }
+    }
 }
