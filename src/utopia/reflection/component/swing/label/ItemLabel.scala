@@ -1,7 +1,7 @@
 package utopia.reflection.component.swing.label
 
 import utopia.reflection.component.swing.AwtTextComponentWrapper
-import utopia.reflection.component.{Alignable, Alignment}
+import utopia.reflection.component.{Alignable, Alignment, Refreshable}
 import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
@@ -11,15 +11,20 @@ import utopia.reflection.text.Font
   * @author Mikko Hilpinen
   * @since 24.4.2019, v1+
   * @tparam A The type of item displayed in this label
+  * @param initialContent The item first displayed in this label
+  * @param displayFunction A function that transforms the item to displayable text
+  * @param font The font used in this label
+  * @param margins The margins (horizontal and vertical) around the text in this label
+  * @param hasMinWidth Whether this label should have minimum width (always show all content text) (default = true)
   */
-class ItemLabel[A](initialItem: A, val displayFunction: DisplayFunction[A], override val font: Font,
+class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], override val font: Font,
 				   override val margins: StackSize, override val hasMinWidth: Boolean = true)
-	extends Label with AwtTextComponentWrapper with Alignable
+	extends Label with AwtTextComponentWrapper with Alignable with Refreshable[A]
 {
 	// ATTRIBUTES	--------------------
 	
-	private var _item = initialItem
-	private var _text = displayFunction(initialItem)
+	private var _content = initialContent
+	private var _text = displayFunction(initialContent)
 	
 	
 	// INITIAL CODE	--------------------
@@ -28,19 +33,16 @@ class ItemLabel[A](initialItem: A, val displayFunction: DisplayFunction[A], over
 	label.setText(_text.string)
 	
 	
-	// COMPUTED	------------------------
+	// IMPLEMENTED	--------------------
 	
-	def item = _item
-	def item_=(newItem: A) =
+	override def content = _content
+	override def content_=(newContent: A) =
 	{
-		_item = newItem
-		_text = displayFunction(newItem)
+		_content = newContent
+		_text = displayFunction(newContent)
 		label.setText(_text.string)
 		revalidate()
 	}
-	
-	
-	// IMPLEMENTED	--------------------
 	
 	override def text = _text
 	

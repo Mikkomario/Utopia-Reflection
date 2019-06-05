@@ -4,19 +4,28 @@ import java.awt.event.KeyEvent
 
 import utopia.flow.util.CollectionExtensions._
 import utopia.reflection.component.input.Selectable
-import utopia.reflection.component.{Refreshable, SelectionDisplay}
+import utopia.reflection.component.Refreshable
 
 /**
   * This manager handles displayed content AND selection
   * @author Mikko Hilpinen
   * @since 22.5.2019, v1+
   */
-trait SelectionManager[A, C <: Refreshable[A] with SelectionDisplay] extends ContentManager[A, C]
-	with Selectable[Option[A], Vector[A]]
+trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with Selectable[Option[A], Vector[A]]
 {
 	// ATTRIBUTES	-------------------
 	
 	private var selectedDisplay: Option[C] = None
+	
+	
+	// ABSTRACT	-----------------------
+	
+	/**
+	  * Updates how selection is displayed
+	  * @param oldSelected The old selected item (None if no item was selected before)
+	  * @param newSelected The new selected item (None if no item is selected anymore)
+	  */
+	protected def updateSelectionDisplay(oldSelected: Option[C], newSelected: Option[C]): Unit
 	
 	
 	// IMPLEMENTED	-------------------
@@ -43,14 +52,9 @@ trait SelectionManager[A, C <: Refreshable[A] with SelectionDisplay] extends Con
 		// Will not select the item again
 		if (selectedDisplay.forall { d => !newValue.contains(d.content)} )
 		{
-			selectedDisplay.foreach { _.isSelected = false }
-			if (newValue.isDefined)
-			{
-				selectedDisplay = displays.find { _.content == newValue.get }
-				selectedDisplay.foreach { _.isSelected = true }
-			}
-			else
-				selectedDisplay = None
+			val oldSelected = selectedDisplay
+			selectedDisplay = newValue.flatMap { v => displays.find { _.content == v } }
+			updateSelectionDisplay(oldSelected, selectedDisplay)
 		}
 	}
 	
@@ -104,9 +108,9 @@ trait SelectionManager[A, C <: Refreshable[A] with SelectionDisplay] extends Con
 	{
 		if (!selectedDisplay.contains(display))
 		{
-			selectedDisplay.foreach { _.isSelected = false }
+			val oldSelected = selectedDisplay
 			selectedDisplay = Some(display)
-			display.isSelected = true
+			updateSelectionDisplay(oldSelected, selectedDisplay)
 		}
 	}
 }

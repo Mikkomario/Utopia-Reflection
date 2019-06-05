@@ -1,6 +1,6 @@
 package utopia.reflection.test
 
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 import utopia.reflection.shape.LengthExtensions._
 import utopia.flow.async.{Loop, ThreadPool}
@@ -21,6 +21,7 @@ import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.FiniteDuration
 
 /**
   * This is a simple test implementation of text labels in a stack
@@ -61,7 +62,7 @@ object TextLabelStackTest extends App
 	val frame = Frame.windowed(framing, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	
-	val buttonLoop = Loop(Duration.ofSeconds(2), () => button.isVisible = !button.isVisible)
+	val buttonLoop = Loop(FiniteDuration(2, TimeUnit.SECONDS), () => button.isVisible = !button.isVisible)
 	buttonLoop.registerToStopOnceJVMCloses()
 	buttonLoop.startAsync()
 	

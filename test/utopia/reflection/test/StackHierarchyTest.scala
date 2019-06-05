@@ -1,7 +1,7 @@
 package utopia.reflection.test
 
 import java.awt.Color
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 import javax.swing.JLabel
 import utopia.flow.async.{Loop, ThreadPool}
@@ -15,6 +15,7 @@ import utopia.reflection.container.swing.window.WindowResizePolicy.Program
 import utopia.reflection.shape.{StackLength, StackSize}
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.FiniteDuration
 
 /**
  * This test creates a simple stack and sees whether the components are positioned properly
@@ -88,7 +89,7 @@ object StackHierarchyTest extends App
     // The last item will pulse every second
     implicit val context: ExecutionContext = new ThreadPool("Test").executionContext
     
-    val pulseLoop = Loop(Duration.ofSeconds(1), () => item.pulse())
+    val pulseLoop = Loop(FiniteDuration(1, TimeUnit.SECONDS), () => item.pulse())
     pulseLoop.registerToStopOnceJVMCloses()
     
     // Start the program

@@ -1,16 +1,22 @@
 package utopia.reflection.test
 
-import utopia.flow.async.ThreadPool
+import java.util.concurrent.TimeUnit
+
+import utopia.flow.util.TimeExtensions._
+import utopia.flow.async.{Loop, ThreadPool}
+import utopia.flow.util.WaitTarget
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
+import utopia.reflection.component.Refreshable
 import utopia.reflection.component.swing.label.ItemLabel
 import utopia.reflection.container.stack.{BoxScrollBarDrawer, StackHierarchyManager}
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.{ScrollView, Stack}
+import utopia.reflection.controller.data.StackContentManager
 import utopia.reflection.localization.{DisplayFunction, Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.shape.StackLengthLimit
@@ -18,6 +24,7 @@ import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
 /**
   * This is a simple test implementation of scroll view
@@ -32,16 +39,25 @@ object ScrollViewTest extends App
 	implicit val defaultLanguageCode: String = "EN"
 	implicit val localizer: Localizer = NoLocalization
 	
-	// Creates the labels
+	// Label creation function
 	val basicFont = Font("Arial", 12, Plain, 2)
-	val labels = (1 to 50).toVector.map { i => new ItemLabel(i,
-		DisplayFunction.interpolating("Label number %i"), basicFont, 16.any x 4.fixed) }
-	labels.foreach { _.background = Color.yellow }
-	labels.foreach { _.alignCenter() }
+	val displayFunction = DisplayFunction.interpolating("Label number %i")
+	def makeLabel(number: Int) =
+	{
+		val label = new ItemLabel(number, displayFunction, basicFont, 16.any x 4.fixed)
+		label.background = Color.yellow
+		label.alignCenter()
+		
+		label
+	}
 	
 	// Creates the main stack
-	val stack = Stack.columnWithItems(labels, 8.fixed, 4.fixed)
+	val stack = Stack.column[ItemLabel[Int]](8.fixed, 4.fixed)
 	stack.background = Color.yellow.minusHue(33).darkened(1.2)
+	
+	// Adds content management
+	val contentManager = new StackContentManager[Int, ItemLabel[Int]](stack, makeLabel)
+	private val contentUpdateLoop = new ContentUpdateLoop(contentManager)
 	
 	val actorHandler = ActorHandler()
 	
@@ -60,6 +76,57 @@ object ScrollViewTest extends App
 	actionLoop.registerToStopOnceJVMCloses()
 	actionLoop.startAsync()
 	StackHierarchyManager.startRevalidationLoop()
+	contentUpdateLoop.registerToStopOnceJVMCloses()
+	contentUpdateLoop.startAsync()
 	frame.startEventGenerators(actorHandler)
 	frame.isVisible = true
+}
+
+private class ContentUpdateLoop(val target: Refreshable[Vector[Int]]) extends Loop
+{
+	// ATTRIBUTES	---------------------
+	
+	private val maxLength = 50
+	private var nextWait: Duration = 5.seconds
+	private var increasing = true
+	
+	
+	// IMPLEMENTED	--------------------
+	
+	override protected def runOnce() =
+	{
+		val turnAround =
+		{
+			if (increasing)
+			{
+				if (target.content.size < maxLength)
+				{
+					target.content :+= target.content.size
+					false
+				}
+				else
+					true
+			}
+			else
+			{
+				if (target.content.nonEmpty)
+				{
+					target.content = target.content.dropRight(1)
+					false
+				}
+				else
+					true
+			}
+		}
+		
+		if (turnAround)
+		{
+			increasing = !increasing
+			nextWait = Duration(10, TimeUnit.SECONDS)
+		}
+		else
+			nextWait = nextWait * 0.8
+	}
+	
+	override protected def nextWaitTarget = WaitTarget.WaitDuration(nextWait)
 }

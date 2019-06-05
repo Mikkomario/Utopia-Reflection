@@ -1,7 +1,5 @@
 package utopia.reflection.container.stack
 
-import java.time.Duration
-
 import javax.swing.SwingUtilities
 import utopia.flow.async.Loop
 import utopia.flow.collection.VolatileList
@@ -14,6 +12,7 @@ import utopia.reflection.component.stack.Stackable
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.Duration
 
 /**
   * Stack hierarchy manager tracks stack component hierarchies and updates the components when necessary
