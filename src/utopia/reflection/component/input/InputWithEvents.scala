@@ -8,6 +8,7 @@ import scala.concurrent.{ExecutionContext, Future}
   * @since 23.4.2019, v1+
   * @tparam A The type of input
   */
+@deprecated("Replaced with a new approach that uses pointers", "v1+")
 trait InputWithEvents[A] extends Input[A] with Listenable[A]
 {
 	/**

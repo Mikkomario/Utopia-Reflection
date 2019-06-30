@@ -2,8 +2,10 @@ package utopia.reflection.controller.data
 
 import java.awt.event.KeyEvent
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
+import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.flow.util.CollectionExtensions._
-import utopia.reflection.component.input.Selectable
+import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.component.Refreshable
 
 /**
@@ -11,11 +13,13 @@ import utopia.reflection.component.Refreshable
   * @author Mikko Hilpinen
   * @since 22.5.2019, v1+
   */
-trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with Selectable[Option[A], Vector[A]]
+trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with SelectableWithPointers[Option[A], Vector[A]]
 {
 	// ATTRIBUTES	-------------------
 	
 	private var _selectedDisplay: Option[C] = None
+	
+	override val valuePointer = new PointerWithEvents[Option[A]](None)
 	
 	
 	// ABSTRACT	-----------------------
@@ -34,35 +38,6 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 	  * @return The currently selected display. None if no item is currently selected
 	  */
 	def selectedDisplay = _selectedDisplay
-	
-	
-	// IMPLEMENTED	-------------------
-	
-	override def content_=(newContent: Vector[A]) =
-	{
-		// Tries to preserve selection during refresh
-		val oldSelected = selected
-		super.content_=(newContent)
-		
-		if (oldSelected.isDefined)
-		{
-			updateSelection(oldSelected)
-			
-			// Informs listeners if selection was lost
-			val newSelected = selected
-			if (newSelected.isEmpty)
-				informListeners(newSelected)
-		}
-	}
-	
-	override def setValueNoEvents(newValue: Option[A]) =
-	{
-		// Will not select the item again
-		if (_selectedDisplay.forall { d => !newValue.contains(d.content)} )
-			updateSelection(newValue)
-	}
-	
-	override def value = _selectedDisplay.map { _.content }
 	
 	
 	// OTHER	-------------------
@@ -120,11 +95,29 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 	private def selectDisplay(display: C) =
 	{
 		if (!_selectedDisplay.contains(display))
+			value = Some(display.content)
+	}
+	
+	
+	// NESTED CLASSES	---------------------
+	
+	private class ContentUpdateSelectionHandler extends ChangeListener[Vector[A]]
+	{
+		override def onChangeEvent(event: ChangeEvent[Vector[A]]) =
 		{
-			val oldSelected = _selectedDisplay
-			_selectedDisplay = Some(display)
-			updateSelectionDisplay(oldSelected, _selectedDisplay)
-			informListeners()
+			// Tries to preserve selection after refresh
+			if (value.isDefined)
+			{
+				if (event.newValue.contains(value.get))
+					updateSelection(value)
+				else
+					value = None
+			}
 		}
+	}
+	
+	private class ValueUpdateListener extends ChangeListener[Option[A]]
+	{
+		override def onChangeEvent(event: ChangeEvent[Option[A]]) = updateSelection(event.newValue)
 	}
 }

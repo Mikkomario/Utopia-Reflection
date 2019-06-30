@@ -6,9 +6,10 @@ import javax.swing.plaf.basic.ComboPopup
 import utopia.reflection.shape.LengthExtensions._
 import utopia.flow.util.CollectionExtensions._
 import javax.swing.{JComboBox, JList, ListCellRenderer}
+import utopia.flow.datastructure.mutable.PointerWithEvents
+import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
-import utopia.reflection.component.Refreshable
-import utopia.reflection.component.input.Selectable
+import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.component.swing.label.Label
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
@@ -33,15 +34,18 @@ import utopia.reflection.text.Font
 class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font: Font, backgroundColor: Color,
 				  selectedBackground: Color, textColor: Color = Color.textBlack,
 				  val displayFunction: DisplayFunction[A] = DisplayFunction.raw, initialContent: Vector[A] = Vector(),
-				  val maximumOptimalWidth: Option[Int] = None) extends Selectable[Option[A], Vector[A]]
-	with Refreshable[Vector[A]] with JWrapper with CachingStackable
+				  val maximumOptimalWidth: Option[Int] = None)
+	extends SelectableWithPointers[Option[A], Vector[A]] with JWrapper with CachingStackable
 {
 	// ATTRIBUTES	-------------------
 	
 	private val field = new JComboBox[String]()
-	private var _content = initialContent
+	// private var _content = initialContent
 	private var _displayValues = Vector[LocalizedString]()
 	private var isShowingSelectOption = true
+	
+	override val valuePointer = new PointerWithEvents[Option[A]](None)
+	override val contentPointer = new PointerWithEvents[Vector[A]](Vector())
 	
 	
 	// INITIAL CODE	-------------------
@@ -70,6 +74,9 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		}
 	}
 	
+	valuePointer.addListener(new SelectionUpdateListener)
+	contentPointer.addListener(new ContentUpdateListener)
+	
 	content = initialContent
 	field.addActionListener(new UserSelectionListener())
 	
@@ -77,24 +84,13 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	// COMPUTED	-----------------------
 	
 	/**
-	  * @return The currently selected index where 0 is the first item
+	  * @return The currently selected index where 0 is the first item. None if no item is selected.
 	  */
 	def selectedIndex =
 	{
 		val index = field.getSelectedIndex
 		// Index 0 in field is a plaeholder text (sometimes)
 		if (index < indexMod) None else Some(index - indexMod)
-	}
-	def selectedIndex_=(newIndex: Option[Int]): Unit = selectedIndex_=(newIndex getOrElse -1)
-	def selectedIndex_=(newIndex: Int) =
-	{
-		// Index 0 in field sometimes represents the placeholder value (not selected)
-		val trueIndex = -1 max ((-1 max newIndex) + indexMod) min (this.count - 1)
-		field.setSelectedIndex(trueIndex)
-		
-		// Doesn't show selection onption once a selection is made
-		if (isShowingSelectOption && trueIndex >= indexMod)
-			content = _content
 	}
 	
 	/**
@@ -110,9 +106,6 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	
 	
 	// IMPLEMENTED	-------------------
-	
-	// Only accepts values that are within selection pool
-	// override def value_=(newValue: Option[A]) = super.value_=(newValue.filter(content.contains))
 	
 	override protected def updateVisibility(visible: Boolean) = super[JWrapper].isVisible_=(visible)
 	
@@ -139,43 +132,34 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	
 	override def updateLayout() = component.revalidate()
 	
-	override def setValueNoEvents(newValue: Option[A]) = selectedIndex = newValue.flatMap(content.optionIndexOf)
-	
-	override def value = selectedIndex.flatMap(content.getOption)
-	
-	override def content = _content
-	
-	override def content_=(newContent: Vector[A]) =
+	private def updateContent(newContent: Vector[A]) =
 	{
 		// Preserves selection
 		val oldSelected = selected
 		
-		_content = newContent
 		_displayValues = newContent.map(displayFunction.apply)
 		
 		// If there is only 1 item available or if previously selected item is still available, auto-selects it afterwards
-		val newSelectedIndex =
+		val newSelection =
 		{
-			if (_content.size == 1)
-				Some(0)
+			if (newContent.size == 1)
+				newContent.headOption
+			else if (oldSelected.exists(newContent.contains))
+				oldSelected
 			else
-				oldSelected.flatMap(_content.optionIndexOf)
+				None
 		}
 		
 		// Updates the field (leaves out "select") if there is an item selected or if there are no values available
-		isShowingSelectOption = newSelectedIndex.isEmpty && _content.nonEmpty
+		isShowingSelectOption = newSelection.isEmpty && newContent.nonEmpty
 		val finalDisplayOptions = if (isShowingSelectOption) selectText +: _displayValues else _displayValues
 		
 		field.removeAllItems()
 		finalDisplayOptions.foreach { s => field.addItem(s.string) }
 		
-		// If there is only 1 item available, auto-selects it afterwards
-		selectedIndex = newSelectedIndex
-		
-		// Informs listeners if selection changes
-		val newSelected = selected
-		if (oldSelected.isDefined && newSelected.isEmpty)
-			informListeners(newSelected)
+		// Updates selection
+		field.setSelectedIndex(newSelection.flatMap(newContent.optionIndexOf).getOrElse(-1) + indexMod)
+		value = newSelection
 		
 		revalidate()
 	}
@@ -183,27 +167,40 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	
 	// NESTED CLASSES	---------------
 	
+	private class ContentUpdateListener extends ChangeListener[Vector[A]]
+	{
+		override def onChangeEvent(event: ChangeEvent[Vector[A]]) = updateContent(event.newValue)
+	}
+	
+	private class SelectionUpdateListener extends ChangeListener[Option[A]]
+	{
+		// TODO: This may possibly be broken on select None case. Problems with indexOutOfBounds and update order
+		override def onChangeEvent(event: ChangeEvent[Option[A]]) =
+		{
+			if (event.newValue.isDefined)
+			{
+				val newIndex = event.newValue.flatMap(content.optionIndexOf) getOrElse -1
+				
+				// Index 0 in field sometimes represents the placeholder value (not selected)
+				val trueIndex = -1 max ((-1 max newIndex) + indexMod) min (content.size - 1)
+				field.setSelectedIndex(trueIndex)
+				
+				// Doesn't show selection onption once a selection is made
+				if (isShowingSelectOption && trueIndex >= indexMod)
+					updateContent(content)
+			}/*
+			else if (isShowingSelectOption)
+				field.setSelectedIndex(0)
+			else
+				field.setSelectedIndex(-1)*/
+		}
+	}
+	
 	private class UserSelectionListener extends ActionListener
 	{
-		// ATTRIBUTES	---------------
-		
-		private var lastSelected = selected
-		
-		
-		// IMPLEMENTED	---------------
-		
 		override def actionPerformed(e: ActionEvent) =
 		{
-			val newSelected = selected
-			if (lastSelected != newSelected)
-			{
-				lastSelected = newSelected
-				informListeners(newSelected)
-				
-				// Once an item has been selected, makes sure that "select" option is no longer shown
-				if (isShowingSelectOption && newSelected.isDefined)
-					content = _content
-			}
+			value = selectedIndex.flatMap { i => content.getOption(i) }
 		}
 	}
 	

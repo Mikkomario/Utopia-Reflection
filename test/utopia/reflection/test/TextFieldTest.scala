@@ -92,7 +92,7 @@ object TextFieldTest extends App
 	val tab = new TabSelection[String](basicFont, color, 16, StackLength(0, 4, 8),
 		initialChoices = Vector("Goods", "for", "Purchase"))
 	tab.selectOne("Goods")
-	tab.addListener { s => println(s.getOrElse("No item") + " selected") }
+	tab.addValueListener { s => println(s.newValue.getOrElse("No item") + " selected") }
 	
 	val framing1 = new Framing(stack, 8.downscaling x 8.downscaling)
 	framing1.background = color

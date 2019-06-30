@@ -58,6 +58,7 @@ class StackSelectionManager[A, C <: Stackable with Refreshable[A]](stack: StackL
 		
 		override def draw(drawer: Drawer, bounds: Bounds) =
 		{
+			// FIXME: The drawer doesn't get called anymore
 			// Draws the selected area using another custom drawer
 			selectedDisplay.flatMap(stack.areaOf).foreach { area => selectionAreaDrawer.draw(drawer,
 				area.translated(bounds.position)) }

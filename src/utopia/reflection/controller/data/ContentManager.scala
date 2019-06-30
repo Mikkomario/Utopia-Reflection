@@ -1,15 +1,28 @@
 package utopia.reflection.controller.data
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
+import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.flow.util.CollectionExtensions._
-import utopia.reflection.component.Refreshable
+import utopia.reflection.component.{Refreshable, RefreshableWithPointer}
 
 /**
-  * ContentManagers update content on a component
+  * ContentManagers update content on a component. Please note that when using ContentManagers, you shouldn't modify
+  * the underlying displays through other means
   * @author Mikko Hilpinen
   * @since 22.5.2019, v1+
   */
-trait ContentManager[A, C <: Refreshable[A]] extends Refreshable[Vector[A]]
+trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vector[A]]
 {
+	// ATTRIBUTES	------------------
+	
+	override val contentPointer = new PointerWithEvents[Vector[A]](Vector())
+	
+	
+	// INITIAL CODE	------------------
+	
+	contentPointer.addListener(new ContentUpdateListener)
+	
+	
 	// ABSTRACT	----------------------
 	
 	/**
@@ -35,27 +48,6 @@ trait ContentManager[A, C <: Refreshable[A]] extends Refreshable[Vector[A]]
 	protected def finalizeRefresh(): Unit
 	
 	
-	// IMPLEMENTED	------------------
-	
-	override def content = displays.map { _.content }
-	
-	override def content_=(newContent: Vector[A]) =
-	{
-		// Existing rows are updated
-		displays.foreachWith(newContent) { _.content = _ }
-		
-		val size = displays.size
-		
-		// Unnecessary rows are removed and new rows may be added
-		if (size > newContent.size)
-			dropDisplays(displays.drop(newContent.size))
-		else if (size < newContent.size)
-			addDisplaysFor(newContent.drop(size))
-		
-		finalizeRefresh()
-	}
-	
-	
 	// OTHER	--------------------
 	
 	/**
@@ -73,4 +65,28 @@ trait ContentManager[A, C <: Refreshable[A]] extends Refreshable[Vector[A]]
 	  * @return The display currently showing the provided item. None if no such display was found.
 	  */
 	def displayFor(item: Any): Option[C] = displayFor[Any](item, _ == _)
+	
+	
+	// NESTED CLASSES	-------------
+	
+	private class ContentUpdateListener extends ChangeListener[Vector[A]]
+	{
+		override def onChangeEvent(event: ChangeEvent[Vector[A]]) =
+		{
+			val newContent = event.newValue
+			
+			// Existing rows are updated
+			displays.foreachWith(newContent) { _.content = _ }
+			
+			val size = displays.size
+			
+			// Unnecessary rows are removed and new rows may be added
+			if (size > newContent.size)
+				dropDisplays(displays.drop(newContent.size))
+			else if (size < newContent.size)
+				addDisplaysFor(newContent.drop(size))
+			
+			finalizeRefresh()
+		}
+	}
 }

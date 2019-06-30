@@ -26,9 +26,9 @@ object Selection
   * @author Mikko Hilpinen
   * @since 23.4.2019, v1+
   * @tparam S the type of selection
-  * @tparam P The type of selection pool
+  * @tparam C The type of selection pool
   */
-trait Selection[S, +P] extends InputWithEvents[S] with Pool[P]
+trait Selection[S, +C] extends Input[S] with Pool[C]
 {
 	// COMPUTED	-----------------
 	

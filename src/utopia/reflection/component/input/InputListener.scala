@@ -18,6 +18,7 @@ object InputListener
   * @author Mikko Hilpinen
   * @since 22.4.2019, v1+
   */
+@deprecated("Replaced with a new approach that uses pointers", "v1+")
 trait InputListener[-A]
 {
 	/**

@@ -9,7 +9,7 @@ object Refreshable
 		/**
 		  * Removes all items from this pool
 		  * @param cbf Implicit canbuildfrom
-		  * @tparam C2 Arbitary collection type
+		  * @tparam C2 Arbitrary collection type
 		  */
 		def clear[C2]()(implicit cbf: CanBuildFrom[C2, A, C]) =
 		{

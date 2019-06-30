@@ -7,6 +7,7 @@ import scala.concurrent.{ExecutionContext, Future}
   * @author Mikko Hilpinen
   * @since 22.4.2019, v1+
   */
+@deprecated("Replaced with a new approach that uses pointers", "v1+")
 trait Listenable[A]
 {
 	// ATTRIBUTES	------------------

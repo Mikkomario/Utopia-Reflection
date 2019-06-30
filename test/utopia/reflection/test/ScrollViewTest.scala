@@ -8,7 +8,6 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
-import utopia.genesis.util.Drawer
 import utopia.reflection.component.Refreshable
 import utopia.reflection.component.drawing.{CustomDrawer, DrawLevel}
 import utopia.reflection.component.swing.label.ItemLabel
@@ -58,11 +57,12 @@ object ScrollViewTest extends App
 	// Adds content management
 	val selectionDrawer = CustomDrawer(DrawLevel.Foreground, (d, b) =>
 	{
+		println("Drawing")
 		d.withColor(Color.black.withAlpha(0.33), Color.black.withAlpha(0.8)).withStroke(2).draw(b)
 	})
 	
 	val contentManager = new StackSelectionManager[Int, ItemLabel[Int]](stack, makeLabel, selectionDrawer)
-	contentManager.addListener(i => println("Selected " + i))
+	contentManager.addValueListener(i => println("Selected " + i.newValue))
 	contentManager.enableKeyHandling()
 	contentManager.enableMouseHandling(false)
 	private val contentUpdateLoop = new ContentUpdateLoop(contentManager)
