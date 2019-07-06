@@ -22,6 +22,12 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 	override val valuePointer = new PointerWithEvents[Option[A]](None)
 	
 	
+	// INITIAL CODE	-------------------
+	
+	valuePointer.addListener(new ValueUpdateListener)
+	contentPointer.addListener(new ContentUpdateSelectionHandler)
+	
+	
 	// ABSTRACT	-----------------------
 	
 	/**
