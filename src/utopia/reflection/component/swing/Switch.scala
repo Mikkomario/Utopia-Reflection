@@ -2,6 +2,7 @@ package utopia.reflection.component.swing
 
 import java.time.Duration
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.util.TimeExtensions._
 import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent}
@@ -12,7 +13,7 @@ import utopia.genesis.util.Drawer
 import utopia.inception.handling.{HandlerType, Mortal}
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
-import utopia.reflection.component.input.InteractionWithEvents
+import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.shape.{StackLength, StackSize}
@@ -29,17 +30,17 @@ object Switch
   * @since 4.5.2019, v1+
   */
 class Switch(val targetWidth: StackLength, val color: Color, actorHandler: ActorHandler)
-	extends AwtComponentWrapperWrapper with CustomDrawableWrapper with InteractionWithEvents[Boolean]
-		with Stackable
+	extends AwtComponentWrapperWrapper with CustomDrawableWrapper with InteractionWithPointer[Boolean] with Stackable
 {
 	// ATTRIBUTES	-----------------
 	
 	private val label = new EmptyLabel()
 	
-	private var _value = false
+	// private var _value = false
 	private var _isEnabled = true
 	
 	override val stackSize = StackSize(targetWidth, targetWidth.noMax * Switch.maxHeightRatio)
+	override val valuePointer = new PointerWithEvents(false)
 	
 	
 	// INITIAL CODE	-----------------
@@ -82,10 +83,6 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 	override def updateLayout() = Unit
 	
 	override def resetCachedSize() = Unit
-	
-	override def setValueNoEvents(newValue: Boolean) = _value = newValue
-	
-	override def value = _value
 	
 	
 	// NESTED CLASSES	-------------

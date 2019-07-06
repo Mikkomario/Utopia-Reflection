@@ -57,7 +57,6 @@ object ScrollViewTest extends App
 	// Adds content management
 	val selectionDrawer = CustomDrawer(DrawLevel.Foreground, (d, b) =>
 	{
-		println("Drawing")
 		d.withColor(Color.black.withAlpha(0.33), Color.black.withAlpha(0.8)).withStroke(2).draw(b)
 	})
 	

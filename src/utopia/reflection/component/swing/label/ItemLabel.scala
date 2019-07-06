@@ -1,7 +1,9 @@
 package utopia.reflection.component.swing.label
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
+import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.reflection.component.swing.AwtTextComponentWrapper
-import utopia.reflection.component.{Alignable, Alignment, Refreshable}
+import utopia.reflection.component.{Alignable, Alignment, RefreshableWithPointer}
 import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
@@ -19,12 +21,13 @@ import utopia.reflection.text.Font
   */
 class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], override val font: Font,
 				   override val margins: StackSize, override val hasMinWidth: Boolean = true)
-	extends Label with AwtTextComponentWrapper with Alignable with Refreshable[A]
+	extends Label with AwtTextComponentWrapper with Alignable with RefreshableWithPointer[A]
 {
 	// ATTRIBUTES	--------------------
 	
-	private var _content = initialContent
 	private var _text = displayFunction(initialContent)
+	
+	override val contentPointer = new PointerWithEvents[A](initialContent)
 	
 	
 	// INITIAL CODE	--------------------
@@ -37,15 +40,6 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	
 	override def toString = s"Label($text)"
 	
-	override def content = _content
-	override def content_=(newContent: A) =
-	{
-		_content = newContent
-		_text = displayFunction(newContent)
-		label.setText(_text.string)
-		revalidate()
-	}
-	
 	override def text = _text
 	
 	override def align(alignment: Alignment) =
@@ -56,4 +50,17 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	}
 	
 	override def updateLayout() = Unit
+	
+	
+	// NESTED CLASSES	----------------
+	
+	private class ContentUpdateListener extends ChangeListener[A]
+	{
+		override def onChangeEvent(event: ChangeEvent[A]) =
+		{
+			_text = displayFunction(event.newValue)
+			label.setText(_text.string)
+			revalidate()
+		}
+	}
 }
