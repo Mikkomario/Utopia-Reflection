@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" afterDir="false" />
     </list>
     <ignored path="../Utopia-Genesis-Scala/out/" />
     <ignored path="out/" />
@@ -26,7 +25,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionManager.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1880">
+            <state relative-caret-position="1760">
               <caret line="94" column="85" selection-start-line="94" selection-start-column="85" selection-end-line="94" selection-end-column="85" />
               <folding>
                 <element signature="e#43#73#0" expanded="true" />
@@ -35,10 +34,22 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+              <folding>
+                <element signature="e#43#121#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
+            <state relative-caret-position="700">
               <caret line="58" column="5" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
               <folding>
                 <element signature="e#32#72#0" expanded="true" />
@@ -50,8 +61,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+            <state relative-caret-position="60">
+              <caret line="19" selection-start-line="19" selection-end-line="19" />
               <folding>
                 <element signature="e#43#68#0" expanded="true" />
               </folding>
@@ -59,19 +70,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/SwitchTest.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="10" column="62" selection-start-line="10" selection-start-column="62" selection-end-line="10" selection-end-column="62" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="362">
+            <state relative-caret-position="980">
               <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
               <folding>
                 <element signature="e#43#73#0" expanded="true" />
@@ -83,7 +85,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/StackContentManager.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
+            <state relative-caret-position="260">
               <caret line="15" column="74" selection-start-line="15" selection-start-column="74" selection-end-line="15" selection-end-column="74" />
               <folding>
                 <element signature="e#43#89#0" expanded="true" />
@@ -95,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="45" column="5" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
+            <state relative-caret-position="440">
+              <caret line="52" column="24" selection-start-line="52" selection-start-column="24" selection-end-line="52" selection-end-column="24" />
               <folding>
                 <element signature="e#32#77#0" expanded="true" />
               </folding>
@@ -116,8 +118,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/ContentManager.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="620">
-              <caret line="31" column="4" lean-forward="true" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
+            <state relative-caret-position="560">
+              <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
               <folding>
                 <element signature="e#43#101#0" expanded="true" />
               </folding>
@@ -129,7 +131,7 @@
         <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="440">
-              <caret line="39" column="53" lean-forward="true" selection-start-line="39" selection-start-column="53" selection-end-line="39" selection-end-column="53" />
+              <caret line="39" column="53" selection-start-line="39" selection-start-column="53" selection-end-line="39" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -188,7 +190,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" />
         <option value="$PROJECT_DIR$/../Utopia-Flow-Scala/src/utopia/flow/util/TimeExtensions.scala" />
         <option value="$PROJECT_DIR$/../Utopia-Flow-Scala/test/utopia/flow/test/TimeNumberTest.scala" />
         <option value="$PROJECT_DIR$/../Utopia-Flow-Scala/test/utopia/flow/test/AllTests.scala" />
@@ -231,7 +232,6 @@
         <option value="$PROJECT_DIR$/src/utopia/reflection/controller/data/ContentManager.scala" />
         <option value="$PROJECT_DIR$/test/utopia/reflection/test/DropDownTest.scala" />
         <option value="$PROJECT_DIR$/src/utopia/reflection/component/input/SelectableWithPointers.scala" />
-        <option value="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" />
         <option value="$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala" />
         <option value="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionManager.scala" />
         <option value="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala" />
@@ -239,6 +239,8 @@
         <option value="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" />
         <option value="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" />
         <option value="$PROJECT_DIR$/test/utopia/reflection/test/SwitchTest.scala" />
+        <option value="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" />
+        <option value="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" />
       </list>
     </option>
   </component>
@@ -255,6 +257,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -308,7 +311,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -354,7 +356,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.SwitchTest">
+  <component name="RunManager" selected="Application.TextFieldTest">
     <configuration name="DropDownTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.DropDownTest" />
       <module name="Utopia-Reflection" />
@@ -422,10 +424,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.SwitchTest" />
         <item itemvalue="Application.ScrollViewTest" />
         <item itemvalue="Application.ScrollAreaTest" />
-        <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.DropDownTest" />
       </list>
     </recent_temporary>
@@ -444,13 +446,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00048" summary="Added simple switch panel. Invisible items are now ignored in stacks">
-      <created>1556353681306</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1556353681306</updated>
     </task>
     <task id="LOCAL-00049" summary="Added simple switch panel. Invisible items are now ignored in stacks">
       <created>1556442444068</created>
@@ -788,7 +783,14 @@
       <option name="project" value="LOCAL" />
       <updated>1562424944224</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <task id="LOCAL-00097" summary="Refacted ItemLabel and Switch to use pointers">
+      <created>1562425545123</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1562425545123</updated>
+    </task>
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="TodoView">
@@ -804,7 +806,7 @@
     <frame x="-7" y="-7" width="2575" height="1415" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19204772" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19363818" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -834,7 +836,6 @@
     </layout>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added dialog class. Moved tests to different source" />
     <MESSAGE value="Focus highlighting option added to text fields" />
     <MESSAGE value="Added key handling to buttons and also default key handling to windows" />
     <MESSAGE value="Added iconLabel class" />
@@ -859,16 +860,10 @@
     <MESSAGE value="Working on cache classes" />
     <MESSAGE value="Added new pointer functionality to selectable items. Currently debugging." />
     <MESSAGE value="Fixed stack selection manager" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed stack selection manager" />
+    <MESSAGE value="Refacted ItemLabel and Switch to use pointers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refacted ItemLabel and Switch to use pointers" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/util/Drawer.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401">
-          <caret line="117" column="9" selection-start-line="117" selection-start-column="9" selection-end-line="117" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentWrapper.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="280">
@@ -1097,16 +1092,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="28" column="50" selection-start-line="28" selection-start-column="50" selection-end-line="28" selection-end-column="50" />
-          <folding>
-            <element signature="e#43#101#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/input/SelectableWithPointers.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -1124,53 +1109,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="45" column="5" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
-          <folding>
-            <element signature="e#32#77#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/input/Selectable.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1840">
-          <caret line="92" column="50" selection-start-line="92" selection-start-column="50" selection-end-line="92" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
-          <folding>
-            <element signature="e#43#73#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/StackContentManager.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="15" column="74" selection-start-line="15" selection-start-column="74" selection-end-line="15" selection-end-column="74" />
-          <folding>
-            <element signature="e#43#89#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/ContentManager.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="620">
-          <caret line="31" column="4" lean-forward="true" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
-          <folding>
-            <element signature="e#43#101#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/label/Button.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -1185,13 +1123,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="39" column="53" lean-forward="true" selection-start-line="39" selection-start-column="53" selection-end-line="39" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="705">
@@ -1202,9 +1133,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/SwitchTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="10" column="62" selection-start-line="10" selection-start-column="62" selection-end-line="10" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="30" column="39" lean-forward="true" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="39" />
+          <folding>
+            <element signature="e#43#101#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionManager.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1880">
+        <state relative-caret-position="1760">
           <caret line="94" column="85" selection-start-line="94" selection-start-column="85" selection-end-line="94" selection-end-column="85" />
           <folding>
             <element signature="e#43#73#0" expanded="true" />
@@ -1214,7 +1162,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
+        <state relative-caret-position="700">
           <caret line="58" column="5" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
           <folding>
             <element signature="e#32#72#0" expanded="true" />
@@ -1224,18 +1172,75 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+        <state relative-caret-position="60">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
           <folding>
             <element signature="e#43#68#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/SwitchTest.scala">
+    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="10" column="62" selection-start-line="10" selection-start-column="62" selection-end-line="10" selection-end-column="62" />
+        <state relative-caret-position="980">
+          <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
+          <folding>
+            <element signature="e#43#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/StackContentManager.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="15" column="74" selection-start-line="15" selection-start-column="74" selection-end-line="15" selection-end-column="74" />
+          <folding>
+            <element signature="e#43#89#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/input/Selectable.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1840">
+          <caret line="92" column="50" selection-start-line="92" selection-start-column="50" selection-end-line="92" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/controller/data/ContentManager.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="560">
+          <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
+          <folding>
+            <element signature="e#43#101#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="39" column="53" selection-start-line="39" selection-start-column="53" selection-end-line="39" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="52" column="24" selection-start-line="52" selection-start-column="24" selection-end-line="52" selection-end-column="24" />
+          <folding>
+            <element signature="e#32#77#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+          <folding>
+            <element signature="e#43#121#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -50,6 +50,7 @@ object TextFieldTest extends App
 	val productField = new TextField(320.downTo(128), 4.upTo(8), basicFont, prompt = Some(productPrompt))
 	productField.alignLeft(16)
 	productField.addFocusHighlight(focusColor)
+	productField.valuePointer.addListener { e => println(s"Product: ${e.newValue}") }
 	
 	val amountPrompt = Prompt("1-999", basicFont)
 	val amountField = TextField.forPositiveInts(128.downTo(64), 4.upTo(8), basicFont, prompt = Some(amountPrompt))

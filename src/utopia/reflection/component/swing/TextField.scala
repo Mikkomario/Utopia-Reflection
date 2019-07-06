@@ -7,9 +7,11 @@ import utopia.flow.generic.ValueConversions._
 import javax.swing.JTextField
 import javax.swing.event.{DocumentEvent, DocumentListener}
 import javax.swing.text.{Document, PlainDocument}
+import utopia.flow.datastructure.mutable.PointerWithEvents
+import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
 import utopia.reflection.component.{Alignable, Alignment}
-import utopia.reflection.component.input.InteractionWithEvents
+import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.shape.{Border, Insets, StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt, Regex}
@@ -101,18 +103,20 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 				val document: Document = new PlainDocument(), initialText: String = "",
 				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,
 				resultFilter: Option[Regex] = None)
-	extends JWrapper with CachingStackable with InteractionWithEvents[Option[String]] with Alignable
+	extends JWrapper with CachingStackable with InteractionWithPointer[Option[String]] with Alignable
 {
 	// ATTRIBUTES	----------------------
 	
 	private val field = new JTextField()
-	private val listener = new InputListener()
 	private val defaultBorder = Border.square(1, textColor.timesAlpha(0.625))
 	
 	private lazy val promptDocument = new PlainDocument()
 	private var isDisplayingPrompt = false
+	private var isUpdatingText = false
 	private var enterListeners = Vector[Option[String] => Unit]()
 	private var resultListeners = Vector[Option[String] => Unit]()
+	
+	override val valuePointer = new PointerWithEvents[Option[String]](None)
 	
 	
 	// INITIAL CODE	----------------------
@@ -125,10 +129,11 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	setBorder(defaultBorder)
 	text = initialText
 	
-	field.getDocument.addDocumentListener(listener)
+	document.addDocumentListener(new InputListener)
 	field.addActionListener(new EnterListener())
 	if (prompt.isDefined)
 		field.addFocusListener(new PromptFocusListener())
+	valuePointer.addListener(new ValueChangeListener)
 	
 	
 	// COMPUTED	--------------------------
@@ -148,6 +153,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	}
 	def text_=(newText: String): Unit =
 	{
+		isUpdatingText = true
 		if (prompt.isEmpty)
 			field.setText(newText)
 		else
@@ -165,6 +171,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 				field.setText(newText)
 			}
 		}
+		isUpdatingText = false
 	}
 	def text_=(newText: Option[String]): Unit = text_=(newText getOrElse "")
 	
@@ -182,13 +189,6 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	// IMPLEMENTED	--------------------
 	
 	override protected def updateVisibility(visible: Boolean) = super[JWrapper].isVisible_=(visible)
-	
-	override def setValueNoEvents(newValue: Option[String]) =
-	{
-		field.getDocument.removeDocumentListener(listener)
-		text = newValue getOrElse ""
-		field.getDocument.addDocumentListener(listener)
-	}
 	
 	override def updateLayout() = Unit
 	
@@ -259,12 +259,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 		val filtered = resultFilter.map { _.findFirstFrom(original.trim) } getOrElse Some(original.trim)
 		val changed = filtered.filter { _ != original }
 		
-		changed.foreach
-		{
-			c =>
-				field.setText(c)
-				informListeners()
-		}
+		changed.foreach(text_=)
 	}
 	
 	private def hidePrompt() =
@@ -308,13 +303,30 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 		}
 	}
 	
+	private class ValueChangeListener extends ChangeListener[Option[String]]
+	{
+		override def onChangeEvent(event: ChangeEvent[Option[String]]) =
+		{
+			if (!isUpdatingText)
+				text = event.newValue getOrElse ""
+		}
+	}
+	
 	private class InputListener extends DocumentListener
 	{
-		override def insertUpdate(e: DocumentEvent) = informListeners()
+		override def insertUpdate(e: DocumentEvent) = handleInputChange()
 		
-		override def removeUpdate(e: DocumentEvent) = informListeners()
+		override def removeUpdate(e: DocumentEvent) = handleInputChange()
 		
-		override def changedUpdate(e: DocumentEvent) = informListeners()
+		override def changedUpdate(e: DocumentEvent) = handleInputChange()
+		
+		private def handleInputChange() =
+		{
+			isUpdatingText = true
+			val raw = text.trim
+			value = resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
+			isUpdatingText = false
+		}
 	}
 	
 	private class PromptFocusListener extends FocusListener
