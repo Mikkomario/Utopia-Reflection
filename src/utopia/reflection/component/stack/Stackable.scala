@@ -18,13 +18,14 @@ object Stackable
 		  * Creates a stack with this item along with some others
 		  * @param elements Other elements
 		  * @param axis Stack axis
-		  * @param margin The margin between items
+		  * @param margin The margin between items (defaults to any, preferring 0)
 		  * @param cap The cap at each end of stack (default = no cap = fixed to 0)
 		  * @param layout The stack layout (default = Fit)
 		  * @tparam S2 Stack element type
 		  * @return A new stack
 		  */
-		def stackWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], axis: Axis2D, margin: StackLength,
+		def stackWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], axis: Axis2D,
+																	 margin: StackLength = StackLength.any,
 																	 cap: StackLength = StackLength.fixed(0),
 																	 layout: StackLayout = Fit) =
 			Stack.withItems(s +: elements, axis, margin, cap, layout)
@@ -32,13 +33,14 @@ object Stackable
 		/**
 		  * Creates a horizontal stack with this item along with some others
 		  * @param elements Other elements
-		  * @param margin Margin between elements
+		  * @param margin Margin between elements (defaults to any, preferring 0)
 		  * @param cap Cap at each end of the stack (default = fixed to 0)
 		  * @param layout Stack layout (default = Fit)
 		  * @tparam S2 Stack element type
 		  * @return A new stack with these items
 		  */
-		def rowWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], margin: StackLength,
+		def rowWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2],
+																   margin: StackLength = StackLength.any,
 																   cap: StackLength = StackLength.fixed(0),
 																   layout: StackLayout = Fit) =
 			s.stackWith(elements, X, margin, cap, layout)
@@ -46,15 +48,16 @@ object Stackable
 		/**
 		  * Creates a vertical stack with this item along with some others
 		  * @param elements Other elements
-		  * @param margin margin between elements
+		  * @param margin margin between elements (defaults to any, preferring 0)
 		  * @param cap Cap at each end of the stack (default = fixed to 0)
 		  * @param layout Stack layout (default = Fit)
 		  * @tparam S2 Stack element type
 		  * @return A new stack with these items
 		  */
-		def columnWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2], margin: StackLength,
-																   cap: StackLength = StackLength.fixed(0),
-																   layout: StackLayout = Fit) =
+		def columnWith[S2 >: S <: Stackable with AwtComponentRelated](elements: Seq[S2],
+																	  margin: StackLength = StackLength.any,
+																	  cap: StackLength = StackLength.fixed(0),
+																	  layout: StackLayout = Fit) =
 			s.stackWith(elements, Y, margin, cap, layout)
 		
 		/**

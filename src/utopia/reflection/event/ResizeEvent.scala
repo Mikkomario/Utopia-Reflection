@@ -15,4 +15,9 @@ case class ResizeEvent(oldSize: Size, newSize: Size)
      * The size increase that occurred during this event
      */
     def increase = newSize - oldSize
+    
+    
+    // IMPLEMENTED  -------------
+    
+    override def toString = s"Resize from $oldSize to $newSize"
 }

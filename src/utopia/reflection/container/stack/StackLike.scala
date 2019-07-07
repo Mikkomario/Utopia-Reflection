@@ -198,7 +198,7 @@ trait StackLike[C <: Stackable] extends MultiStackContainer[C] with StackSizeCal
                     {
                         if (breadth.min > newBreadth)
                             breadth.min
-                        else if (breadth.max.exists { newBreadth < _ })
+                        else if (breadth.max.exists { newBreadth > _ })
                             breadth.max.get
                         else
                         {

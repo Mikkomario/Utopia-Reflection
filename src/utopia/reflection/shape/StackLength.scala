@@ -9,7 +9,7 @@ object StackLength
 	/**
 	  * A stack length that allows any value (from 0 and up, preferring 0)
 	  */
-	val any = new StackLength(0, 0, None, true)
+	val any = new StackLength(0, 0, None)
     
     
     // CONSTRUCTORS    -------------

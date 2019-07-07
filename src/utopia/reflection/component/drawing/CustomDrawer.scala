@@ -30,7 +30,7 @@ trait CustomDrawer
 	
 	/**
 	  * Performs the drawing
-	  * @param drawer A drawer used for the drawing (origin located at component origin)
+	  * @param drawer A drawer used for the drawing (origin located at parent component origin)
 	  * @param bounds Draw area bounds
 	  */
 	def draw(drawer: Drawer, bounds: Bounds): Unit
