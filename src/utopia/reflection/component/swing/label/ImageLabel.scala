@@ -50,10 +50,6 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 		{
 			_image = newImage
 			revalidate()
-			/*
-			SwingUtilities.invokeLater { () =>
-				println("Repainting")
-				repaint() }*/
 		}
 	}
 	

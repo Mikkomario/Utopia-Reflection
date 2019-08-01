@@ -13,7 +13,7 @@ import utopia.reflection.component.Alignment
 import utopia.reflection.component.swing.label.TextButton
 import utopia.reflection.component.swing.{ButtonImageSet, ImageAndTextButton, ImageButton}
 import utopia.reflection.container.stack.StackHierarchyManager
-import utopia.reflection.container.stack.StackLayout.Center
+import utopia.reflection.container.stack.StackLayout.{Center, Fit}
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
@@ -44,7 +44,7 @@ object ButtonTest extends App
 		
 		val action = () => println("Button pressed!")
 		val color = Color.magenta
-		val textMargins = 8.any x 4.downscaling
+		val textMargins = 8.any x 4.any
 		val borderWitdh = 2
 		
 		// Creates the buttons
@@ -53,7 +53,7 @@ object ButtonTest extends App
 		val comboButton = new ImageAndTextButton(images, "Button", basicFont, color, textMargins, borderWitdh,
 			4.downscaling, Alignment.Left, action)
 		
-		val row = imageButton.rowWith(Vector(textButton, comboButton), margin = 16.any, layout = Center)
+		val row = imageButton.rowWith(Vector(textButton, comboButton), margin = 16.any, layout = Fit)
 		
 		// Creates the frame and displays it
 		val actorHandler = ActorHandler()

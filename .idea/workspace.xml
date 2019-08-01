@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/image/Image.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/image/Image.scala" afterDir="false" />
+    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Genesis: Added toString to image&#10;Reflection: Debugged image button and ImageAndTextButton">
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Button.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ProgressBar.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentWrapper.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentWrapper.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonState.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonState.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -188,13 +182,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00053" summary="Debugged segmented row">
-      <created>1556549756896</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1556549756896</updated>
     </task>
     <task id="LOCAL-00054" summary="Segmented rows now update whenever master is updated">
       <created>1556550111124</created>
@@ -528,7 +515,13 @@
       <option name="presentableId" value="LOCAL−00101" />
       <updated>1564651103619</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL−00102" summary="Genesis: Added toString to image&#10;Reflection: Debugged image button and ImageAndTextButton">
+      <created>1564654800801</created>
+      <option name="number" value="LOCAL−00102" />
+      <option name="presentableId" value="LOCAL−00102" />
+      <updated>1564654800801</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="TodoView">
@@ -552,7 +545,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Working on scroll canvas class" />
     <MESSAGE value="Genesis: MouseWheelEvents can now be consumed. &#10;Reflection: ComponentLike takes consumed state into consideration when &#10;distributing MouseButtonStateEvents and MouseWheelEvents. ScrollViews &#10;now only accept non-consumed wheel-events" />
     <MESSAGE value="Scroll views now only accept non-consumed mouse button events, which means that there won't be drag scrolling when otherwise interacting with content" />
     <MESSAGE value="Testing scroll canvas" />
@@ -577,7 +569,8 @@
     <MESSAGE value="Moved some of button functionality to a separate trait" />
     <MESSAGE value="Added a new image button class (not tested yet)" />
     <MESSAGE value="Added button for image and text content" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added button for image and text content" />
+    <MESSAGE value="Genesis: Added toString to image&#10;Reflection: Debugged image button and ImageAndTextButton" />
+    <option name="LAST_COMMIT_MESSAGE" value="Genesis: Added toString to image&#10;Reflection: Debugged image button and ImageAndTextButton" />
   </component>
   <component name="masterDetails">
     <states>
