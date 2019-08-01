@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Refacted ItemLabel and Switch to use pointers">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/src/utopia/flow/datastructure/mutable/Lazy.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Flow-Scala/src/utopia/flow/datastructure/mutable/Lazy.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/Utopia-Inception-Scala.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/Utopia-Inception-Scala.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Moved some of button functionality to a separate trait">
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonState.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/input/InputListener.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/StackHierarchyTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/StackHierarchyTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/Button.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/Button.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,39 +25,6 @@
         <option value="Scala Trait" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>distinct</find>
-      <find>reset</find>
-      <find>parent</find>
-      <find>margin =</find>
-      <find>println(</find>
-      <find>JWrapper</find>
-      <find>stackSize</find>
-      <find>prin</find>
-      <find>calculating stack</find>
-      <find>content</find>
-      <find>setup</find>
-      <find>selected</find>
-      <find>this</find>
-      <find>border</find>
-      <find>println</find>
-      <find>add</find>
-      <find>updateLay</find>
-      <find>import java.time.Duration</find>
-      <find>visibl</find>
-      <find>isVisible</find>
-      <find>visible</find>
-      <find>print</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>_selected</replace>
-    </replaceStrings>
-    <dirStrings>
-      <dir>C:\Users\Mikko\IdeaProjects\Utopia-Flow-Scala</dir>
-      <dir>C:\Users\Mikko\IdeaProjects\Utopia-Reflection</dir>
-    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -103,18 +59,18 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="utopia.reflection.component.drawing" />
       <recent name="utopia.reflection.component.swing" />
+      <recent name="utopia.reflection.component.drawing" />
       <recent name="utopia.reflection.component.stack" />
       <recent name="utopia.reflection.component.swing.label" />
       <recent name="utopia.reflection.container.swing" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="utopia.reflection.component" />
       <recent name="utopia.reflection.test" />
       <recent name="utopia.reflection.container.swing" />
       <recent name="utopia.reflection.container.stack" />
       <recent name="utopia.reflection.container.swing.window" />
-      <recent name="utopia.reflection.container.stack.segmented" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Mikko\IdeaProjects\Utopia-Reflection\test-images" />
@@ -135,7 +91,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ImageLabelTest">
+  <component name="RunManager" selected="Application.TextLabelStackTest">
     <configuration name="ImageLabelTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.ImageLabelTest" />
       <module name="Utopia-Reflection" />
@@ -203,9 +159,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TextLabelStackTest" />
         <item itemvalue="Application.ImageLabelTest" />
         <item itemvalue="Application.ImageTest" />
-        <item itemvalue="Application.TextLabelStackTest" />
         <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.SwitchTest" />
       </list>
@@ -225,13 +181,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00049" summary="Added simple switch panel. Invisible items are now ignored in stacks">
-      <created>1556442444068</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1556442444069</updated>
     </task>
     <task id="LOCAL-00050" summary="Major refactoring&#10;&#10;swing related features were separated under their own classes and traits">
       <created>1556474415105</created>
@@ -569,7 +518,13 @@
       <option name="project" value="LOCAL" />
       <updated>1562425545123</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL−00098" summary="Flow: Lazy.set(...) no longer deprecated&#10;Genesis: Gitignore updated&#10;Reflection: Removed InputListener, removed test print from ImageLabel. Fixed errors in tests.">
+      <created>1564643293545</created>
+      <option name="number" value="LOCAL−00098" />
+      <option name="presentableId" value="LOCAL−00098" />
+      <updated>1564643293546</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="TodoView">
@@ -593,8 +548,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Focus highlighting option added to text fields" />
-    <MESSAGE value="Added key handling to buttons and also default key handling to windows" />
     <MESSAGE value="Added iconLabel class" />
     <MESSAGE value="Added interpolating display function" />
     <MESSAGE value="Working on scroll canvas class" />
@@ -618,7 +571,9 @@
     <MESSAGE value="Added new pointer functionality to selectable items. Currently debugging." />
     <MESSAGE value="Fixed stack selection manager" />
     <MESSAGE value="Refacted ItemLabel and Switch to use pointers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refacted ItemLabel and Switch to use pointers" />
+    <MESSAGE value="Flow: Lazy.set(...) no longer deprecated&#10;Genesis: Gitignore updated&#10;Reflection: Removed InputListener, removed test print from ImageLabel. Fixed errors in tests." />
+    <MESSAGE value="Moved some of button functionality to a separate trait" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved some of button functionality to a separate trait" />
   </component>
   <component name="masterDetails">
     <states>
