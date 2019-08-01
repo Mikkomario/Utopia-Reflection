@@ -63,10 +63,7 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 		else if (alwaysFillArea || !_image.size.fitsInto(size))
 			scaledImage = _image.withSize(size)
 		else
-		{
-			println(s"Won't upscale! (allows upscale: $allowUpscaling, always fills: $alwaysFillArea)")
 			scaledImage = _image
-		}
 		
 		relativeImagePosition = (size - scaledImage.size).toPoint / 2
 	}
