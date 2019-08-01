@@ -39,10 +39,6 @@ object ButtonTest extends App
 		val image = Image.readFrom(Paths.get("test-images/mushrooms.png")).get.withSize(Size(64, 64)).downscaled
 		val images = ButtonImageSet.brightening(image)
 		
-		println(s"Default: ${images.defaultImage.hashCode()}")
-		println(s"Hover: ${images.focusImage.hashCode()}")
-		println(s"Pressed: ${images.actionImage.hashCode()}")
-		
 		val progressPointer = new PointerWithEvents(0.0)
 		val action = () => progressPointer.value += 0.1
 		val color = Color.magenta
