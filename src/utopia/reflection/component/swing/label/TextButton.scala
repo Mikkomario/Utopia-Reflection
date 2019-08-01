@@ -12,6 +12,12 @@ import utopia.reflection.text.Font
   * Buttons are used for user interaction
   * @author Mikko Hilpinen
   * @since 25.4.2019, v1+
+  * @param text Text displayed in this button
+  * @param font Font used when displaying text
+  * @param color This button's background color
+  * @param margins Margins placed around this button's text
+  * @param borderWidth Width of the border inside this button (in pixels)
+  * @param action Action performed when this button is triggered
   */
 class TextButton(override val text: LocalizedString, override val font: Font, val color: Color, override val margins: StackSize,
 				 val borderWidth: Double, val action: () => Unit) extends Label with AwtTextComponentWrapper with ButtonLike

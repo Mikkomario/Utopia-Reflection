@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonImageSet.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/Button.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/DefaultButtonHandler.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/DefaultButtonHandler.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -186,13 +181,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00051" summary="Debugged Window, testing">
-      <created>1556478597284</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1556478597286</updated>
     </task>
     <task id="LOCAL-00052" summary="Debugging segmented row classes">
       <created>1556480847967</created>
@@ -528,7 +516,13 @@
       <option name="presentableId" value="LOCAL−00099" />
       <updated>1564647168283</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL−00100" summary="Added a new image button class (not tested yet)">
+      <created>1564649324764</created>
+      <option name="number" value="LOCAL−00100" />
+      <option name="presentableId" value="LOCAL−00100" />
+      <updated>1564649324765</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="TodoView">
@@ -552,7 +546,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added iconLabel class" />
     <MESSAGE value="Added interpolating display function" />
     <MESSAGE value="Working on scroll canvas class" />
     <MESSAGE value="Genesis: MouseWheelEvents can now be consumed. &#10;Reflection: ComponentLike takes consumed state into consideration when &#10;distributing MouseButtonStateEvents and MouseWheelEvents. ScrollViews &#10;now only accept non-consumed wheel-events" />
@@ -577,7 +570,8 @@
     <MESSAGE value="Refacted ItemLabel and Switch to use pointers" />
     <MESSAGE value="Flow: Lazy.set(...) no longer deprecated&#10;Genesis: Gitignore updated&#10;Reflection: Removed InputListener, removed test print from ImageLabel. Fixed errors in tests." />
     <MESSAGE value="Moved some of button functionality to a separate trait" />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved some of button functionality to a separate trait" />
+    <MESSAGE value="Added a new image button class (not tested yet)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a new image button class (not tested yet)" />
   </component>
   <component name="masterDetails">
     <states>

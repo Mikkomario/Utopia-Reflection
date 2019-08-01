@@ -29,8 +29,9 @@ object TextLabel
   * @param margins The margins placed around the text
   * @param hasMinWidth Whether this text label always presents the whole text (default = true)
   */
-class TextLabel(initialText: LocalizedString, override val font: Font, override val margins: StackSize,
-					 override val hasMinWidth: Boolean = true) extends Label with AwtTextComponentWrapper with Alignable
+class TextLabel(initialText: LocalizedString, override val font: Font, override val margins: StackSize = StackSize.any,
+					 override val hasMinWidth: Boolean = true, initialAlignment: Alignment = Alignment.Left)
+	extends Label with AwtTextComponentWrapper with Alignable
 {
 	// ATTRIBUTES	------------------
 	
@@ -42,6 +43,7 @@ class TextLabel(initialText: LocalizedString, override val font: Font, override 
 	label.setText(initialText.string)
 	label.setFont(font.toAwt)
 	textColor = Color.textBlack
+	align(initialAlignment)
 	
 	
 	// IMPLEMENTED	------------------
