@@ -11,7 +11,7 @@ import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.AwtComponentRelated
-import utopia.reflection.component.swing.label.Button
+import utopia.reflection.component.swing.label.TextButton
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.Insets
@@ -159,7 +159,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
       * @param defaultButton The default button for this window
       * @param moreButtons More buttons for this window
       */
-    def registerButtons(defaultButton: Button, moreButtons: Button*) =
+    def registerButtons(defaultButton: TextButton, moreButtons: TextButton*) =
         addKeyStateListener(DefaultButtonHandler(defaultButton, moreButtons: _*))
     
     /**

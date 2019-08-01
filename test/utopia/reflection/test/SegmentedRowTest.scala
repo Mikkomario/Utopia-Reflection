@@ -6,7 +6,7 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
-import utopia.reflection.component.swing.label.{Button, TextLabel}
+import utopia.reflection.component.swing.label.{TextButton, TextLabel}
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.{SegmentedRow, Stack}
@@ -41,8 +41,8 @@ object SegmentedRowTest extends App
 	// Creates a button too
 	val largeFont = basicFont * 1.2
 	
-	val button1 = new Button("Yeah!", largeFont, Color.magenta, 32.any x 8.any, 4, () => labels(1).text += "!")
-	val button2 = new Button("For Sure!", largeFont, Color.magenta, 32.any x 8.any, 4, () => labels(3).text += "!")
+	val button1 = new TextButton("Yeah!", largeFont, Color.magenta, 32.any x 8.any, 4, () => labels(1).text += "!")
+	val button2 = new TextButton("For Sure!", largeFont, Color.magenta, 32.any x 8.any, 4, () => labels(3).text += "!")
 	
 	// Creates the rows
 	val hGroup = new SegmentedGroup(X)

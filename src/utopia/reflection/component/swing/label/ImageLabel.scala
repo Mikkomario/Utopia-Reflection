@@ -46,8 +46,11 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 	  */
 	def image_=(newImage: Image) =
 	{
-		_image = newImage
-		revalidate()
+		if (_image != newImage)
+		{
+			_image = newImage
+			revalidate()
+		}
 	}
 	
 	

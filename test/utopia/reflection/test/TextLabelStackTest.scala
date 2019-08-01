@@ -9,7 +9,7 @@ import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.drawing.DrawLevel.Normal
-import utopia.reflection.component.swing.label.{Button, TextLabel}
+import utopia.reflection.component.swing.label.{TextButton, TextLabel}
 import utopia.reflection.container.stack.StackLayout.Leading
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.{Framing, Stack}
@@ -40,7 +40,7 @@ object TextLabelStackTest extends App
 	labels.foreach { _.background = Color.yellow }
 	
 	// Creates a button too
-	val button = new Button("A Button!", basicFont, Color.magenta, 32.any x 8.any, 4,
+	val button = new TextButton("A Button!", basicFont, Color.magenta, 32.any x 8.any, 4,
 		() => println("The Button was pressed"))
 	
 	// Creates the stack

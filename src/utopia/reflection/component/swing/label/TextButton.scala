@@ -13,8 +13,8 @@ import utopia.reflection.text.Font
   * @author Mikko Hilpinen
   * @since 25.4.2019, v1+
   */
-class Button(override val text: LocalizedString, override val font: Font, val color: Color, override val margins: StackSize,
-			 val borderWidth: Double, val action: () => Unit) extends Label with AwtTextComponentWrapper with ButtonLike
+class TextButton(override val text: LocalizedString, override val font: Font, val color: Color, override val margins: StackSize,
+				 val borderWidth: Double, val action: () => Unit) extends Label with AwtTextComponentWrapper with ButtonLike
 {
 	// INITIAL CODE	------------------
 	
