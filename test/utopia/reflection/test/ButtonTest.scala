@@ -3,6 +3,7 @@ package utopia.reflection.test
 import java.nio.file.Paths
 
 import utopia.flow.async.ThreadPool
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.reflection.shape.LengthExtensions._
 import utopia.genesis.color.Color
 import utopia.genesis.handling.ActorLoop
@@ -11,9 +12,9 @@ import utopia.genesis.image.Image
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.Alignment
 import utopia.reflection.component.swing.label.TextButton
-import utopia.reflection.component.swing.{ButtonImageSet, ImageAndTextButton, ImageButton}
+import utopia.reflection.component.swing.{ButtonImageSet, ImageAndTextButton, ImageButton, ProgressBar}
 import utopia.reflection.container.stack.StackHierarchyManager
-import utopia.reflection.container.stack.StackLayout.{Center, Fit}
+import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
@@ -42,7 +43,8 @@ object ButtonTest extends App
 		println(s"Hover: ${images.focusImage.hashCode()}")
 		println(s"Pressed: ${images.actionImage.hashCode()}")
 		
-		val action = () => println("Button pressed!")
+		val progressPointer = new PointerWithEvents(0.0)
+		val action = () => progressPointer.value += 0.1
 		val color = Color.magenta
 		val textMargins = 8.any x 4.any
 		val borderWitdh = 2
@@ -55,12 +57,17 @@ object ButtonTest extends App
 		
 		val row = imageButton.rowWith(Vector(textButton, comboButton), margin = 16.any, layout = Fit)
 		
+		// Creates progress bar
+		val bar = new ProgressBar[Double](160.any x 12.downscaling, Color.gray(0.7), Color.magenta, progressPointer,
+			d => d)
+		val content = row.columnWith(Vector(bar), margin = 16.downscaling)
+		
 		// Creates the frame and displays it
 		val actorHandler = ActorHandler()
 		val actionLoop = new ActorLoop(actorHandler)
 		implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 		
-		val framing = row.framed(16.any x 8.any)
+		val framing = content.framed(16.any x 8.any)
 		framing.background = Color.white
 		val frame = Frame.windowed(framing, "Button Test", User)
 		frame.setToExitOnClose()
