@@ -32,22 +32,6 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 	private var _state: ButtonState = ButtonState(isEnabled = true, isInFocus = false, isMouseOver = false, isPressed = false)
 	
 	
-	// INITIAL CODE	------------------
-	
-	{
-		// Adds mouse handling
-		val listener = new ButtonMouseListener()
-		addMouseMoveListener(listener)
-		addMouseButtonListener(listener)
-		
-		// Adds key listening
-		addKeyStateListener(new ButtonKeyListener())
-		
-		// Adds focus listening
-		component.addFocusListener(new ButtonFocusListener())
-	}
-	
-	
 	// COMPUTED	----------------------
 	
 	/**
@@ -92,6 +76,23 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 	  * @return Whether this button is likely to gain focus
 	  */
 	def requestFocus() = component.requestFocusInWindow()
+	
+	/**
+	  * Initializes this button's listeners. Shuold be called when constructing this button.
+	  */
+	protected def initializeListeners() =
+	{
+		// Adds mouse handling
+		val listener = new ButtonMouseListener()
+		addMouseMoveListener(listener)
+		addMouseButtonListener(listener)
+		
+		// Adds key listening
+		addKeyStateListener(new ButtonKeyListener())
+		
+		// Adds focus listening
+		component.addFocusListener(new ButtonFocusListener())
+	}
 	
 	
 	// NESTED CLASSES	--------------

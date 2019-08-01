@@ -145,16 +145,6 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
     // OTHER    -------------------------
     
     /**
-      * Specifies that the mouse should have a hand cursor when hovering over this component
-      */
-    def setHandCursor() = component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
-    
-    /**
-      * Specifies that the mouse should have the default cursor when hovering over this component
-      */
-    def setArrowCursor() = component.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
-    
-    /**
       * Performs a (longer) operation on the GUI thread and updates the component size & position only after the update
       * has been done
       * @param operation The operation that will be run

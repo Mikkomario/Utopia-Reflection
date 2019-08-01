@@ -13,6 +13,25 @@ import utopia.genesis.color.Color
   */
 case class ButtonState(isEnabled: Boolean, isInFocus: Boolean, isMouseOver: Boolean, isPressed: Boolean)
 {
+	// IMPLEMENTED	----------------------
+	
+	override def toString =
+	{
+		if (!isEnabled)
+			"Disabled"
+		else if (isPressed)
+			"Pressed"
+		else if (isMouseOver)
+			"Mouse Over"
+		else if (isInFocus)
+			"In Focus"
+		else
+			"Default"
+	}
+	
+	
+	// OTHER	--------------------------
+	
 	/**
 	  * Modifies provided color to better suit the new button state
 	  * @param originalColor Original color

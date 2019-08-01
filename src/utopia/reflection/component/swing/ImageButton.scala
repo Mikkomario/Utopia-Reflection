@@ -13,13 +13,15 @@ class ImageButton(val images: ButtonImageSet, val action: () => Unit) extends St
 {
 	// ATTRIBUTES	--------------------
 	
-	private val label = new ImageLabel(images.defaultImage)
+	private val label = new ImageLabel(images(state))
 	
 	
 	// INITIAL CODE	--------------------
 	
 	// Uses hand cursor on buttons by default
-	label.setHandCursor()
+	setHandCursor()
+	initializeListeners()
+	component.setFocusable(true)
 	
 	
 	// IMPLEMENTED	--------------------
@@ -28,5 +30,9 @@ class ImageButton(val images: ButtonImageSet, val action: () => Unit) extends St
 	
 	override protected def performAction() = action()
 	
-	override protected def updateStyleForState(newState: ButtonState) = label.image = images(newState)
+	override protected def updateStyleForState(newState: ButtonState) =
+	{
+		val newImage = images(newState)
+		label.image = newImage
+	}
 }

@@ -31,6 +31,8 @@ class TextButton(override val text: LocalizedString, override val font: Font, va
 	background = color
 	label.setHorizontalAlignment(Alignment.Center.toSwingAlignment)
 	
+	initializeListeners()
+	
 	
 	// IMPLEMENTED	------------------
 	

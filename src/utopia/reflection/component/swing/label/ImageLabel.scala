@@ -50,6 +50,10 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 		{
 			_image = newImage
 			revalidate()
+			/*
+			SwingUtilities.invokeLater { () =>
+				println("Repainting")
+				repaint() }*/
 		}
 	}
 	
@@ -61,7 +65,7 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 	override def updateLayout() =
 	{
 		// Updates image scaling to match this label's size
-		if (_image.size == size)
+		if (_image.size.ceil == size)
 			scaledImage = _image
 		else if (alwaysFillArea || !_image.size.fitsInto(size))
 			scaledImage = _image.withSize(size)
@@ -69,13 +73,14 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 			scaledImage = _image
 		
 		relativeImagePosition = (size - scaledImage.size).toPoint / 2
+		repaint()
 	}
 	
 	override protected def calculatedStackSize =
 	{
 		// Optimal size is always set to image size
 		// Upscaling may also be allowed (limited if upscaling is not allowed and image must fill area)
-		val imageSize = _image.size
+		val imageSize = _image.size.ceil
 		val isLimited = alwaysFillArea && !allowUpscaling
 		
 		if (isLimited)

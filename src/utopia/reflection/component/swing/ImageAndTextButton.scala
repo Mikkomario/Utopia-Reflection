@@ -36,6 +36,9 @@ class ImageAndTextButton(val images: ButtonImageSet, text: LocalizedString, font
 	
 	content.background = color
 	updateBorder(color)
+	setHandCursor()
+	content.component.setFocusable(true)
+	initializeListeners()
 	
 	
 	// IMPLEMENTED	------------------------

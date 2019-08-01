@@ -2,10 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/image/Image.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/image/Image.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentWrapper.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentWrapper.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonState.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonState.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -91,7 +98,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TextLabelStackTest">
+  <component name="RunManager" selected="Application.ButtonTest">
+    <configuration name="ButtonTest" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.ButtonTest" />
+      <module name="Utopia-Reflection" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="utopia.reflection.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ImageLabelTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.ImageLabelTest" />
       <module name="Utopia-Reflection" />
@@ -111,19 +131,6 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="utopia.genesis.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SwitchTest" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.SwitchTest" />
-      <module name="Utopia-Reflection" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="utopia.reflection.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -159,11 +166,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ButtonTest" />
         <item itemvalue="Application.TextLabelStackTest" />
         <item itemvalue="Application.ImageLabelTest" />
         <item itemvalue="Application.ImageTest" />
         <item itemvalue="Application.TextFieldTest" />
-        <item itemvalue="Application.SwitchTest" />
       </list>
     </recent_temporary>
   </component>
@@ -181,13 +188,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00052" summary="Debugging segmented row classes">
-      <created>1556480847967</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1556480847967</updated>
     </task>
     <task id="LOCAL-00053" summary="Debugged segmented row">
       <created>1556549756896</created>
@@ -522,7 +522,13 @@
       <option name="presentableId" value="LOCAL−00100" />
       <updated>1564649324765</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL−00101" summary="Added button for image and text content">
+      <created>1564651103619</created>
+      <option name="number" value="LOCAL−00101" />
+      <option name="presentableId" value="LOCAL−00101" />
+      <updated>1564651103619</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="TodoView">
@@ -546,7 +552,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added interpolating display function" />
     <MESSAGE value="Working on scroll canvas class" />
     <MESSAGE value="Genesis: MouseWheelEvents can now be consumed. &#10;Reflection: ComponentLike takes consumed state into consideration when &#10;distributing MouseButtonStateEvents and MouseWheelEvents. ScrollViews &#10;now only accept non-consumed wheel-events" />
     <MESSAGE value="Scroll views now only accept non-consumed mouse button events, which means that there won't be drag scrolling when otherwise interacting with content" />
@@ -571,7 +576,8 @@
     <MESSAGE value="Flow: Lazy.set(...) no longer deprecated&#10;Genesis: Gitignore updated&#10;Reflection: Removed InputListener, removed test print from ImageLabel. Fixed errors in tests." />
     <MESSAGE value="Moved some of button functionality to a separate trait" />
     <MESSAGE value="Added a new image button class (not tested yet)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added a new image button class (not tested yet)" />
+    <MESSAGE value="Added button for image and text content" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added button for image and text content" />
   </component>
   <component name="masterDetails">
     <states>
