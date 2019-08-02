@@ -7,14 +7,15 @@ import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.util.Screen
 
-
 /**
 * A frame operates as the / a main window in an app
 * @author Mikko Hilpinen
 * @since 26.3.2019
 **/
-class Dialog[C <: Stackable with AwtContainerRelated](owner: java.awt.Window, override val content: C, override val title: String,
-                                                     startResizePolicy: WindowResizePolicy = User) extends Window[C]
+class Dialog[C <: Stackable with AwtContainerRelated](owner: java.awt.Window, override val content: C,
+                                                      override val title: String,
+                                                      startResizePolicy: WindowResizePolicy = User,
+                                                      borderless: Boolean = false) extends Window[C]
 {
     // ATTRIBUTES    -------------------
     
@@ -30,22 +31,12 @@ class Dialog[C <: Stackable with AwtContainerRelated](owner: java.awt.Window, ov
         
         // Sets up the underlying frame
         _component.setContentPane(content.component)
+        _component.setUndecorated(borderless)
         _component.setResizable(startResizePolicy.allowsUserResize)
         _component.pack()
     
-        // Sets position and size
-        updateWindowBounds(true)
-    
-        if (!fullScreen)
-            position = ((Screen.size - size) / 2).toVector.toPoint
-        
-        updateContentBounds()
-    
-        // Registers to update bounds on each size change
-        activateResizeHandling()
-        
-        // Registers self (and content) into stack hierarchy management
-        StackHierarchyManager.registerConnection(this, content)
+        setup()
+        center()
     }
     
 	// IMPLEMENTED    ------------------

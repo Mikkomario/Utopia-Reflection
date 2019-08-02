@@ -1,5 +1,6 @@
 package utopia.reflection.component.stack
 
+import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis2D
 import utopia.reflection.component.ComponentLike
 import utopia.reflection.component.swing.AwtComponentRelated
@@ -66,6 +67,19 @@ object Stackable
 		  * @return A framing with this item inside it
 		  */
 		def framed(margins: StackSize) = new Framing(s, margins)
+		
+		/**
+		  * Frames this item
+		  * @param margins The margins placed around this item
+		  * @param color Background color of the framing
+		  * @return A framing with this item inside it
+		  */
+		def framed(margins: StackSize, color: Color) =
+		{
+			val framing = new Framing(s, margins)
+			framing.background = color
+			framing
+		}
 	}
 }
 

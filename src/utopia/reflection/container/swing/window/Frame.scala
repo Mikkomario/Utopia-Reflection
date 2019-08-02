@@ -16,8 +16,9 @@ object Frame
       * @return A new windowed frame
       */
     def windowed[C <: Stackable with AwtContainerRelated](content: C, title: String,
-                                                          resizePolicy: WindowResizePolicy = WindowResizePolicy.User) =
-        new Frame(content, title, resizePolicy, false, false, false)
+                                                          resizePolicy: WindowResizePolicy = WindowResizePolicy.User,
+                                                          borderless: Boolean = false) =
+        new Frame(content, title, resizePolicy, borderless, false, false)
     
     /**
       * Creates a new full screen frame
@@ -60,21 +61,7 @@ class Frame[C <: Stackable with AwtContainerRelated](override val content: C, ov
         _component.setResizable(startResizePolicy.allowsUserResize)
         _component.pack()
     
-        // TODO: This portion of the code may be moved to window under a specific protected method
-        
-        // Sets position and size
-        updateWindowBounds(true)
-    
-        if (!fullScreen)
-            position = ((Screen.size - size) / 2).toVector.toPoint
-        
-        updateContentBounds()
-    
-        // Registers to update bounds on each size change
-        activateResizeHandling()
-        
-        // Registers self (and content) into stack hierarchy management
-        StackHierarchyManager.registerConnection(this, content)
+        setup()
     }
     
 	// IMPLEMENTED    ------------------

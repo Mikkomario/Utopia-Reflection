@@ -20,7 +20,7 @@ object Button
 	  * @param action Action performed when button is pressed
 	  * @return A new button
 	  */
-	def withImage(images: ButtonImageSet)(action: => Unit) = new ImageButton(images, () => action)
+	def withImage(images: ButtonImageSet)(action: () => Unit) = ImageButton(images)(action)
 	
 	/**
 	  * Creates a new button with only text
@@ -33,7 +33,7 @@ object Button
 	  * @return A new button
 	  */
 	def withText(text: LocalizedString, font: Font, color: Color, margins: StackSize, borderWidth: Double)
-				(action: => Unit) = new TextButton(text, font, color, margins, borderWidth, () => action)
+				(action: () => Unit) = TextButton(text, font, color, margins, borderWidth)(action)
 	
 	/**
 	  * Creates a new button with both image and text
@@ -50,6 +50,6 @@ object Button
 	  */
 	def withImageAndText(images: ButtonImageSet, text: LocalizedString, font: Font, color: Color, margins: StackSize,
 						 borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
-						 textAlignment: Alignment = Alignment.Left)(action: => Unit) =
-		new ImageAndTextButton(images, text, font, color, margins, borderWidth, beforeTextMargin, textAlignment, () => action)
+						 textAlignment: Alignment = Alignment.Left)(action: () => Unit) =
+		ImageAndTextButton(images, text, font, color, margins, borderWidth, beforeTextMargin, textAlignment)(action)
 }

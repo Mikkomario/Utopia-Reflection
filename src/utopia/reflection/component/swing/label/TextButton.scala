@@ -8,6 +8,27 @@ import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackSize}
 import utopia.reflection.text.Font
 
+object TextButton
+{
+	/**
+	  * Creates a new button
+	  * @param text Text displayed in this button
+	  * @param font Font used when displaying text
+	  * @param color This button's background color
+	  * @param margins Margins placed around this button's text
+	  * @param borderWidth Width of the border inside this button (in pixels)
+	  * @param action Action performed when this button is pressed
+	  * @return A new button
+	  */
+	def apply(text: LocalizedString, font: Font, color: Color, margins: StackSize, borderWidth: Double)
+			 (action: () => Unit) =
+	{
+		val button = new TextButton(text, font, color, margins, borderWidth)
+		button.registerAction(action)
+		button
+	}
+}
+
 /**
   * Buttons are used for user interaction
   * @author Mikko Hilpinen
@@ -17,10 +38,9 @@ import utopia.reflection.text.Font
   * @param color This button's background color
   * @param margins Margins placed around this button's text
   * @param borderWidth Width of the border inside this button (in pixels)
-  * @param action Action performed when this button is triggered
   */
 class TextButton(override val text: LocalizedString, override val font: Font, val color: Color, override val margins: StackSize,
-				 val borderWidth: Double, val action: () => Unit) extends Label with AwtTextComponentWrapper with ButtonLike
+				 val borderWidth: Double) extends Label with AwtTextComponentWrapper with ButtonLike
 {
 	// INITIAL CODE	------------------
 	
@@ -35,8 +55,6 @@ class TextButton(override val text: LocalizedString, override val font: Font, va
 	
 	
 	// IMPLEMENTED	------------------
-	
-	override protected def performAction() = action()
 	
 	override protected def updateStyleForState(newState: ButtonState) =
 	{

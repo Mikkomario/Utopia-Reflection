@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageCheckBox.scala" afterDir="false" />
+    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style">
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Popup.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/view/MouseEventGenerator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/view/MouseEventGenerator.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/stack/Stackable.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/stack/Stackable.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Button.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Button.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageCheckBox.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageCheckBox.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Dialog.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Dialog.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Frame.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Frame.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -89,7 +107,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ButtonTest">
+  <component name="RunManager" selected="Application.TextFieldTest">
     <configuration name="ButtonTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.ButtonTest" />
       <module name="Utopia-Reflection" />
@@ -157,11 +175,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.ButtonTest" />
         <item itemvalue="Application.TextLabelStackTest" />
         <item itemvalue="Application.ImageLabelTest" />
         <item itemvalue="Application.ImageTest" />
-        <item itemvalue="Application.TextFieldTest" />
       </list>
     </recent_temporary>
   </component>
@@ -179,13 +197,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00056" summary="Mouse events are now only distributed to visible components">
-      <created>1556556879597</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1556556879598</updated>
     </task>
     <task id="LOCAL-00057" summary="Custom drawing added to panels and labels. Button now extends label and &#10;was moved to label package">
       <created>1556567741817</created>
@@ -516,7 +527,13 @@
       <option name="presentableId" value="LOCAL−00104" />
       <updated>1564661508586</updated>
     </task>
-    <option name="localTasksCounter" value="105" />
+    <task id="LOCAL−00105" summary="Added check box that uses images">
+      <created>1564662903361</created>
+      <option name="number" value="LOCAL−00105" />
+      <option name="presentableId" value="LOCAL−00105" />
+      <updated>1564662903361</updated>
+    </task>
+    <option name="localTasksCounter" value="106" />
     <servers />
   </component>
   <component name="TodoView">
@@ -533,15 +550,15 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Testing scroll canvas" />
-    <MESSAGE value="Working on scrollable area" />
     <MESSAGE value="Added a new scroll view trait that allows 2D scrolling" />
     <MESSAGE value="Fixed a bug in ScrollAreaLike" />
     <MESSAGE value="Refactored stack and segmentedRow constructor parameter orderings and added default parameters" />
@@ -565,7 +582,9 @@
     <MESSAGE value="Genesis: Added toString to image&#10;Reflection: Debugged image button and ImageAndTextButton" />
     <MESSAGE value="Added progress bar component and an object for constructing buttons" />
     <MESSAGE value="Progress bar tested" />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress bar tested" />
+    <MESSAGE value="Added check box that uses images" />
+    <MESSAGE value="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style" />
+    <option name="LAST_COMMIT_MESSAGE" value="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style" />
   </component>
   <component name="masterDetails">
     <states>

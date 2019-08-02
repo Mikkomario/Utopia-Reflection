@@ -17,6 +17,30 @@ trait AwtComponentRelated
 	def component: java.awt.Component
 	
 	
+	// COMPUTED	--------------------
+	
+	/**
+	  * @return The lowest window parent of this component. None if this component isn't hosted in any window.
+	  */
+	def parentWindow =
+	{
+		var nextParent = component.getParent
+		var window: Option[java.awt.Window] = None
+		
+		// Checks parents until a window is found
+		while (window.isEmpty && nextParent != null)
+		{
+			nextParent match
+			{
+				case w: java.awt.Window => window = Some(w)
+				case _ => nextParent = nextParent.getParent
+			}
+		}
+		
+		window
+	}
+	
+	
 	// OTHER	--------------------
 	
 	/**

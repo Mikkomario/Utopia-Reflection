@@ -24,6 +24,7 @@ class ImageCheckBox(offImages: ButtonImageSet, onImages: ButtonImageSet, initial
 	
 	initializeListeners()
 	valuePointer.addListener { _ => updateStyleForState(state) }
+	registerAction { () => value = !value }
 	
 	
 	// COMPUTED	-------------------------
@@ -37,8 +38,6 @@ class ImageCheckBox(offImages: ButtonImageSet, onImages: ButtonImageSet, initial
 	override protected def wrapped = label
 	
 	override def drawable = label
-	
-	override protected def performAction() = value = !value
 	
 	override protected def updateStyleForState(newState: ButtonState) =
 	{

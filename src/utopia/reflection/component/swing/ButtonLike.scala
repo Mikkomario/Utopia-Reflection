@@ -17,10 +17,6 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 	// ABSTRACT	----------------------
 	
 	/**
-	  * Performs the action associated with this button
-	  */
-	protected def performAction(): Unit
-	/**
 	  * Updates this button's style to match the new state
 	  * @param newState New button state
 	  */
@@ -29,6 +25,7 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 	
 	// ATTRIBUTES	------------------
 	
+	private var actions = Vector[() => Unit]()
 	private var _state: ButtonState = ButtonState(isEnabled = true, isInFocus = false, isMouseOver = false, isPressed = false)
 	
 	
@@ -67,9 +64,15 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 	// OTHER	----------------------
 	
 	/**
+	  * Adds a new action to this button. The action will be performed whenever this button is pressed
+	  * @param action An action that should be performed when this button is pressed
+	  */
+	def registerAction(action: () => Unit) = actions :+= action
+	
+	/**
 	  * Triggers this button's action. Same as if the user clicked this button (only works for enabled buttons)
 	  */
-	def trigger() = if (isEnabled) performAction()
+	def trigger() = if (isEnabled) actions.foreach { _() }
 	
 	/**
 	  * Makes this button request focus within the current window

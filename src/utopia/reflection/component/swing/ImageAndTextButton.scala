@@ -7,6 +7,31 @@ import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackLength, StackSize}
 import utopia.reflection.text.Font
 
+object ImageAndTextButton
+{
+	/**
+	  * Creates a new button
+	  * @param images Images displayed in this button
+	  * @param text Text displayed in this button
+	  * @param font Font used in this button's text
+	  * @param color This button's background color
+	  * @param margins Margins around this button's contents
+	  * @param borderWidth Width of border around this button's contents (in pixels)
+	  * @param beforeTextMargin Margin placed between this button's image and text (labels)
+	  * @param textAlignment Alignment used with this button's text
+	  * @param action Action that is performed when this button is triggered
+	  * @return A new button
+	  */
+	def apply(images: ButtonImageSet, text: LocalizedString, font: Font, color: Color, margins: StackSize,
+			  borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
+			  textAlignment: Alignment = Alignment.Left)(action: () => Unit) =
+	{
+		val button = new ImageAndTextButton(images, text, font, color, margins, borderWidth, beforeTextMargin, textAlignment)
+		button.registerAction(action)
+		button
+	}
+}
+
 /**
   * This button implementation displays both an image and some text
   * @author Mikko Hilpinen
@@ -19,11 +44,11 @@ import utopia.reflection.text.Font
   * @param borderWidth Width of border around this button's contents (in pixels)
   * @param beforeTextMargin Margin placed between this button's image and text (labels)
   * @param textAlignment Alignment used with this button's text
-  * @param action Action that is performed when this button is triggered
   */
 class ImageAndTextButton(val images: ButtonImageSet, text: LocalizedString, font: Font, val color: Color,
-						 margins: StackSize, borderWidth: Double, beforeTextMargin: StackLength, textAlignment: Alignment,
-						 val action: () => Unit) extends StackableAwtComponentWrapperWrapper with ButtonLike
+						 margins: StackSize, borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
+						 textAlignment: Alignment = Alignment.Left)
+	extends StackableAwtComponentWrapperWrapper with ButtonLike
 {
 	// ATTRIBUTES	------------------------
 	
@@ -44,8 +69,6 @@ class ImageAndTextButton(val images: ButtonImageSet, text: LocalizedString, font
 	// IMPLEMENTED	------------------------
 	
 	override protected def wrapped = content
-	
-	override protected def performAction() = action()
 	
 	override protected def updateStyleForState(newState: ButtonState) =
 	{

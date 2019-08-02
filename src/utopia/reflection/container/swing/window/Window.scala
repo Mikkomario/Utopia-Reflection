@@ -12,6 +12,7 @@ import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.component.swing.label.TextButton
+import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.Insets
@@ -129,7 +130,27 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     
     
     // OTHER    --------------------
-	
+    
+    /**
+      * Setups up basic functionality in window. Should be called after this window has been filled with content and  packed.
+      */
+    protected def setup() =
+    {
+        // Sets position and size
+        updateWindowBounds(true)
+    
+        if (!fullScreen)
+            position = ((Screen.size - size) / 2).toVector.toPoint
+    
+        updateContentBounds()
+    
+        // Registers to update bounds on each size change
+        activateResizeHandling()
+    
+        // Registers self (and content) into stack hierarchy management
+        StackHierarchyManager.registerConnection(this, content)
+    }
+    
 	/**
       * Starts mouse event generation for this window
       * @param actorHandler An actorhandler that generates the necessary action events
@@ -224,6 +245,11 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
         if (isUnderSized)
             size = size max stackSize.min
     }
+    
+    /**
+      * Closes (disposes) this window
+      */
+    def close() = component.dispose()
     
     /**
      * Centers this window on the screen

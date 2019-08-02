@@ -66,7 +66,7 @@ trait ComponentLike extends Area
     def children: Seq[ComponentLike] = Vector()
     
     
-    // OTHER    ---------------------------
+    // COMPUTED    ---------------------------
     
     /**
       * @return An iterator of this components parents
@@ -95,6 +95,13 @@ trait ComponentLike extends Area
       * @return The text height for the current font used in this component
       */
     def textHeight = fontMetrics.map { _.getHeight }
+    
+    /**
+      * @return This component's "absolute" position. Ie. Position on the screen, provided that this component belongs to
+      *         a window. If this component isn't connected to a window, a position in relation to topmost component
+      *         is returned.
+      */
+    def absolutePosition: Point = parent.map { _.absolutePosition + position }.getOrElse(position)
     
     
     // OTHER    -------------------------

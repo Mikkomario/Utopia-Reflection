@@ -6,10 +6,11 @@ import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.shape.shape2D.Point
 import utopia.reflection.component.swing.{TabSelection, TextField}
-import utopia.reflection.component.swing.label.TextLabel
+import utopia.reflection.component.swing.label.{TextButton, TextLabel}
 import utopia.reflection.container.stack.StackHierarchyManager
-import utopia.reflection.container.swing.window.Frame
+import utopia.reflection.container.swing.window.{Frame, Popup}
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.{Framing, Stack}
 import utopia.reflection.localization.{Localizer, NoLocalization}
@@ -68,6 +69,20 @@ object TextFieldTest extends App
 	
 	val stack = Stack.rowWithItems(Vector(productStack, amountStack, priceStack), 8.downscaling)
 	
+	val actorHandler = ActorHandler()
+	
+	// Pop-up handling
+	def showPopup(message: String) =
+	{
+		val messageLabel = new TextLabel(message, basicFont)
+		val okButton = new TextButton("OK", basicFont, Color.red, 8.any x 8.any, 8)
+		val popupContent = messageLabel.rowWith(Vector(okButton), margin = 16.any).framed(8.any x 8.any, Color.white)
+		
+		val popup = Popup(priceField, popupContent, actorHandler, (c, _) => Point(c.width + 16, 0) )
+		okButton.registerAction(() => popup.close())
+		popup.isVisible = true
+	}
+	
 	// Adds listening to field(s)
 	priceField.addEnterListener
 	{
@@ -78,11 +93,11 @@ object TextFieldTest extends App
 			
 			if (product.isDefined && amount.isDefined && price.isDefined)
 			{
-				println(s"${amount.get} x ${product.get} = ${amount.get * price.get} €")
 				productField.clear()
 				amountField.clear()
 				priceField.clear()
 				productField.requestFocus()
+				showPopup(s"${amount.get} x ${product.get} = ${amount.get * price.get} €")
 			}
 			else
 				println("Please select product + amount + price")
@@ -101,7 +116,6 @@ object TextFieldTest extends App
 	val stack2 = tab.columnWith(Vector(framing1), 0.fixed)
 	
 	// Creates the frame and displays it
-	val actorHandler = ActorHandler()
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
