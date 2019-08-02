@@ -15,7 +15,18 @@ import utopia.reflection.shape.StackLength
 
 object Stack
 {
+    // TYPES    --------------------
+    
     type AwtStackable = Stackable with AwtComponentRelated
+    
+    
+    // ATTRIBUTES   ----------------
+    
+    private val defaultMargin = StackLength.any
+    private val defaultCap = StackLength.fixed(0)
+    
+    
+    // OTHER    --------------------
     
     /**
       * Creates a new stack with a set of items to begin with
@@ -27,8 +38,8 @@ object Stack
       * @tparam C The type of items in the stack
       * @return A new stack
       */
-    def withItems[C <: AwtStackable](items: TraversableOnce[C], direction: Axis2D, margin: StackLength,
-                                     cap: StackLength = StackLength.fixed(0), layout: StackLayout = Fit) =
+    def withItems[C <: AwtStackable](items: TraversableOnce[C], direction: Axis2D, margin: StackLength = defaultMargin,
+                                     cap: StackLength = defaultCap, layout: StackLayout = Fit) =
     {
         val stack = new Stack[C](direction, margin, cap, layout)
         stack ++= items
@@ -43,7 +54,7 @@ object Stack
       * @tparam C The type of items in this stack
       * @return A new stack
       */
-    def row[C <: AwtStackable](margin: StackLength, cap: StackLength = StackLength.fixed(0), layout: StackLayout = Fit) =
+    def row[C <: AwtStackable](margin: StackLength = defaultMargin, cap: StackLength = defaultCap, layout: StackLayout = Fit) =
         new Stack[C](X, margin, cap, layout)
     
     /**
@@ -54,7 +65,7 @@ object Stack
       * @tparam C The type of items in this stack
       * @return A new stack
       */
-    def column[C <: AwtStackable](margin: StackLength, cap: StackLength = StackLength.fixed(0), layout: StackLayout = Fit) =
+    def column[C <: AwtStackable](margin: StackLength = defaultMargin, cap: StackLength = defaultCap, layout: StackLayout = Fit) =
         new Stack[C](Y, margin, cap, layout)
     
     /**
@@ -66,8 +77,9 @@ object Stack
       * @tparam C The type of items in this stack
       * @return A new stack
       */
-    def rowWithItems[C <: AwtStackable](items: TraversableOnce[C], margin: StackLength, cap: StackLength = StackLength.fixed(0),
-                                        layout: StackLayout = Fit) = withItems(items, X, margin, cap, layout)
+    def rowWithItems[C <: AwtStackable](items: TraversableOnce[C], margin: StackLength = defaultMargin,
+                                        cap: StackLength = defaultCap, layout: StackLayout = Fit) =
+        withItems(items, X, margin, cap, layout)
     
     /**
       * Creates a new vertical stack
@@ -78,8 +90,9 @@ object Stack
       * @tparam C The type of items in this stack
       * @return A new stack
       */
-    def columnWithItems[C <: AwtStackable](items: TraversableOnce[C], margin: StackLength, cap: StackLength = StackLength.fixed(0),
-                                           layout: StackLayout = Fit) = withItems(items, Y, margin, cap, layout)
+    def columnWithItems[C <: AwtStackable](items: TraversableOnce[C], margin: StackLength = defaultMargin,
+                                           cap: StackLength = defaultCap, layout: StackLayout = Fit) =
+        withItems(items, Y, margin, cap, layout)
 }
 
 /**
@@ -91,7 +104,7 @@ object Stack
   * @param cap The cap at each end of this stack (default = no cap)
   * @param layout The layout of this stack's components perpendicular to the 'direction' (default = Fit)
 **/
-class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override val margin: StackLength,
+class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override val margin: StackLength = StackLength.any,
                                      override val cap: StackLength = StackLength.fixed(0), override val layout: StackLayout = Fit)
     extends StackLike[C] with AwtComponentWrapperWrapper with CachingStackable with SwingComponentRelated
         with AwtContainerRelated with CustomDrawableWrapper

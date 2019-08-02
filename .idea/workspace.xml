@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style">
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Popup.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/view/MouseEventGenerator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/view/MouseEventGenerator.scala" afterDir="false" />
+    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Flow: Added some time extensions">
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/input/SelectionGroup.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Flow-Scala/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/src/utopia/flow/util/TimeExtensions.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Flow-Scala/src/utopia/flow/util/TimeExtensions.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/test/utopia/flow/test/TimeNumberTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Flow-Scala/test/utopia/flow/test/TimeNumberTest.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/stack/Stackable.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/stack/Stackable.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/AwtComponentRelated.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Button.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Button.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageCheckBox.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageCheckBox.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Dialog.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Dialog.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Frame.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Frame.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,16 +35,11 @@
         <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../Utopia-Flow-Scala" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
-    <option name="width" value="2442" />
-    <option name="height" value="2112" />
   </component>
   <component name="ProjectId" id="1OoSSl7Vtkg8U2w4WXhTOJGimZ8" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -107,7 +89,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TextFieldTest">
+  <component name="RunManager" selected="Application.TimeNumberTest">
     <configuration name="ButtonTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.ButtonTest" />
       <module name="Utopia-Reflection" />
@@ -127,19 +109,6 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="utopia.reflection.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ImageTest" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="utopia.genesis.test.ImageTest" />
-      <module name="Utopia-Genesis-Scala" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="utopia.genesis.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -173,13 +142,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TimeNumberTest" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="utopia.flow.test.TimeNumberTest" />
+      <module name="Utopia-Flow-Scala" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="utopia.flow.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TimeNumberTest" />
         <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.ButtonTest" />
         <item itemvalue="Application.TextLabelStackTest" />
         <item itemvalue="Application.ImageLabelTest" />
-        <item itemvalue="Application.ImageTest" />
       </list>
     </recent_temporary>
   </component>
@@ -197,13 +179,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00057" summary="Custom drawing added to panels and labels. Button now extends label and &#10;was moved to label package">
-      <created>1556567741817</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1556567741817</updated>
     </task>
     <task id="LOCAL-00058" summary="Working on Reflect scrollViewLike. Updated some shape classes">
       <created>1556646907191</created>
@@ -533,7 +508,13 @@
       <option name="presentableId" value="LOCAL−00105" />
       <updated>1564662903361</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL−00106" summary="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style">
+      <created>1564740262332</created>
+      <option name="number" value="LOCAL−00106" />
+      <option name="presentableId" value="LOCAL−00106" />
+      <updated>1564740262333</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="TodoView">
