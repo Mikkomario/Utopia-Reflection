@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Flow: Added some time extensions">
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/input/SelectionGroup.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Flow-Scala/README.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/src/utopia/flow/util/TimeExtensions.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Flow-Scala/src/utopia/flow/util/TimeExtensions.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/test/utopia/flow/test/TimeNumberTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Flow-Scala/test/utopia/flow/test/TimeNumberTest.scala" afterDir="false" />
+    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +30,7 @@
         <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../Utopia-Flow-Scala" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
@@ -179,13 +174,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00058" summary="Working on Reflect scrollViewLike. Updated some shape classes">
-      <created>1556646907191</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1556646907191</updated>
     </task>
     <task id="LOCAL-00059" summary="Working on scroll views">
       <created>1556651533541</created>
@@ -514,7 +502,13 @@
       <option name="presentableId" value="LOCAL−00106" />
       <updated>1564740262333</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL−00107" summary="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)">
+      <created>1564753026562</created>
+      <option name="number" value="LOCAL−00107" />
+      <option name="presentableId" value="LOCAL−00107" />
+      <updated>1564753026562</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
     <servers />
   </component>
   <component name="TodoView">
@@ -540,7 +534,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added a new scroll view trait that allows 2D scrolling" />
     <MESSAGE value="Fixed a bug in ScrollAreaLike" />
     <MESSAGE value="Refactored stack and segmentedRow constructor parameter orderings and added default parameters" />
     <MESSAGE value="Tested and debugged scroll area&#10;&#10;ScrollCanvas is still not working" />
@@ -565,7 +558,8 @@
     <MESSAGE value="Progress bar tested" />
     <MESSAGE value="Added check box that uses images" />
     <MESSAGE value="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style" />
-    <option name="LAST_COMMIT_MESSAGE" value="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style" />
+    <MESSAGE value="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)" />
   </component>
   <component name="masterDetails">
     <states>

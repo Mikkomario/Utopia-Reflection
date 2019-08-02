@@ -2,6 +2,7 @@ package utopia.reflection.component.swing
 
 import java.time.{DayOfWeek, LocalDate, Month, Year, YearMonth}
 
+import utopia.flow.util.RichComparable._
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.flow.util.TimeExtensions._
@@ -65,6 +66,9 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 	
 	private var currentSelection = selectionFor(selectedMonth)
 	
+	private val previousButton = ImageButton(backwardIcon) { () => lastMonth() }
+	private val nextButton = ImageButton(forwardIcon) { () => nextMonth() }
+	
 	// Day selections are swapped each time month changes, hence the switch panel
 	private val selectionSwitch = new SwitchPanel(currentSelection)
 	
@@ -72,8 +76,6 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 	private val content: Stack[Stack[_]] =
 	{
 		// Header consists of 2 dropdowns (month & year) and 2 arrow buttons (previous & next)
-		val previousButton = ImageButton(backwardIcon) { () => lastMonth() }
-		val nextButton = ImageButton(forwardIcon) { () => nextMonth() }
 		val headerRow = previousButton.rowWith(Vector(monthDropDown, yearDropDown, nextButton),
 			margin = headerHMargin, layout = Center)
 		
@@ -119,6 +121,31 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 	
 	// COMPUTED	---------------------------
 	
+	/**
+	  * @return The smallest possible month that is currently selectable
+	  */
+	def minMonth =
+	{
+		if (yearDropDown.isEmpty || monthDropDown.isEmpty)
+			value.yearMonth
+		else
+			yearDropDown.content.min + monthDropDown.content.min
+	}
+	
+	/**
+	  * @return The largest possible month that is currently selectable
+	  */
+	def maxMonth =
+	{
+		if (yearDropDown.isEmpty || monthDropDown.isEmpty)
+			value.yearMonth
+		else
+			yearDropDown.content.max + monthDropDown.content.max
+	}
+	
+	/**
+	  * @return Currently selected month
+	  */
 	def selectedMonth =
 	{
 		val year = yearDropDown.selected.getOrElse(value.year)
@@ -145,6 +172,8 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 			currentSelection.value.foreach { value = _ }
 			handlingDropDownUpdate = false
 		}
+		
+		updateMonthAdjustButtons()
 	}
 	
 	private def nextMonth() = adjustMonth(1)
@@ -178,6 +207,13 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 			cachedDaySelections += month -> selection
 			selection
 		}
+	}
+	
+	private def updateMonthAdjustButtons() =
+	{
+		val current = selectedMonth
+		previousButton.isEnabled = current > minMonth
+		nextButton.isEnabled = current < maxMonth
 	}
 	
 	
