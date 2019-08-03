@@ -7,8 +7,9 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.Point
+import utopia.reflection.component.swing.button.TextButton
 import utopia.reflection.component.swing.{TabSelection, TextField}
-import utopia.reflection.component.swing.label.{TextButton, TextLabel}
+import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.window.{Frame, Popup}
 import utopia.reflection.container.swing.window.WindowResizePolicy.User

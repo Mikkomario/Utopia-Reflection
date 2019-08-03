@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)">
+    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/Button.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ButtonLike.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ButtonState.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ButtonStateDrawer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ButtonWrapper.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/CustomDrawableButtonLike.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test-images/arrow-back-48dp.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utopia/reflection/test/CalendarTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Utopia-Reflection.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Utopia-Reflection.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Button.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonImageSet.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ButtonImageSet.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonLike.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ButtonState.scala" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageAndTextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ImageCheckBox.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageCheckBox.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/TextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/DefaultButtonHandler.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/DefaultButtonHandler.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/MouseTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/MouseTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/SegmentedRowTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextLabelStackTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,7 +46,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Scala Object" />
         <option value="Scala Trait" />
+        <option value="Scala Class" />
       </list>
     </option>
   </component>
@@ -48,15 +76,15 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="Scala Compiler" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="utopia.reflection.component.swing.button" />
       <recent name="utopia.reflection.component.swing" />
       <recent name="utopia.reflection.component.drawing" />
       <recent name="utopia.reflection.component.stack" />
       <recent name="utopia.reflection.component.swing.label" />
-      <recent name="utopia.reflection.container.swing" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="utopia.reflection.component" />
@@ -560,90 +588,5 @@
     <MESSAGE value="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style" />
     <MESSAGE value="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)" />
     <option name="LAST_COMMIT_MESSAGE" value="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)" />
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>Utopia-Reflection</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.6" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectJDKs.UI">
-        <settings>
-          <last-edited>1.8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>

@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent
 import utopia.genesis.event.KeyStateEvent
 import utopia.genesis.handling.KeyStateListener
 import utopia.inception.handling.immutable.Handleable
-import utopia.reflection.component.swing.label.TextButton
+import utopia.reflection.component.swing.button.TextButton
 
 object DefaultButtonHandler
 {

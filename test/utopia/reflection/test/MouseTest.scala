@@ -25,7 +25,7 @@ import scala.concurrent.ExecutionContext
 object MouseTest extends App
 {
 	DataType.setup()
-	
+
 	private class MouseEnterExitListener(val area: Area) extends MouseMoveListener with Handleable
 	{
 		override val mouseMoveEventFilter = e =>

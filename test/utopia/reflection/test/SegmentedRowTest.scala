@@ -6,7 +6,8 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
-import utopia.reflection.component.swing.label.{TextButton, TextLabel}
+import utopia.reflection.component.swing.button.TextButton
+import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.{SegmentedRow, Stack}

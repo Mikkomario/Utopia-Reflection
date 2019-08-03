@@ -1,4 +1,4 @@
-package utopia.reflection.component.swing
+package utopia.reflection.component.swing.button
 
 import utopia.genesis.image.Image
 
@@ -24,6 +24,23 @@ object ButtonImageSet
 		val pressed = focused.mapPixels { _.lightened(1 + (0.5 * intensity)) }
 		
 		ButtonImageSet(image, focused, pressed, disabled)
+	}
+	
+	/**
+	  * Creates a new button image set that changes alpha value based on button state
+	  * @param image The source image
+	  * @param defaultAlpha Alpha used in button defeult state
+	  * @param maxAlpha Alpha used in button pressed state
+	  * @return A button image set that uses varying alpha value
+	  */
+	def varyingAlpha(image: Image, defaultAlpha: Double, maxAlpha: Double) =
+	{
+		val default = image.timesAlpha(defaultAlpha)
+		val disabled = image.timesAlpha(defaultAlpha * 0.55)
+		val pressed = image.timesAlpha(maxAlpha)
+		val focus = image.timesAlpha((maxAlpha * 2 + defaultAlpha) / 3)
+		
+		ButtonImageSet(default, focus, pressed, disabled)
 	}
 }
 

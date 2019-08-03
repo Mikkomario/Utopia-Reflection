@@ -1,8 +1,7 @@
-package utopia.reflection.component.swing
+package utopia.reflection.component.swing.button
 
 import utopia.genesis.color.Color
 import utopia.reflection.component.Alignment
-import utopia.reflection.component.swing.label.TextButton
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.Font

@@ -1,5 +1,6 @@
-package utopia.reflection.component.swing
+package utopia.reflection.component.swing.button
 
+import utopia.reflection.component.swing.StackableAwtComponentWrapperWrapper
 import utopia.reflection.component.swing.label.ImageLabel
 
 object ImageButton

@@ -1,4 +1,4 @@
-package utopia.reflection.component.swing
+package utopia.reflection.component.swing.button
 
 import java.awt.event.{FocusEvent, FocusListener, KeyEvent}
 
@@ -6,6 +6,7 @@ import utopia.genesis.event.{KeyStateEvent, MouseButton, MouseButtonStateEvent, 
 import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener, MouseMoveListener}
 import utopia.inception.handling.HandlerType
 import utopia.reflection.component.ComponentLike
+import utopia.reflection.component.swing.AwtComponentRelated
 
 /**
   * Used as a common trait for all different button implementations

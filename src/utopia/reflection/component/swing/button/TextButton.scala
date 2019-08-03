@@ -1,9 +1,10 @@
-package utopia.reflection.component.swing.label
+package utopia.reflection.component.swing.button
 
 import utopia.genesis.color.Color
 import utopia.reflection.component.Alignment
 import utopia.reflection.component.Alignment.Center
-import utopia.reflection.component.swing.{AwtTextComponentWrapper, ButtonLike, ButtonState}
+import utopia.reflection.component.swing.AwtTextComponentWrapper
+import utopia.reflection.component.swing.label.Label
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackSize}
 import utopia.reflection.text.Font
