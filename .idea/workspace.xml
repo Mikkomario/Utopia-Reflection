@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/component/drawing/SelectionCircleDrawer.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/input/SelectionGroup.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/input/SelectionGroup.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/StackHierarchyManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/StackHierarchyManager.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/StackLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/StackLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/SwitchPanel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/SwitchPanel.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/CalendarTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/CalendarTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -184,13 +178,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00060" summary="Scroll view tested and debugged">
-      <created>1556655657876</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1556655657876</updated>
     </task>
     <task id="LOCAL-00061" summary="Added drop down class (not tested yet) and altered selection traits">
       <created>1556709251575</created>
@@ -517,7 +504,13 @@
       <option name="presentableId" value="LOCAL−00108" />
       <updated>1564822645643</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL−00109" summary="Debugged calendar component">
+      <created>1564837778134</created>
+      <option name="number" value="LOCAL−00109" />
+      <option name="presentableId" value="LOCAL−00109" />
+      <updated>1564837778134</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TodoView">
@@ -543,7 +536,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactored stack and segmentedRow constructor parameter orderings and added default parameters" />
     <MESSAGE value="Tested and debugged scroll area&#10;&#10;ScrollCanvas is still not working" />
     <MESSAGE value="Debugged scroll area&#10;&#10;Scroll canvas is not yet working, however" />
     <MESSAGE value="Fixed a bug regarding stack hierarchy management" />
@@ -568,6 +560,7 @@
     <MESSAGE value="Genesis: Fixed a mouse event generation bug&#10;Reflection: Added pop-ups and changed button action style" />
     <MESSAGE value="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)" />
     <MESSAGE value="Reflection: Updated package structure for buttons. Testing calendar next" />
-    <option name="LAST_COMMIT_MESSAGE" value="Reflection: Updated package structure for buttons. Testing calendar next" />
+    <MESSAGE value="Debugged calendar component" />
+    <option name="LAST_COMMIT_MESSAGE" value="Debugged calendar component" />
   </component>
 </project>

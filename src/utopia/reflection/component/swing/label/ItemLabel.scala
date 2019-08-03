@@ -2,6 +2,7 @@ package utopia.reflection.component.swing.label
 
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
+import utopia.genesis.color.Color
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.{Alignable, Alignment, RefreshableWithPointer}
 import utopia.reflection.localization.DisplayFunction
@@ -35,6 +36,7 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	
 	label.setFont(font.toAwt)
 	label.setText(_text.string)
+	textColor = Color.textBlack
 	align(initialAlignment)
 	
 	

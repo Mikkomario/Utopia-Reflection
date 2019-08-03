@@ -6,18 +6,98 @@ import utopia.flow.util.RichComparable._
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.flow.util.TimeExtensions._
+import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.{X, Y}
-import utopia.reflection.component.drawing.CustomDrawableWrapper
+import utopia.genesis.shape.shape2D.Size
+import utopia.reflection.component.Alignment
+import utopia.reflection.component.drawing.{CustomDrawableWrapper, SelectionCircleDrawer}
 import utopia.reflection.component.input.{InteractionWithPointer, SelectionGroup}
 import utopia.reflection.component.stack.Stackable
-import utopia.reflection.component.swing.button.{ButtonImageSet, ImageButton}
-import utopia.reflection.component.swing.label.EmptyLabel
+import utopia.reflection.component.swing.button.{ButtonImageSet, CustomDrawableButtonLike, ImageButton}
+import utopia.reflection.component.swing.label.{EmptyLabel, ItemLabel, TextLabel}
 import utopia.reflection.container.stack.StackLayout.Center
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.swing.{SegmentedRow, Stack, SwitchPanel}
+import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.text.Font
 
 import scala.collection.immutable.HashMap
+
+object Calendar
+{
+	/**
+	  * Creates a new calendar component
+	  * @param monthDropDown Drop down used for selecting months
+	  * @param yearDropDown Drop down used for selecting years
+	  * @param forwardIcon Images used for forward button
+	  * @param backwardIcon Images used for backward button
+	  * @param headerHMargin Horizontal margin between header (month selection) items
+	  * @param afterHeaderMargin Margin after header
+	  * @param dayNameDisplayFunction Display function used with week days
+	  * @param dayNameFont Font used with day names
+	  * @param dayNameTextColor Text color used with day names
+	  * @param dayNameMargins Margins used inside day name labels
+	  * @param dateFont Font used with date number buttons
+	  * @param dateTextColor Text color used in date number buttons
+	  * @param dateMargins Margins used inside date number buttons
+	  * @param selectionHoverColor Color used to highlight the field mouse is hovering over
+	  * @param selectedColor Color used to highlight selected field
+	  * @param firstDayOfWeek First day of a week (default = Monday)
+	  * @return A new calendar
+	  */
+	def apply(monthDropDown: DropDown[Month], yearDropDown: DropDown[Year], forwardIcon: ButtonImageSet,
+			  backwardIcon: ButtonImageSet, headerHMargin: StackLength, afterHeaderMargin: StackLength,
+			  dayNameDisplayFunction: DisplayFunction[DayOfWeek], dayNameFont: Font, dayNameTextColor: Color,
+			  dayNameMargins: StackSize, dateFont: Font, dateTextColor: Color, dateMargins: StackSize,
+			  selectionHoverColor: Color, selectedColor: Color, firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY) =
+	{
+		def makeDayNameLabel(day: DayOfWeek) =
+		{
+			val label = new ItemLabel[DayOfWeek](day,
+				dayNameDisplayFunction, dayNameFont, dayNameMargins, initialAlignment = Alignment.Center)
+			label.textColor = dayNameTextColor
+			label
+		}
+		def makeDateLabel(date: Int) = new DateLabel(date, dateFont, dateMargins, dateTextColor, selectionHoverColor,
+			selectedColor)
+		
+		new Calendar(monthDropDown, yearDropDown, forwardIcon, backwardIcon, headerHMargin, afterHeaderMargin,
+			StackSize.fixed(Size.zero), makeDayNameLabel, makeDateLabel)
+	}
+	
+	private class DateLabel(val date: Int, font: Font, margins: StackSize, textColor: Color, hoverColor: Color,
+							selectedColor: Color)
+		extends StackableAwtComponentWrapperWrapper with CustomDrawableWrapper
+		with CustomDrawableButtonLike with InteractionWithPointer[Boolean]
+	{
+		// ATTRIBUTES	-----------------
+		
+		private val label = new ItemLabel[Int](date, DisplayFunction.raw, font, margins)
+		
+		override val valuePointer = new PointerWithEvents[Boolean](false)
+		
+		
+		// INITIAL CODE	-----------------
+		
+		label.component.setFocusable(true)
+		label.alignCenter()
+		label.textColor = textColor
+		addCustomDrawer(new SelectionCircleDrawer(hoverColor, selectedColor, () => value, () => state))
+		
+		valuePointer.addListener { _ => repaint() }
+		registerAction(() => value = !value)
+		initializeListeners()
+		setHandCursor()
+		
+		
+		// IMPLEMENTED	-----------------
+		
+		override protected def wrapped = label
+		
+		override def drawable = label
+	}
+}
 
 /**
   * Used for letting the user choose a date
