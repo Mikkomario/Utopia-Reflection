@@ -128,6 +128,7 @@ object StackHierarchyManager
 		}
 	}
 	
+	@scala.annotation.tailrec
 	private def revalidate(remainingIds: Set[StackId], nodes: Set[Node]): Unit =
 	{
 		// Finds the next set of nodes to validate
@@ -146,6 +147,7 @@ object StackHierarchyManager
 		}
 	}
 	
+	@scala.annotation.tailrec
 	private def resetStackSizesFor(remainingIds: Set[StackId]): Unit =
 	{
 		if (remainingIds.nonEmpty)

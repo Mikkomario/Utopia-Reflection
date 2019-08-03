@@ -20,7 +20,8 @@ import utopia.reflection.text.Font
   * @param hasMinWidth Whether this label should have minimum width (always show all content text) (default = true)
   */
 class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], override val font: Font,
-				   override val margins: StackSize, override val hasMinWidth: Boolean = true)
+				   override val margins: StackSize = StackSize.any, override val hasMinWidth: Boolean = true,
+				   initialAlignment: Alignment = Alignment.Left)
 	extends Label with AwtTextComponentWrapper with Alignable with RefreshableWithPointer[A]
 {
 	// ATTRIBUTES	--------------------
@@ -34,6 +35,7 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	
 	label.setFont(font.toAwt)
 	label.setText(_text.string)
+	align(initialAlignment)
 	
 	
 	// IMPLEMENTED	--------------------

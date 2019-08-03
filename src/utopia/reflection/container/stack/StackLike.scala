@@ -301,7 +301,8 @@ trait StackLike[C <: Stackable] extends MultiStackContainer[C] with StackSizeCal
         }.orElse(c.lastOption)
     }
     
-    private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double = 
+    @scala.annotation.tailrec
+    private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double =
     {
         // println(s"Adjusting length for ${targets.size} targets. Remaining adjustment: $adjustment")
         

@@ -70,6 +70,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 				jlist.setForeground(textColor.toAwt)
 				jlist.setBackground(backgroundColor.toAwt)
 				jlist.setSelectionForeground(textColor.toAwt)
+				textHeight.foreach { jlist.setFixedCellHeight }
 			case _ =>
 		}
 	}

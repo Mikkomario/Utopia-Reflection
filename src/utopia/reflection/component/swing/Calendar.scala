@@ -43,7 +43,7 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 {
 	// ATTRIBUTES	-----------------------
 	
-	override def valuePointer = new PointerWithEvents[LocalDate](LocalDate.now)
+	override val valuePointer = new PointerWithEvents[LocalDate](LocalDate.now)
 	
 	private var handlingDropDownUpdate = false
 	private var handlingPointerUpdate = false
@@ -61,7 +61,7 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 	private val weekDays = (DayOfWeek.values().dropWhile { _.getValue < firstDayOfWeek.getValue } ++
 		DayOfWeek.values().takeWhile { _.getValue < firstDayOfWeek.getValue }).toVector
 	
-	private val segmentGroup = new SegmentedGroup(Y)
+	private val segmentGroup = new SegmentedGroup(X)
 	
 	private var cachedDaySelections: Map[YearMonth, DaySelection] = HashMap()
 	
@@ -85,6 +85,7 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 		val dayNameRow = SegmentedRow.partOfGroupWithItems(segmentGroup, dayNameLabels, insideCalendarMargin.along(X))
 		
 		currentSelection.attach()
+		currentSelection.addValueListener(SelectionChangeListener)
 		
 		val calendarPart = dayNameRow.columnWith(Vector(selectionSwitch), margin = insideCalendarMargin.along(Y))
 		headerRow.columnWith(Vector(calendarPart), margin = afterHeaderMargin)
@@ -282,7 +283,6 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 		
 		// OTHER	----------------------
 		
-		// TODO: Add revalidation?
 		def attach() = segmentGroup.register(rows)
 		def detach() = rows.foreach(segmentGroup.remove)
 	}

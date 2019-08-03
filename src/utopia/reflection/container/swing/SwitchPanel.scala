@@ -38,7 +38,11 @@ class SwitchPanel[C <: Stackable with AwtComponentRelated](initialContent: C) ex
 	override def component = panel.component
 	
 	// Content size matches that of this panel
-	override def updateLayout() = content.foreach { _.size = this.size }
+	override def updateLayout() =
+	{
+		content.foreach { _.size = this.size }
+		repaint()
+	}
 	
 	override protected def calculatedStackSize = content.map { _.stackSize } getOrElse StackSize.any
 	
