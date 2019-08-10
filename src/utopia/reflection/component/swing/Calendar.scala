@@ -18,7 +18,7 @@ import utopia.reflection.component.swing.label.{EmptyLabel, ItemLabel, TextLabel
 import utopia.reflection.container.stack.StackLayout.Center
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.swing.{SegmentedRow, Stack, SwitchPanel}
-import utopia.reflection.localization.DisplayFunction
+import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.Font
 
@@ -26,6 +26,8 @@ import scala.collection.immutable.HashMap
 
 object Calendar
 {
+	// TODO: Add contextual creation options once date limits have been added
+	
 	/**
 	  * Creates a new calendar component
 	  * @param monthDropDown Drop down used for selecting months

@@ -23,7 +23,7 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 								   stackMargin: StackLength = StackLength.any, relatedItemsStackMargin: Option[StackLength] = None,
 								   stackCap: StackLength = StackLength.fixed(0), dropDownWidthLimit: Option[Int] = None,
 								   switchWidth: Option[StackLength] = None, textFieldWidth: Option[StackLength] = None,
-								   scrollPerWheelClick: Double = 32, scrollBarWidth: Double = 24,
+								   scrollPerWheelClick: Double = 32, scrollBarWidth: Int = 24,
 								   scrollBarDrawer: Option[ScrollBarDrawer] = None, scrollBarIsInsideContent: Boolean = false,
 								   allowImageUpscaling: Boolean = false)
 {
@@ -95,7 +95,7 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	
 	def withScrollPerWheelClick(scrollAmount: Double) = copy(scrollPerWheelClick = scrollAmount)
 	
-	def withScrollBarWidth(barWidth: Double) = copy(scrollBarWidth = barWidth)
+	def withScrollBarWidth(barWidth: Int) = copy(scrollBarWidth = barWidth)
 	
 	def withScrollBarDrawer(drawer: ScrollBarDrawer) = copy(scrollBarDrawer = Some(drawer))
 	

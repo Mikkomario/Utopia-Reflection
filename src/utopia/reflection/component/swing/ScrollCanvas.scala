@@ -16,8 +16,32 @@ import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.container.stack.ScrollBarDrawer
 import utopia.reflection.container.swing.{Panel, ScrollArea}
 import utopia.reflection.shape.{StackLengthLimit, StackSize}
+import utopia.reflection.util.ComponentContext
 
 import scala.concurrent.ExecutionContext
+
+object ScrollCanvas
+{
+	/**
+	  * Creates a new scroll canvas using component creation context
+	  * @param originalWorldSize The initial size of the drawn world
+	  * @param drawHandler A handler that draws all the content in this canvas
+	  * @param contentMouseButtonHandler A mouse button handler that is used by the content drawn in this canvas
+	  * @param contentMouseMoveHandler A mouse move handler that is used by the content drawn in this canvas
+	  * @param contentMouseWheelHandler A mouse wheel handler that is used by the content drawn in this canvas
+	  * @param maxOptimalSize The maximum optimal size for this canvas (None if no maximum) (default = None)
+	  * @param context Component creation context (implicit)
+	  * @return A new scroll canvas
+	  */
+	def contextual(originalWorldSize: Size, drawHandler: DrawableHandler, contentMouseButtonHandler: MouseButtonStateHandler,
+				   contentMouseMoveHandler: MouseMoveHandler, contentMouseWheelHandler: MouseWheelHandler,
+				   maxOptimalSize: Option[Size] = None)(implicit context: ComponentContext) =
+	{
+		new ScrollCanvas(originalWorldSize, drawHandler, context.actorHandler, contentMouseButtonHandler,
+			contentMouseMoveHandler, contentMouseWheelHandler, context.scrollPerWheelClick, context.scrollBarDrawer,
+			context.scrollBarWidth, context.scrollBarIsInsideContent, maxOptimalSize)
+	}
+}
 
 /**
   * This canvas uses scroll views to make the whole content available. All of the content is custom drawn using a

@@ -8,8 +8,28 @@ import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer, StackHierarchyManager}
 import utopia.reflection.shape.StackLengthLimit
+import utopia.reflection.util.ComponentContext
 
 import scala.collection.immutable.HashMap
+
+object ScrollArea
+{
+	/**
+	  * Creates a new scroll area using component creation context
+	  * @param content Content that will be scrolled
+	  * @param lengthLimits Limits applied to scroll area size (default = no limits)
+	  * @param limitsToContentSize Whether scroll area size should be limited to content size (default = false)
+	  * @param context Component creation context (implicit)
+	  * @tparam C Type of wrapped content
+	  * @return A new scroll area
+	  */
+	def contextual[C <: Stackable with AwtComponentRelated](content: C, lengthLimits: Map[Axis2D, StackLengthLimit] = HashMap(),
+															limitsToContentSize: Boolean = false)(implicit context: ComponentContext) =
+	{
+		new ScrollArea[C](content, context.actorHandler, context.scrollPerWheelClick, context.scrollBarDrawer,
+			context.scrollBarWidth, context.scrollBarIsInsideContent, lengthLimits, limitsToContentSize)
+	}
+}
 
 /**
   * This is a 2D scroll area implemented with swing components

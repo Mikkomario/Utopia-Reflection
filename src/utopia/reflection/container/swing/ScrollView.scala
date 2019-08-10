@@ -1,6 +1,7 @@
 package utopia.reflection.container.swing
 
 import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.shape.Axis.Y
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.reflection.component.drawing.CustomDrawableWrapper
@@ -8,6 +9,29 @@ import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.{ScrollBarDrawer, ScrollViewLike, StackHierarchyManager}
 import utopia.reflection.shape.StackLengthLimit
+import utopia.reflection.util.ComponentContext
+
+object ScrollView
+{
+	/**
+	  * Creates a new scroll view using component creation context
+	  * @param content Scroll view contents
+	  * @param axis Scroll view axis (default = Y)
+	  * @param lengthLimits Scroll view length limits (default = no limits)
+	  * @param limitsToContentSize Whether scroll view length should be limited to content length (default = false)
+	  * @param context Component creation context (implicit)
+	  * @tparam C Type of contained content
+	  * @return A new scroll view
+	  */
+	def contextual[C <: Stackable with AwtComponentRelated](content: C, axis: Axis2D = Y,
+															lengthLimits: StackLengthLimit = StackLengthLimit.noLimit,
+															limitsToContentSize: Boolean = false)
+														   (implicit context: ComponentContext) =
+	{
+		new ScrollView[C](content, axis, context.actorHandler, context.scrollPerWheelClick, context.scrollBarDrawer,
+			context.scrollBarWidth, context.scrollBarIsInsideContent, lengthLimits, limitsToContentSize)
+	}
+}
 
 /**
   * This is a scroll view implemented with swing components

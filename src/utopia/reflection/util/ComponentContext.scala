@@ -19,7 +19,7 @@ case class ComponentContext(actorHandler: ActorHandler, font: Font, highlightCol
 							border: Option[Border], borderWidth: Double, stackMargin: StackLength,
 							relatedItemsStackMargin: StackLength, stackCap: StackLength, dropDownWidthLimit: Option[Int],
 							switchWidth: StackLength, textFieldWidth: StackLength, scrollPerWheelClick: Double,
-							scrollBarWidth: Double, scrollBarDrawer: ScrollBarDrawer, scrollBarIsInsideContent: Boolean,
+							scrollBarWidth: Int, scrollBarDrawer: ScrollBarDrawer, scrollBarIsInsideContent: Boolean,
 							allowImageUpscaling: Boolean)
 {
 	// COMPUTED	------------------------

@@ -2,23 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ProgressBar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ProgressBar.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageAndTextButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageCheckBox.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageCheckBox.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/TextButton.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/EmptyLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/EmptyLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/shape/Insets.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/shape/Insets.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ScrollCanvas.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ScrollCanvas.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollArea.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollArea.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollView.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollView.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -191,13 +182,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00062" summary="Debugged drop down class">
-      <created>1556718945310</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1556718945310</updated>
     </task>
     <task id="LOCAL-00063" summary="Updated package structure">
       <created>1556719409574</created>
@@ -522,7 +506,13 @@
       <option name="presentableId" value="LOCAL−00110" />
       <updated>1564849678420</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL−00111" summary="Added contextual creation options to a couple of components">
+      <created>1565427106458</created>
+      <option name="number" value="LOCAL−00111" />
+      <option name="presentableId" value="LOCAL−00111" />
+      <updated>1565427106458</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TodoView">
@@ -548,7 +538,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Debugged scroll area&#10;&#10;Scroll canvas is not yet working, however" />
     <MESSAGE value="Fixed a bug regarding stack hierarchy management" />
     <MESSAGE value="Fixed scroll canvas" />
     <MESSAGE value="Flow: Now using scala Duration. Added a new way of creating durations&#10;Reflection: Testing StackContentManager" />
@@ -573,6 +562,7 @@
     <MESSAGE value="Reflection: Updated package structure for buttons. Testing calendar next" />
     <MESSAGE value="Debugged calendar component" />
     <MESSAGE value="Added another constructor option to calendar" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added another constructor option to calendar" />
+    <MESSAGE value="Added contextual creation options to a couple of components" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added contextual creation options to a couple of components" />
   </component>
 </project>
