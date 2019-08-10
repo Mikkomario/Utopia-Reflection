@@ -7,6 +7,7 @@ import utopia.reflection.component.swing.label.{ImageLabel, TextLabel}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackLength, StackSize}
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
 
 object ImageAndTextButton
 {
@@ -31,6 +32,18 @@ object ImageAndTextButton
 		button.registerAction(action)
 		button
 	}
+	
+	/**
+	  * Creates a new button using contextual information
+	  * @param images Images used in this button
+	  * @param text Text displayed in this button
+	  * @param action Action performed when this button is pressed
+	  * @param context Component creation context
+	  * @return A new button
+	  */
+	def contextual(images: ButtonImageSet, text: LocalizedString)(action: () => Unit)(implicit context: ComponentContext) =
+		apply(images, text, context.font, context.buttonBackground, context.insideMargins, context.borderWidth,
+			context.relatedItemsStackMargin, context.textAlignment)(action)
 }
 
 /**

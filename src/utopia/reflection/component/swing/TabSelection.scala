@@ -5,6 +5,7 @@ import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.MouseButtonStateListener
+import utopia.genesis.shape.Axis.{X, Y}
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.drawing.{BorderDrawer, CustomDrawableWrapper}
 import utopia.reflection.component.input.SelectableWithPointers
@@ -14,8 +15,25 @@ import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.shape.{Border, StackLength, StackSize}
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
 
 import scala.collection.immutable.HashMap
+
+object TabSelection
+{
+	/**
+	  * Creates a new tab selection using contextual information
+	  * @param displayFunction Display function used for selectable values (default = displayed as is)
+	  * @param initialChoices Initially selectable choices (default = empty)
+	  * @param context Component creation context
+	  * @tparam A Type of selected item
+	  * @return A new tab selection
+	  */
+	def contextual[A](displayFunction: DisplayFunction[A] = DisplayFunction.raw, initialChoices: Seq[A] = Vector())
+					 (implicit context: ComponentContext) = new TabSelection[A](context.font,
+		context.background.getOrElse(context.highlightColor), context.insideMargins.along(X).optimal,
+		context.insideMargins.along(Y), context.borderWidth, displayFunction, initialChoices)
+}
 
 /**
   * This class offers a selection from multiple choices using a horizontal set of tabs

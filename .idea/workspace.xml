@@ -2,10 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/DropDown.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ProgressBar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ProgressBar.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageAndTextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageCheckBox.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageCheckBox.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/TextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/EmptyLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/EmptyLabel.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ImageLabel.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/CalendarTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/CalendarTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/shape/Insets.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/shape/Insets.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -178,13 +191,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00061" summary="Added drop down class (not tested yet) and altered selection traits">
-      <created>1556709251575</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1556709251576</updated>
     </task>
     <task id="LOCAL-00062" summary="Debugged drop down class">
       <created>1556718945310</created>
@@ -510,7 +516,13 @@
       <option name="presentableId" value="LOCAL−00109" />
       <updated>1564837778134</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL−00110" summary="Added another constructor option to calendar">
+      <created>1564849678419</created>
+      <option name="number" value="LOCAL−00110" />
+      <option name="presentableId" value="LOCAL−00110" />
+      <updated>1564849678420</updated>
+    </task>
+    <option name="localTasksCounter" value="111" />
     <servers />
   </component>
   <component name="TodoView">
@@ -536,7 +548,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Tested and debugged scroll area&#10;&#10;ScrollCanvas is still not working" />
     <MESSAGE value="Debugged scroll area&#10;&#10;Scroll canvas is not yet working, however" />
     <MESSAGE value="Fixed a bug regarding stack hierarchy management" />
     <MESSAGE value="Fixed scroll canvas" />
@@ -561,6 +572,7 @@
     <MESSAGE value="Flow: Added some time extensions&#10;Reflection: Added a calendar component (not tested)" />
     <MESSAGE value="Reflection: Updated package structure for buttons. Testing calendar next" />
     <MESSAGE value="Debugged calendar component" />
-    <option name="LAST_COMMIT_MESSAGE" value="Debugged calendar component" />
+    <MESSAGE value="Added another constructor option to calendar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added another constructor option to calendar" />
   </component>
 </project>

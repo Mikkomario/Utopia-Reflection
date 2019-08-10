@@ -17,11 +17,20 @@ import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.util.ComponentContext
 
 object Switch
 {
 	private val animationDuration = Duration.ofMillis(100)
 	private val maxHeightRatio = 0.5
+	
+	/**
+	  * Creates a new switch using contextual information
+	  * @param context Component creation context
+	  * @return A new switch
+	  */
+	def contextual(implicit context: ComponentContext) = new Switch(context.switchWidth, context.highlightColor,
+		context.actorHandler)
 }
 
 /**

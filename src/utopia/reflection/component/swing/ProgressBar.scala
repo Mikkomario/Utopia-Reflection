@@ -10,6 +10,23 @@ import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.shape.StackSize
+import utopia.reflection.util.ComponentContext
+
+object ProgressBar
+{
+	/**
+	  * Creates a new progress bar using contextual information
+	  * @param stackSize Progress bar size
+	  * @param data Tracked data
+	  * @param calculateProgress A function for calculating progress
+	  * @param context Component creation context
+	  * @tparam A Tracked item type
+	  * @return A new progress bar
+	  */
+	def contextual[A](stackSize: StackSize, data: PointerWithEvents[A])(calculateProgress: A => Double)
+					 (implicit context: ComponentContext) = new ProgressBar[A](stackSize, context.barBackground,
+		context.highlightColor, data, calculateProgress)
+}
 
 /**
   * Used for displaying progress of some longer operation

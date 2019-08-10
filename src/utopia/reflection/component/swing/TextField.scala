@@ -10,11 +10,14 @@ import javax.swing.text.{Document, PlainDocument}
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
+import utopia.genesis.shape.Axis
 import utopia.reflection.component.{Alignable, Alignment}
 import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.CachingStackable
+import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, Insets, StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt, Regex}
+import utopia.reflection.util.ComponentContext
 
 object TextField
 {
@@ -84,6 +87,26 @@ object TextField
 	{
 		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.decimalParts, 24),
 			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimal))
+	}
+	
+	/**
+	  * Creates a new text field using contextual information
+	  * @param document Document used for this field (default = plain document)
+	  * @param initialText Initially displayed text (default = no text)
+	  * @param prompt Prompt text displayed (optional)
+	  * @param resultFilter A regex used for transforming field content (default = None)
+	  * @param context Component creation context
+	  * @return A new text field
+	  */
+	def contextual(document: Document = new PlainDocument(), initialText: String = "",
+				   prompt: Option[LocalizedString] = None, resultFilter: Option[Regex] = None)
+				  (implicit context: ComponentContext) =
+	{
+		val field = new TextField(context.textFieldWidth, context.insideMargins.along(Axis.Y), context.font, document,
+			initialText, prompt.map { Prompt(_, context.promptFont, context.promptTextColor) }, context.textColor,
+			resultFilter)
+		context.setBorderAndBackground(field)
+		field
 	}
 }
 

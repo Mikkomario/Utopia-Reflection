@@ -8,6 +8,7 @@ import utopia.reflection.component.swing.label.Label
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackSize}
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
 
 object TextButton
 {
@@ -28,6 +29,16 @@ object TextButton
 		button.registerAction(action)
 		button
 	}
+	
+	/**
+	  * Creates a new text button using external context
+	  * @param text Button text
+	  * @param action Button action
+	  * @param context Button context
+	  * @return The new button
+	  */
+	def contextual(text: LocalizedString)(action: () => Unit)(implicit context: ComponentContext): TextButton =
+		apply(text, context.font, context.buttonBackground, context.insideMargins, context.borderWidth)(action)
 }
 
 /**

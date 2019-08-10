@@ -15,6 +15,30 @@ import utopia.reflection.component.swing.label.Label
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.{Border, Insets, StackSize}
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
+
+object DropDown
+{
+	/**
+	  * Creates a new drop down using contextual information
+	  * @param selectText Text displayed when no value is selected and some are available
+	  * @param displayFunction A function for transforming selectable values into displayable format
+	  *                        (default = displayed as is)
+	  * @param initialChoices Initially shown choices (default = empty)
+	  * @param context Component creation context
+	  * @tparam A Type of selected item
+	  * @return A new drop down
+	  */
+	def contextual[A](selectText: LocalizedString, displayFunction: DisplayFunction[A] = DisplayFunction.raw,
+					  initialChoices: Vector[A] = Vector())(implicit context: ComponentContext) =
+	{
+		val dropDown = new DropDown[A](context.insideMargins, selectText, context.font,
+			context.background.getOrElse(Color.white), context.focusColor, context.textColor, displayFunction,
+			initialChoices, context.dropDownWidthLimit)
+		context.border.foreach(dropDown.setBorder)
+		dropDown
+	}
+}
 
 /**
   * Dropdowns are used for selecting a single value from multiple alternatives

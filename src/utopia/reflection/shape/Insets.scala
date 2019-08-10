@@ -107,6 +107,11 @@ case class Insets(left: Double, right: Double, top: Double, bottom: Double)
       */
     def vMirrored = Insets(left, right, bottom, top)
     
+    /**
+      * @return The average width of these insets
+      */
+    def average = (left + right + top + bottom) / 4
+    
     
     // OPERATORS    --------------
     

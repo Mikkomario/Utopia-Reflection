@@ -8,6 +8,26 @@ import utopia.reflection.component.{Alignable, Alignment, RefreshableWithPointer
 import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
+
+object ItemLabel
+{
+	/**
+	  * Creates a new label using contextual information
+	  * @param content Initial label content
+	  * @param displayFunction A function for displaying label data
+	  * @param context Component creation context
+	  * @tparam A Type of presented item
+	  * @return A new label
+	  */
+	def contextual[A](content: A, displayFunction: DisplayFunction[A])(implicit context: ComponentContext) =
+	{
+		val label = new ItemLabel[A](content, displayFunction, context.font, context.insideMargins,
+			context.textHasMinWidth, context.textAlignment)
+		context.setBorderAndBackground(label)
+		label
+	}
+}
 
 /**
   * These labels display an item of a specific type, transforming it into text format

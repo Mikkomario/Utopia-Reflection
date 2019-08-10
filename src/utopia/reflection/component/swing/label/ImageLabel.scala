@@ -7,6 +7,24 @@ import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.shape.StackSize
+import utopia.reflection.util.ComponentContext
+
+object ImageLabel
+{
+	/**
+	  * Creates a new label using contextual settings
+	  * @param image Image presented in this label
+	  * @param alwaysFillsArea Whether image should fill the whole area (default = true)
+	  * @param context Component creation context
+	  * @return A new label
+	  */
+	def contextual(image: Image, alwaysFillsArea: Boolean = true)(implicit context: ComponentContext) =
+	{
+		val label = new ImageLabel(image, alwaysFillsArea, context.allowImageUpscaling)
+		context.setBorderAndBackground(label)
+		label
+	}
+}
 
 /**
   * This label shows an image

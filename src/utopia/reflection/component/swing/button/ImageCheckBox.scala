@@ -3,7 +3,7 @@ package utopia.reflection.component.swing.button
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.input.InteractionWithPointer
-import utopia.reflection.component.swing.StackableAwtComponentWrapperWrapper
+import utopia.reflection.component.swing.{StackableAwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.component.swing.label.ImageLabel
 
 /**
@@ -13,7 +13,7 @@ import utopia.reflection.component.swing.label.ImageLabel
   */
 class ImageCheckBox(offImages: ButtonImageSet, onImages: ButtonImageSet, initialState: Boolean = false)
 	extends StackableAwtComponentWrapperWrapper with CustomDrawableWrapper with ButtonLike
-		with InteractionWithPointer[Boolean]
+		with InteractionWithPointer[Boolean] with SwingComponentRelated
 {
 	// ATTRIBUTES	---------------------
 	
@@ -30,11 +30,19 @@ class ImageCheckBox(offImages: ButtonImageSet, onImages: ButtonImageSet, initial
 	
 	// COMPUTED	-------------------------
 	
+	/**
+	  * @return Whether this check box has been checked
+	  */
 	def isOn = value
+	/**
+	  * @return Whether this check box is empty
+	  */
 	def isOff = !isOn
 	
 	
 	// IMPLEMENTED	---------------------
+	
+	override def component = label.component
 	
 	override protected def wrapped = label
 	

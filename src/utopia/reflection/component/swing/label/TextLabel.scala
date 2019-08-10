@@ -6,6 +6,7 @@ import utopia.reflection.component.{Alignable, Alignment}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
 
 object TextLabel
 {
@@ -16,8 +17,22 @@ object TextLabel
 	  * @param hasMinWidth Whether this label always presents the whole text (default = true)
 	  * @return A new label with specified text
 	  */
-	def apply(text: LocalizedString, font: Font, margins: StackSize, hasMinWidth: Boolean = true) =
-		new TextLabel(text, font, margins, hasMinWidth)
+	def apply(text: LocalizedString, font: Font, margins: StackSize = StackSize.any, hasMinWidth: Boolean = true,
+			  alignment: Alignment = Alignment.Left) = new TextLabel(text, font, margins, hasMinWidth, alignment)
+	
+	/**
+	  * Creates a new label using contextual information
+	  * @param text Label text
+	  * @param context Component creation context
+	  * @return A new label
+	  */
+	def contextual(text: LocalizedString)(implicit context: ComponentContext) =
+	{
+		val label = new TextLabel(text, context.font, context.insideMargins, context.textHasMinWidth,
+			context.textAlignment)
+		context.setBorderAndBackground(label)
+		label
+	}
 }
 
 /**
