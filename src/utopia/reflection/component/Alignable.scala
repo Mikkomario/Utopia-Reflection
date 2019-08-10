@@ -1,6 +1,7 @@
 package utopia.reflection.component
 
-import utopia.reflection.component.Alignment._
+import utopia.reflection.util.Alignment._
+import utopia.reflection.util.Alignment
 
 /**
   * Alignable elements can be aligned

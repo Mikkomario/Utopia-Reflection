@@ -13,12 +13,13 @@ import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.window.{Frame, Popup}
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
-import utopia.reflection.container.swing.{Framing, Stack}
+import utopia.reflection.container.swing.Stack
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
-import utopia.reflection.shape.StackLength
-import utopia.reflection.text.{Font, Prompt}
+import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
+import utopia.reflection.util.Alignment.BottomLeft
+import utopia.reflection.util.{Alignment, ComponentContextBuilder}
 
 import scala.concurrent.ExecutionContext
 
@@ -35,94 +36,93 @@ object TextFieldTest extends App
 	implicit val defaultLanguageCode: String = "EN"
 	implicit val localizer: Localizer = NoLocalization
 	
-	// Creates the hint labels
-	val basicFont = Font("Arial", 12, Plain, 2)
-	val focusColor = Color.yellow
-	val labels = Vector("Product", "Amount", "Price").map { s => TextLabel(s, basicFont, 8.any x 0.any) }
-	labels.foreach
-	{
-		l =>
-			l.textColor = Color.textBlackDisabled
-			l.alignBottom()
-			l.alignLeft()
-	}
-	
-	// Creates three text fields
-	val productPrompt = Prompt("Describe product", basicFont)
-	val productField = new TextField(320.downTo(128), 4.upTo(8), basicFont, prompt = Some(productPrompt))
-	productField.alignLeft(16)
-	productField.addFocusHighlight(focusColor)
-	productField.valuePointer.addListener { e => println(s"Product: ${e.newValue}") }
-	
-	val amountPrompt = Prompt("1-999", basicFont)
-	val amountField = TextField.forPositiveInts(128.downTo(64), 4.upTo(8), basicFont, prompt = Some(amountPrompt))
-	amountField.addFocusHighlight(focusColor)
-	
-	val pricePrompt = Prompt("€", basicFont)
-	val priceField = TextField.forPositiveDoubles(160.downTo(64), 4.upTo(8), basicFont, prompt = Some(pricePrompt))
-	priceField.addFocusHighlight(focusColor)
-	
-	// Creates the stacks
-	def combine(label: TextLabel, field: TextField) = label.columnWith(Vector(field), 4.downscaling)
-	val productStack = combine(labels(0), productField)
-	val amountStack = combine(labels(1), amountField)
-	val priceStack = combine(labels(2), priceField)
-	
-	val stack = Stack.rowWithItems(Vector(productStack, amountStack, priceStack), 8.downscaling)
-	
+	// Creates component context
 	val actorHandler = ActorHandler()
+	val base = ComponentContextBuilder(actorHandler, Font("Arial", 12, Plain, 2), Color.green, Color.yellow, 320,
+		insideMargins = 8.any x 8.any, stackMargin = 8.downscaling, relatedItemsStackMargin = Some(4.downscaling))
 	
-	// Pop-up handling
-	def showPopup(message: String) =
-	{
-		val messageLabel = new TextLabel(message, basicFont)
-		val okButton = new TextButton("OK", basicFont, Color.red, 8.any x 8.any, 8)
-		val popupContent = messageLabel.rowWith(Vector(okButton), margin = 16.any).framed(8.any x 8.any, Color.white)
+	val content = base.use { implicit context =>
 		
-		val popup = Popup(priceField, popupContent, actorHandler, (c, _) => Point(c.width + 16, 0) )
-		okButton.registerAction(() => popup.close())
-		popup.isVisible = true
-	}
-	
-	// Adds listening to field(s)
-	priceField.addEnterListener
-	{
-		p =>
-			val product = productField.value
-			val amount = amountField.intValue
-			val price = p.double
+		Stack.buildColumn(0.fixed) { mainStack =>
+		
+			val contextWithBackground = base.withBackground(Color.magenta).result
+			val tab = TabSelection.contextual(initialChoices = Vector("Goods", "for", "Purchase"))(
+				contextWithBackground)
+			tab.selectOne("Goods")
+			tab.addValueListener { s => println(s.newValue.getOrElse("No item") + " selected") }
 			
-			if (product.isDefined && amount.isDefined && price.isDefined)
-			{
-				productField.clear()
-				amountField.clear()
-				priceField.clear()
-				productField.requestFocus()
-				showPopup(s"${amount.get} x ${product.get} = ${amount.get * price.get} €")
-			}
-			else
-				println("Please select product + amount + price")
+			mainStack += tab
+			mainStack += Stack.buildRowWithContext() { textRow =>
+			 
+				val labelContext = base.withAlignment(BottomLeft).withTextColor(Color.white).result
+				val textFieldContext = base.withAlignment(Alignment.Left).result
+				
+				val productField = TextField.contextual(prompt = Some("Describe product"))(textFieldContext)
+				productField.valuePointer.addListener { e => println(s"Product: ${e.newValue}") }
+				
+				textRow += Stack.buildColumnWithContext(isRelated = true) { productColumn =>
+					
+					productColumn += TextLabel.contextual("Product")(labelContext)
+					productColumn += productField
+				}
+				
+				val amountField = TextField.contextualForPositiveInts(prompt = Some("1-999"))(textFieldContext)
+				
+				textRow += Stack.buildColumnWithContext(isRelated = true) { amountColumn =>
+					amountColumn += TextLabel.contextual("Amount")(labelContext)
+					amountColumn += amountField
+				}
+				textRow += Stack.buildColumnWithContext(isRelated = true) { priceColumn =>
+					
+					priceColumn += TextLabel.contextual("Price")(labelContext)
+					val field = TextField.contextualForPositiveDoubles(prompt = Some("€"))(textFieldContext)
+					priceColumn += field
+					
+					// Pop-up handling
+					def showPopup(message: String) =
+					{
+						val okButton = TextButton.contextual("OK")
+						val popupContent = Stack.buildRowWithContext() { row =>
+							row += TextLabel.contextual(message)
+							row += okButton
+						}.framed(8.any x 8.any, Color.white)
+						
+						val popup = Popup(field, popupContent, actorHandler, (c, _) => Point(c.width + 16, 0) )
+						okButton.registerAction(() => popup.close())
+						popup.isVisible = true
+					}
+					
+					// Adds listening to field(s)
+					field.addEnterListener
+					{
+						p =>
+							val product = productField.value
+							val amount = amountField.intValue
+							val price = p.double
+							
+							if (product.isDefined && amount.isDefined && price.isDefined)
+							{
+								productField.clear()
+								amountField.clear()
+								field.clear()
+								productField.requestFocus()
+								showPopup(s"${amount.get} x ${product.get} = ${amount.get * price.get} €")
+							}
+							else
+								println("Please select product + amount + price")
+					}
+				}
+				
+			}.framed(8.downscaling x 8.downscaling, contextWithBackground.background.get)
+		
+		}.framed(16.any x 8.any, Color.white)
 	}
-	
-	// Also creates a tab selection because testing
-	val color = Color.magenta
-	val tab = new TabSelection[String](basicFont, color, 16, StackLength(0, 4, 8),
-		initialChoices = Vector("Goods", "for", "Purchase"))
-	tab.selectOne("Goods")
-	tab.addValueListener { s => println(s.newValue.getOrElse("No item") + " selected") }
-	
-	val framing1 = new Framing(stack, 8.downscaling x 8.downscaling)
-	framing1.background = color
-	
-	val stack2 = tab.columnWith(Vector(framing1), 0.fixed)
 	
 	// Creates the frame and displays it
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val framing2 = stack2.framed(16.any x 8.any)
-	framing2.background = Color.white
-	val frame = Frame.windowed(framing2, "TextLabel Stack Test", User)
+	val frame = Frame.windowed(content, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	
 	actionLoop.registerToStopOnceJVMCloses()

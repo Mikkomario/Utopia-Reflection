@@ -11,13 +11,14 @@ import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis
-import utopia.reflection.component.{Alignable, Alignment}
+import utopia.genesis.shape.Axis.X
+import utopia.reflection.component.Alignable
 import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, Insets, StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt, Regex}
-import utopia.reflection.util.ComponentContext
+import utopia.reflection.util.{Alignment, ComponentContext}
 
 object TextField
 {
@@ -106,8 +107,60 @@ object TextField
 			initialText, prompt.map { Prompt(_, context.promptFont, context.promptTextColor) }, context.textColor,
 			resultFilter)
 		context.setBorderAndBackground(field)
+		field.addFocusHighlight(context.focusColor)
+		
+		val alignment = context.textAlignment.horizontal
+		if (alignment == Alignment.Left)
+			field.alignLeft(context.insideMargins.width.optimal)
+		else
+			field.align(alignment)
+		
 		field
 	}
+	
+	/**
+	  * Creates a field that is used for writing positive integers. Uses component creation context.
+	  * @param initialValue Initially displayed value (Default = None)
+	  * @param prompt Prompt text displayed, if any (Default = None)
+	  * @param context Component creation context (implicit)
+	  * @return A new text field
+	  */
+	def contextualForPositiveInts(initialValue: Option[Int] = None, prompt: Option[LocalizedString] = None)
+								 (implicit context: ComponentContext) = contextual(
+		FilterDocument(Regex.digit, 10), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.numericPositive))
+	
+	/**
+	  * Creates a field that is used for writing positive or negative integers. Uses component creation context.
+	  * @param initialValue Initially displayed value (Default = None)
+	  * @param prompt Prompt text displayed, if any (Default = None)
+	  * @param context Component creation context (implicit)
+	  * @return A new text field
+	  */
+	def contextualForInts(initialValue: Option[Int] = None, prompt: Option[LocalizedString] = None)
+								 (implicit context: ComponentContext) = contextual(
+		FilterDocument(Regex.numericParts, 11), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.numeric))
+	
+	/**
+	  * Creates a field that is used for writing positive doubles. Uses component creation context.
+	  * @param initialValue Initially displayed value (Default = None)
+	  * @param prompt Prompt text displayed, if any (Default = None)
+	  * @param context Component creation context (implicit)
+	  * @return A new text field
+	  */
+	def contextualForPositiveDoubles(initialValue: Option[Double] = None, prompt: Option[LocalizedString] = None)
+								 (implicit context: ComponentContext) = contextual(
+		FilterDocument(Regex.decimalPositiveParts, 24), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.decimalPositive))
+	
+	/**
+	  * Creates a field that is used for writing positive or negative doubles. Uses component creation context.
+	  * @param initialValue Initially displayed value (Default = None)
+	  * @param prompt Prompt text displayed, if any (Default = None)
+	  * @param context Component creation context (implicit)
+	  * @return A new text field
+	  */
+	def contextualForDoubles(initialValue: Option[Double] = None, prompt: Option[LocalizedString] = None)
+						 (implicit context: ComponentContext) = contextual(
+		FilterDocument(Regex.decimalParts, 24), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.decimal))
 }
 
 /**
@@ -230,7 +283,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 		StackSize(targetWidth, h)
 	}
 	
-	override def align(alignment: Alignment) = field.setHorizontalAlignment(alignment.horizontal.toSwingAlignment)
+	override def align(alignment: Alignment) = alignment.horizontal.swingComponents.get(X).foreach(field.setHorizontalAlignment)
 	
 	
 	// OTHER	------------------------------
@@ -247,7 +300,8 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	def alignLeft(margin: Double): Unit =
 	{
 		alignLeft()
-		setBorder(defaultBorder + Border(Insets.left(margin), None))
+		if (margin > 0)
+			setBorder(defaultBorder + Border(Insets.left(margin), None))
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.Alignment
 import utopia.reflection.container.stack.ScrollBarDrawer
 import utopia.reflection.shape.{Border, ScrollBarBounds, StackLength, StackSize}
 import utopia.reflection.text.Font
@@ -98,6 +97,12 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	def withScrollBarWidth(barWidth: Int) = copy(scrollBarWidth = barWidth)
 	
 	def withScrollBarDrawer(drawer: ScrollBarDrawer) = copy(scrollBarDrawer = Some(drawer))
+	
+	/**
+	  * Completes a block of code using a context built from this builder
+	  * @param f A function that uses build context
+	  */
+	def use[A](f: ComponentContext => A) = f(result)
 	
 	
 	// NESTED	-----------------------------

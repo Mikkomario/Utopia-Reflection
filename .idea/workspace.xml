@@ -3,13 +3,22 @@
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/Alignable.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/Alignable.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/Alignment.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/util/Alignment.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/TextComponent.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/TextComponent.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Calendar.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ScrollCanvas.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ScrollCanvas.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollArea.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollArea.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollView.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollView.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TextField.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/Button.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/Button.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageAndTextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ImageAndTextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/TextButton.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/TextButton.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/ItemLabel.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/Label.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/Label.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/label/TextLabel.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/Stack.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ButtonTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,11 +69,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="utopia.reflection.util" />
       <recent name="utopia.reflection.component.swing.button" />
       <recent name="utopia.reflection.component.swing" />
       <recent name="utopia.reflection.component.drawing" />
       <recent name="utopia.reflection.component.stack" />
-      <recent name="utopia.reflection.component.swing.label" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="utopia.reflection.component" />
@@ -92,7 +101,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.CalendarTest">
+  <component name="RunManager" selected="Application.TextFieldTest">
     <configuration name="ButtonTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.ButtonTest" />
       <module name="Utopia-Reflection" />
@@ -160,10 +169,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.CalendarTest" />
         <item itemvalue="Application.DropDownTest" />
         <item itemvalue="Application.TimeNumberTest" />
-        <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.ButtonTest" />
       </list>
     </recent_temporary>
@@ -182,13 +191,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00063" summary="Updated package structure">
-      <created>1556719409574</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1556719409574</updated>
     </task>
     <task id="LOCAL-00064" summary="made select option disappear from drop down once selection is made">
       <created>1556731209460</created>
@@ -512,7 +514,13 @@
       <option name="presentableId" value="LOCAL−00111" />
       <updated>1565427106458</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL−00112" summary="Added contextual creation options to scroll components and stack">
+      <created>1565429262875</created>
+      <option name="number" value="LOCAL−00112" />
+      <option name="presentableId" value="LOCAL−00112" />
+      <updated>1565429262875</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="TodoView">
@@ -538,7 +546,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed a bug regarding stack hierarchy management" />
     <MESSAGE value="Fixed scroll canvas" />
     <MESSAGE value="Flow: Now using scala Duration. Added a new way of creating durations&#10;Reflection: Testing StackContentManager" />
     <MESSAGE value="Debugged empty stack bug" />
@@ -563,6 +570,7 @@
     <MESSAGE value="Debugged calendar component" />
     <MESSAGE value="Added another constructor option to calendar" />
     <MESSAGE value="Added contextual creation options to a couple of components" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added contextual creation options to a couple of components" />
+    <MESSAGE value="Added contextual creation options to scroll components and stack" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added contextual creation options to scroll components and stack" />
   </component>
 </project>

@@ -104,13 +104,12 @@ object Stack
       * @param cap Cap at each end of this stack (default = no cap)
       * @param layout Stack layout used (default = Fit)
       * @param b A function for building stack contents
-      * @tparam C The type of items added to this stack
       * @return A new stack
       */
-    def build[C <: AwtStackable](direction: Axis2D, margin: StackLength = defaultMargin, cap: StackLength = defaultCap,
-                                    layout: StackLayout = Fit)(b: VectorBuilder[C] => Unit) =
+    def build(direction: Axis2D, margin: StackLength = defaultMargin, cap: StackLength = defaultCap,
+              layout: StackLayout = Fit)(b: VectorBuilder[AwtStackable] => Unit) =
     {
-        val itemBuffer = new VectorBuilder[C]()
+        val itemBuffer = new VectorBuilder[AwtStackable]()
         b(itemBuffer)
         withItems(itemBuffer.result(), direction, margin, cap, layout)
     }
@@ -121,11 +120,10 @@ object Stack
       * @param cap Cap at each end of this stack (default = no cap)
       * @param layout Stack layout used (default = Fit)
       * @param b A function for building stack contents
-      * @tparam C The type of items added to this stack
       * @return A new stack
       */
-    def buildRow[C <: AwtStackable](margin: StackLength = defaultMargin, cap: StackLength = defaultCap,
-                                    layout: StackLayout = Fit)(b: VectorBuilder[C] => Unit) =
+    def buildRow(margin: StackLength = defaultMargin, cap: StackLength = defaultCap, layout: StackLayout = Fit)
+                (b: VectorBuilder[AwtStackable] => Unit) =
         build(X, margin, cap, layout)(b)
     
     /**
@@ -134,47 +132,48 @@ object Stack
       * @param cap Cap at each end of this stack (default = no cap)
       * @param layout Stack layout used (default = Fit)
       * @param b A function for building stack contents
-      * @tparam C The type of items added to this stack
       * @return A new stack
       */
-    def buildColumn[C <: AwtStackable](margin: StackLength = defaultMargin, cap: StackLength = defaultCap,
-                                       layout: StackLayout = Fit)(b: VectorBuilder[C] => Unit) =
+    def buildColumn(margin: StackLength = defaultMargin, cap: StackLength = defaultCap, layout: StackLayout = Fit)
+                   (b: VectorBuilder[AwtStackable] => Unit) =
         build(Y, margin, cap, layout)(b)
     
     /**
       * Creates a stack by adding contents through a builder. Uses component creation context.
       * @param direction Stack direction
       * @param layout Stack layout used (default = Fit)
+      * @param isRelated Whether the items in this stack should be considered closely related (default = false)
       * @param b A function for building stack contents
       * @param context Component creation context (implicit)
-      * @tparam C The type of items added to this stack
       * @return A new stack
       */
-    def buildWithContext[C <: AwtStackable](direction: Axis2D, layout: StackLayout = Fit)(b: VectorBuilder[C] => Unit)
-                                           (implicit context: ComponentContext) =
-        build(direction, context.stackMargin, context.stackCap, layout)(b)
+    def buildWithContext(direction: Axis2D, layout: StackLayout = Fit, isRelated: Boolean = false)
+                        (b: VectorBuilder[AwtStackable] => Unit)(implicit context: ComponentContext) =
+        build(direction, if (isRelated) context.relatedItemsStackMargin else context.stackMargin, context.stackCap, layout)(b)
     
     /**
       * Creates a horizontal stack by adding contents through a builder. Uses component creation context.
       * @param layout Stack layout used (default = Fit)
+      * @param isRelated Whether the items in this stack should be considered closely related (default = false)
       * @param b A function for building stack contents
       * @param context Component creation context (implicit)
-      * @tparam C The type of items added to this stack
       * @return A new stack
       */
-    def buildRowWithContext[C <: AwtStackable](layout: StackLayout = Fit)(b: VectorBuilder[C] => Unit)
-                                              (implicit context: ComponentContext) = buildWithContext(X, layout)(b)
+    def buildRowWithContext(layout: StackLayout = Fit, isRelated: Boolean = false)
+                           (b: VectorBuilder[AwtStackable] => Unit)(implicit context: ComponentContext) =
+        buildWithContext(X, layout, isRelated)(b)
     
     /**
       * Creates a vertical stack by adding contents through a builder. Uses component creation context.
       * @param layout Stack layout used (default = Fit)
+      * @param isRelated Whether the items in this stack should be considered closely related (default = false)
       * @param b A function for building stack contents
       * @param context Component creation context (implicit)
-      * @tparam C The type of items added to this stack
       * @return A new stack
       */
-    def buildColumnWithContext[C <: AwtStackable](layout: StackLayout = Fit)(b: VectorBuilder[C] => Unit)
-                                              (implicit context: ComponentContext) = buildWithContext(Y, layout)(b)
+    def buildColumnWithContext(layout: StackLayout = Fit, isRelated: Boolean = false)
+                              (b: VectorBuilder[AwtStackable] => Unit)(implicit context: ComponentContext) =
+        buildWithContext(Y, layout, isRelated)(b)
 }
 
 /**

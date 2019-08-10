@@ -1,11 +1,12 @@
 package utopia.reflection.component
 
 import utopia.genesis.color.Color
-import utopia.reflection.component.Alignment.Center
+import utopia.reflection.util.Alignment.Center
 import utopia.reflection.component.stack.{StackSizeCalculating, Stackable}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.Font
+import utopia.reflection.util.Alignment
 
 /**
   * This is a commom trait for components that present text

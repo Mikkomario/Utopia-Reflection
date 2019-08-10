@@ -5,13 +5,12 @@ import java.awt.Graphics
 import javax.swing.{JComponent, JLabel}
 import utopia.genesis.color.Color
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
-import utopia.reflection.component.Alignment.Center
 import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawableWrapper}
-import utopia.reflection.component.Alignment
 import utopia.reflection.component.swing.{CustomDrawComponent, JWrapper}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
+import utopia.reflection.util.Alignment
 
 object Label
 {
@@ -53,17 +52,7 @@ class Label extends JWrapper with CustomDrawableWrapper
 	/**
 	  * @return The alignment for this label's contents
 	  */
-	def alignment =
-	{
-		val vertical = Alignment.forSwingAlignment(label.getVerticalAlignment)
-		
-		if (vertical.exists { _ != Center})
-			vertical.get
-		else
-		{
-			Alignment.forSwingAlignment(label.getHorizontalAlignment) getOrElse Center
-		}
-	}
+	def alignment = Alignment.forSwingAlignments(_label.getHorizontalAlignment, _label.getVerticalAlignment)
 	
 	
 	// IMPLEMENTED	-----------------

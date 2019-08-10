@@ -1,14 +1,14 @@
 package utopia.reflection.component.swing.button
 
 import utopia.genesis.color.Color
-import utopia.reflection.component.Alignment
-import utopia.reflection.component.Alignment.Center
+import utopia.genesis.shape.Axis.X
+import utopia.reflection.util.Alignment.Center
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.swing.label.Label
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.ComponentContext
+import utopia.reflection.util.{Alignment, ComponentContext}
 
 object TextButton
 {
@@ -33,12 +33,26 @@ object TextButton
 	/**
 	  * Creates a new text button using external context
 	  * @param text Button text
-	  * @param action Button action
-	  * @param context Button context
+	  * @param action The action performed when this button is pressed, if any (Default = None)
+	  * @param context Button context (implicit)
 	  * @return The new button
 	  */
-	def contextual(text: LocalizedString)(action: () => Unit)(implicit context: ComponentContext): TextButton =
-		apply(text, context.font, context.buttonBackground, context.insideMargins, context.borderWidth)(action)
+	def contextual(text: LocalizedString, action: Option[() => Unit] = None)(implicit context: ComponentContext): TextButton =
+	{
+		val button = new TextButton(text, context.font, context.buttonBackground, context.insideMargins, context.borderWidth)
+		action.foreach(button.registerAction)
+		button
+	}
+	
+	/**
+	  * Creates a new text button using external context
+	  * @param text Button text
+	  * @param action Button action
+	  * @param context Button context (implicit)
+	  * @return The new button
+	  */
+	def contextual(text: LocalizedString, action: () => Unit)(implicit context: ComponentContext): TextButton =
+		contextual(text, Some(action))
 }
 
 /**
@@ -61,7 +75,7 @@ class TextButton(override val text: LocalizedString, override val font: Font, va
 	setHandCursor()
 	label.setText(text.string)
 	background = color
-	label.setHorizontalAlignment(Alignment.Center.toSwingAlignment)
+	Alignment.Center.swingComponents.get(X).foreach(label.setHorizontalAlignment)
 	
 	initializeListeners()
 	

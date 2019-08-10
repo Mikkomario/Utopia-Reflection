@@ -3,12 +3,13 @@ package utopia.reflection.component.swing.label
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
+import utopia.genesis.shape.Axis.{X, Y}
 import utopia.reflection.component.swing.AwtTextComponentWrapper
-import utopia.reflection.component.{Alignable, Alignment, RefreshableWithPointer}
+import utopia.reflection.component.{Alignable, RefreshableWithPointer}
 import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
-import utopia.reflection.util.ComponentContext
+import utopia.reflection.util.{Alignment, ComponentContext}
 
 object ItemLabel
 {
@@ -68,8 +69,9 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	
 	override def align(alignment: Alignment) =
 	{
-		label.setHorizontalAlignment(alignment.horizontal.toSwingAlignment)
-		label.setVerticalAlignment(alignment.vertical.toSwingAlignment)
+		val comps = alignment.swingComponents
+		comps.get(X).foreach(label.setHorizontalAlignment)
+		comps.get(Y).foreach(label.setVerticalAlignment)
 		revalidate()
 	}
 	

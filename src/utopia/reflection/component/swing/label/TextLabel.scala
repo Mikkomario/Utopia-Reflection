@@ -1,12 +1,13 @@
 package utopia.reflection.component.swing.label
 
 import utopia.genesis.color.Color
+import utopia.genesis.shape.Axis.{X, Y}
 import utopia.reflection.component.swing.AwtTextComponentWrapper
-import utopia.reflection.component.{Alignable, Alignment}
+import utopia.reflection.component.Alignable
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
-import utopia.reflection.util.ComponentContext
+import utopia.reflection.util.{Alignment, ComponentContext}
 
 object TextLabel
 {
@@ -26,11 +27,12 @@ object TextLabel
 	  * @param context Component creation context
 	  * @return A new label
 	  */
-	def contextual(text: LocalizedString)(implicit context: ComponentContext) =
+	def contextual(text: LocalizedString, isHint: Boolean = false)(implicit context: ComponentContext) =
 	{
 		val label = new TextLabel(text, context.font, context.insideMargins, context.textHasMinWidth,
 			context.textAlignment)
 		context.setBorderAndBackground(label)
+		label.textColor = if (isHint) context.hintTextColor else context.textColor
 		label
 	}
 }
@@ -83,11 +85,9 @@ class TextLabel(initialText: LocalizedString, override val font: Font, override 
 	
 	override def align(alignment: Alignment) =
 	{
-		if (alignment.isHorizontal)
-			label.setHorizontalAlignment(alignment.toSwingAlignment)
-		else
-			label.setVerticalAlignment(alignment.toSwingAlignment)
-		
+		val comps = alignment.swingComponents
+		comps.get(X).foreach(label.setHorizontalAlignment)
+		comps.get(Y).foreach(label.setVerticalAlignment)
 		revalidate()
 	}
 	

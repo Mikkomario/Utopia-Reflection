@@ -10,7 +10,6 @@ import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.image.Image
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.Alignment
 import utopia.reflection.component.swing.ProgressBar
 import utopia.reflection.component.swing.button.{ButtonImageSet, ImageAndTextButton, ImageButton, TextButton}
 import utopia.reflection.container.stack.StackHierarchyManager
@@ -20,6 +19,7 @@ import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
+import utopia.reflection.util.Alignment
 
 import scala.concurrent.ExecutionContext
 

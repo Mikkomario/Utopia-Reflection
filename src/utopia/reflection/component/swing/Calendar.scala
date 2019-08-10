@@ -9,7 +9,6 @@ import utopia.flow.util.TimeExtensions._
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.{X, Y}
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.Alignment
 import utopia.reflection.component.drawing.{CustomDrawableWrapper, SelectionCircleDrawer}
 import utopia.reflection.component.input.{InteractionWithPointer, SelectionGroup}
 import utopia.reflection.component.stack.Stackable
@@ -21,6 +20,7 @@ import utopia.reflection.container.swing.{SegmentedRow, Stack, SwitchPanel}
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.Font
+import utopia.reflection.util.Alignment
 
 import scala.collection.immutable.HashMap
 

@@ -2,7 +2,7 @@ package utopia.reflection.util
 
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.reflection.component.{Alignment, ComponentLike}
+import utopia.reflection.component.ComponentLike
 import utopia.reflection.component.swing.SwingComponentRelated
 import utopia.reflection.container.stack.ScrollBarDrawer
 import utopia.reflection.shape.{Border, StackLength, StackSize}
@@ -28,6 +28,11 @@ case class ComponentContext(actorHandler: ActorHandler, font: Font, highlightCol
 	  * @return Background color used with buttons
 	  */
 	def buttonBackground = background.getOrElse(highlightColor)
+	
+	/**
+	  * @return Color used for "hint" text, (less important or disabled text)
+	  */
+	def hintTextColor = textColor.timesAlpha(0.625)
 	
 	
 	// OTHERS	------------------------
