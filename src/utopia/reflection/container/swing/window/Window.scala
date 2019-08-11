@@ -1,6 +1,6 @@
 package utopia.reflection.container.swing.window
 
-import java.awt.event.{ComponentAdapter, ComponentEvent}
+import java.awt.event.{ComponentAdapter, ComponentEvent, WindowAdapter, WindowEvent}
 
 import utopia.flow.async.VolatileFlag
 import utopia.flow.datastructure.mutable.Lazy
@@ -18,6 +18,8 @@ import utopia.reflection.event.ResizeListener
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
 
+import scala.concurrent.Promise
+
 /**
 * This is a common wrapper for all window implementations
 * @author Mikko Hilpinen
@@ -29,6 +31,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     
     private val cachedStackSize = new Lazy(() => calculatedStackSize)
     private val generatorActivated = new VolatileFlag()
+    private val closePromise = Promise[Unit]()
     
     
 	// ABSTRACT    -----------------
@@ -67,6 +70,11 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
      * The insets in around this screen
      */
     def insets = Insets of component.getInsets
+    
+    /**
+      * @return A future of this window's closing
+      */
+    def closeFuture = closePromise.future
     
     
     // IMPLEMENTED    --------------
@@ -132,7 +140,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     // OTHER    --------------------
     
     /**
-      * Setups up basic functionality in window. Should be called after this window has been filled with content and  packed.
+      * Setups up basic functionality in window. Should be called after this window has been filled with content and packed.
       */
     protected def setup() =
     {
@@ -149,6 +157,8 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     
         // Registers self (and content) into stack hierarchy management
         StackHierarchyManager.registerConnection(this, content)
+        
+        component.addWindowListener(new CloseListener)
     }
     
 	/**
@@ -273,5 +283,21 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
         }
         else
             this.component.setLocationRelativeTo(component)
+    }
+    
+    
+    // NESTED   -------------------------
+    
+    private class CloseListener extends WindowAdapter
+    {
+        override def windowClosed(e: WindowEvent) = handleClosing()
+        
+        override def windowClosing(e: WindowEvent) = handleClosing()
+    
+        private def handleClosing() =
+        {
+            if (!closePromise.isCompleted)
+                closePromise.success(Unit)
+        }
     }
 }

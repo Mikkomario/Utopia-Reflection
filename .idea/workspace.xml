@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/TextFieldTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/DialogTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/DialogTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -86,9 +87,9 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TextFieldTest">
-    <configuration name="ButtonTest" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.ButtonTest" />
+  <component name="RunManager" selected="Application.DialogTest">
+    <configuration name="CalendarTest" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.CalendarTest" />
       <module name="Utopia-Reflection" />
       <extension name="coverage">
         <pattern>
@@ -100,8 +101,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CalendarTest" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.CalendarTest" />
+    <configuration name="DialogTest" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.DialogTest" />
       <module name="Utopia-Reflection" />
       <extension name="coverage">
         <pattern>
@@ -154,11 +155,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.DialogTest" />
         <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.CalendarTest" />
         <item itemvalue="Application.DropDownTest" />
         <item itemvalue="Application.TimeNumberTest" />
-        <item itemvalue="Application.ButtonTest" />
       </list>
     </recent_temporary>
   </component>
@@ -176,13 +177,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00065" summary="Added textField and associated classes (not tested yet)">
-      <created>1556741916650</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1556741916650</updated>
     </task>
     <task id="LOCAL-00066" summary="Tested and fixed Regex &amp; Text Field">
       <created>1556900373506</created>
@@ -504,7 +498,13 @@
       <option name="presentableId" value="LOCAL−00113" />
       <updated>1565473791691</updated>
     </task>
-    <option name="localTasksCounter" value="114" />
+    <task id="LOCAL−00114" summary="Shortly tested text fields once again">
+      <created>1565507786214</created>
+      <option name="number" value="LOCAL−00114" />
+      <option name="presentableId" value="LOCAL−00114" />
+      <updated>1565507786214</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="TodoView">
@@ -530,7 +530,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Flow: Now using scala Duration. Added a new way of creating durations&#10;Reflection: Testing StackContentManager" />
     <MESSAGE value="Debugged empty stack bug" />
     <MESSAGE value="Genesis: Comments added to KeyStateEvent, utility method added to Drawer&#10;Reflection: Testing &amp; debugging stack selection management" />
     <MESSAGE value="Flow: Added repeating iteration to iterable&#10;Reflection: Added alternating background option for stack" />
@@ -555,6 +554,7 @@
     <MESSAGE value="Added contextual creation options to a couple of components" />
     <MESSAGE value="Added contextual creation options to scroll components and stack" />
     <MESSAGE value="Tested contextual component creation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tested contextual component creation" />
+    <MESSAGE value="Shortly tested text fields once again" />
+    <option name="LAST_COMMIT_MESSAGE" value="Shortly tested text fields once again" />
   </component>
 </project>

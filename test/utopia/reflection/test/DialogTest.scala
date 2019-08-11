@@ -1,5 +1,6 @@
 package utopia.reflection.test
 
+import utopia.flow.async.ThreadPool
 import utopia.reflection.shape.LengthExtensions._
 import utopia.genesis.color.Color
 import utopia.reflection.component.ComponentLike
@@ -8,6 +9,8 @@ import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.container.swing.Panel
 import utopia.reflection.container.swing.window.{Dialog, Frame}
 import utopia.reflection.shape.StackSize
+
+import scala.concurrent.ExecutionContext
 
 /**
   * This is a test implementation for dialogs
@@ -30,6 +33,8 @@ object DialogTest extends App
 	frame.setToExitOnClose()
 	
 	private val dialog = new Dialog(frame.component, new ContentPanel(320.any x 240.any), "Dialog")
+	implicit val exc: ExecutionContext = new ThreadPool("Reflection").executionContext
+	dialog.closeFuture.foreach { u => frame.background = Color.yellow }
 	
 	frame.isVisible = true
 	dialog.isVisible = true
