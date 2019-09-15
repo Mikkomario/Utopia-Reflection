@@ -1,10 +1,13 @@
 package utopia.reflection.test
 
+import java.util.concurrent.TimeUnit
+
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.shape.LinearAcceleration
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.swing.label.ItemLabel
 import utopia.reflection.container.stack.{BoxScrollBarDrawer, StackHierarchyManager}
@@ -52,7 +55,8 @@ object ScrollAreaTest extends App
 	// Creates the scroll area
 	val barDrawer = BoxScrollBarDrawer.roundedBarOnly(Color.black.withAlpha(0.55))
 	val scrollArea = new ScrollArea(stack, actorHandler, 16, barDrawer, 16,
-		true, StackLengthLimit.sizeLimit(maxOptimal =  Some(Size.square(480))))
+		true, friction = LinearAcceleration(2000)(TimeUnit.SECONDS),
+		lengthLimits = StackLengthLimit.sizeLimit(maxOptimal =  Some(Size.square(480))))
 	
 	// Creates the frame and displays it
 	val actionLoop = new ActorLoop(actorHandler)

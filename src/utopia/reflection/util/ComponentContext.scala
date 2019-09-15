@@ -2,6 +2,7 @@ package utopia.reflection.util
 
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.shape.LinearAcceleration
 import utopia.reflection.component.ComponentLike
 import utopia.reflection.component.swing.SwingComponentRelated
 import utopia.reflection.container.stack.ScrollBarDrawer
@@ -20,7 +21,7 @@ case class ComponentContext(actorHandler: ActorHandler, font: Font, highlightCol
 							relatedItemsStackMargin: StackLength, stackCap: StackLength, dropDownWidthLimit: Option[Int],
 							switchWidth: StackLength, textFieldWidth: StackLength, scrollPerWheelClick: Double,
 							scrollBarWidth: Int, scrollBarDrawer: ScrollBarDrawer, scrollBarIsInsideContent: Boolean,
-							allowImageUpscaling: Boolean)
+							scrollFriction: LinearAcceleration, allowImageUpscaling: Boolean)
 {
 	// COMPUTED	------------------------
 	

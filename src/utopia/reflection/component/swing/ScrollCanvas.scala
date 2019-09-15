@@ -5,6 +5,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButtonStateEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.{DrawableHandler, MouseButtonStateHandler, MouseButtonStateListener, MouseMoveHandler, MouseMoveListener, MouseWheelHandler, MouseWheelListener}
 import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.shape.LinearAcceleration
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size, Transformation}
 import utopia.genesis.util.{Drawer, FPS}
 import utopia.genesis.view.RepaintLoop
@@ -39,7 +40,7 @@ object ScrollCanvas
 	{
 		new ScrollCanvas(originalWorldSize, drawHandler, context.actorHandler, contentMouseButtonHandler,
 			contentMouseMoveHandler, contentMouseWheelHandler, context.scrollPerWheelClick, context.scrollBarDrawer,
-			context.scrollBarWidth, context.scrollBarIsInsideContent, maxOptimalSize)
+			context.scrollBarWidth, context.scrollBarIsInsideContent, context.scrollFriction, maxOptimalSize)
 	}
 }
 
@@ -58,19 +59,20 @@ object ScrollCanvas
   * @param scrollBarDrawer An instance that draws the scroll bars
   * @param scrollBarWidth The width of the scroll bars
   * @param scrollBarIsInsideContent Whether the scroll bar should be placed inside (true) or outside (false) of drawn content
+  * @param scrollFriction Friction applied to animated scrolling (pixels/s2)
   * @param maxOptimalSize The maximum optimal size for this canvas (None if no maximum)
   */
 class ScrollCanvas(originalWorldSize: Size, val drawHandler: DrawableHandler, actorHandler: ActorHandler,
 				   val contentMouseButtonHandler: MouseButtonStateHandler, val contentMouseMoveHandler: MouseMoveHandler,
 				   val contentMouseWheelHandler: MouseWheelHandler, scrollPerWheelClick: Double,
 				   scrollBarDrawer: ScrollBarDrawer, scrollBarWidth: Int, scrollBarIsInsideContent: Boolean,
-				   maxOptimalSize: Option[Size]) extends StackableAwtComponentWrapperWrapper
+				   scrollFriction: LinearAcceleration, maxOptimalSize: Option[Size]) extends StackableAwtComponentWrapperWrapper
 {
 	// ATTRIBUTES	------------------------
 	
 	private val canvas = new Canvas()
 	private val scrollArea = new ScrollArea(canvas, actorHandler, scrollPerWheelClick, scrollBarDrawer, scrollBarWidth,
-		scrollBarIsInsideContent, StackLengthLimit.sizeLimit(maxOptimal = maxOptimalSize), limitsToContentSize = true)
+		scrollBarIsInsideContent, scrollFriction, StackLengthLimit.sizeLimit(maxOptimal = maxOptimalSize), limitsToContentSize = true)
 	
 	private val started = new VolatileFlag()
 	

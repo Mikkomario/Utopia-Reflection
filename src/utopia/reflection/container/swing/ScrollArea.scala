@@ -1,7 +1,9 @@
 package utopia.reflection.container.swing
 
+import java.util.concurrent.TimeUnit
+
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.{Axis2D, LinearAcceleration}
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.Stackable
@@ -27,7 +29,7 @@ object ScrollArea
 															limitsToContentSize: Boolean = false)(implicit context: ComponentContext) =
 	{
 		new ScrollArea[C](content, context.actorHandler, context.scrollPerWheelClick, context.scrollBarDrawer,
-			context.scrollBarWidth, context.scrollBarIsInsideContent, lengthLimits, limitsToContentSize)
+			context.scrollBarWidth, context.scrollBarIsInsideContent, context.scrollFriction, lengthLimits, limitsToContentSize)
 	}
 }
 
@@ -40,6 +42,7 @@ class ScrollArea[C <: Stackable with AwtComponentRelated](override val content: 
 														  scrollPerWheelClick: Double, scrollBarDrawer: ScrollBarDrawer,
 														  override val scrollBarWidth: Int,
 														  override val scrollBarIsInsideContent: Boolean = false,
+														  override val friction: LinearAcceleration = ScrollAreaLike.defaultFriction,
 														  override val lengthLimits: Map[Axis2D, StackLengthLimit] = HashMap(),
 														  override val limitsToContentSize: Boolean = false)
 	extends ScrollAreaLike with AwtComponentWrapperWrapper with CustomDrawableWrapper with AwtContainerRelated with SwingComponentRelated

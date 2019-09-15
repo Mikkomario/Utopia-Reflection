@@ -1,10 +1,12 @@
 package utopia.reflection.util
 
+import java.util.concurrent.TimeUnit
+
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.{Axis2D, LinearAcceleration}
 import utopia.genesis.util.Drawer
-import utopia.reflection.container.stack.ScrollBarDrawer
+import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer}
 import utopia.reflection.shape.{Border, ScrollBarBounds, StackLength, StackSize}
 import utopia.reflection.text.Font
 
@@ -24,6 +26,7 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 								   switchWidth: Option[StackLength] = None, textFieldWidth: Option[StackLength] = None,
 								   scrollPerWheelClick: Double = 32, scrollBarWidth: Int = 24,
 								   scrollBarDrawer: Option[ScrollBarDrawer] = None, scrollBarIsInsideContent: Boolean = false,
+								   scrollFriction: LinearAcceleration = ScrollAreaLike.defaultFriction,
 								   allowImageUpscaling: Boolean = false)
 {
 	// ATTRIBUTES	-------------------------
@@ -36,7 +39,7 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 		stackMargin, relatedItemsStackMargin.getOrElse(stackMargin), stackCap, dropDownWidthLimit,
 		switchWidth.getOrElse(StackLength.any(normalWidth / 4)), textFieldWidth.getOrElse(StackLength.any(normalWidth)),
 		scrollPerWheelClick, scrollBarWidth, scrollBarDrawer.getOrElse(new DefaultScrollBarDrawer),
-		scrollBarIsInsideContent, allowImageUpscaling)
+		scrollBarIsInsideContent, scrollFriction, allowImageUpscaling)
 	
 	
 	// COMPUTED	-----------------------------
@@ -97,6 +100,8 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	def withScrollBarWidth(barWidth: Int) = copy(scrollBarWidth = barWidth)
 	
 	def withScrollBarDrawer(drawer: ScrollBarDrawer) = copy(scrollBarDrawer = Some(drawer))
+	
+	def withScrollFriction(friction: LinearAcceleration) = copy(scrollFriction = friction)
 	
 	/**
 	  * Completes a block of code using a context built from this builder

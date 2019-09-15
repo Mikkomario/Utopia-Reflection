@@ -1,7 +1,5 @@
 package utopia.reflection.component.swing
 
-import java.time.Duration
-
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.util.TimeExtensions._
 import utopia.genesis.color.Color
@@ -19,9 +17,11 @@ import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.util.ComponentContext
 
+import scala.concurrent.duration.FiniteDuration
+
 object Switch
 {
-	private val animationDuration = Duration.ofMillis(100)
+	private val animationDuration = 100.millis
 	private val maxHeightRatio = 0.5
 	
 	/**
@@ -151,7 +151,7 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 			}
 		}
 		
-		override def act(duration: Duration) =
+		override def act(duration: FiniteDuration) =
 		{
 			val shouldUpdate =
 			{

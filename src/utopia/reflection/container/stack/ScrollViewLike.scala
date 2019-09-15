@@ -61,7 +61,7 @@ trait ScrollViewLike extends ScrollAreaLike
 	  * @return The current scroll modifier / percentage [0, 1]
 	  */
 	def scrollPercent = -contentPosition / contentLength
-	def scrollPercent_=(newPercent: Double) = scrollTo(newPercent, axis)
+	def scrollPercent_=(newPercent: Double) = scrollTo(newPercent, axis, animated = false)
 	
 	/**
 	  * @return Whether the content is currently scrolled to the top
@@ -83,18 +83,24 @@ trait ScrollViewLike extends ScrollAreaLike
 	// OTHER	----------------------
 	
 	/**
+	  * Scrolls to a certain percentage
+	  * @param abovePercent The percentage of content that should be above (outside) this view
+	  * @param animated Whether scrolling should be animated (default = true)
+	  */
+	def scrollTo(abovePercent: Double, animated: Boolean): Unit = scrollTo(abovePercent, axis, animated)
+	/**
+	  * Scrolls to a certain percentage
+	  * @param abovePercent The percentage of content that should be above (outside) this view
+	  */
+	def scrollTo(abovePercent: Double): Unit = scrollTo(abovePercent, true)
+	/**
 	  * Scrolls this scroll view to display content top
 	  */
-	def scrollToTop() = contentPosition = 0
+	def scrollToTop(animated: Boolean = true) = scrollTo(0, animated)
 	/**
 	  * Scrolls this scroll view to display content bottom
 	  */
-	def scrollToBottom() = contentPosition = minContentPosition
-	/**
-	  * Scrolls to a specific percentage
-	  * @param abovePercent The portion of the content that should be above the view [0, 1]
-	  */
-	def scrollTo(abovePercent: Double) = contentPosition = -contentLength * abovePercent
+	def scrollToBottom(animated: Boolean = true) = scrollTo(100, animated)
 	/**
 	  * Scrolls this view a certain amount
 	  * @param amount The amount of pixels scrolled

@@ -1,7 +1,8 @@
 package utopia.reflection.container.stack
 
 import java.awt.event.KeyEvent
-import java.time.{Duration, Instant}
+import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 import utopia.flow.util.CollectionExtensions._
 import utopia.flow.util.TimeExtensions._
@@ -9,7 +10,7 @@ import utopia.genesis.event._
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling.{Actor, KeyStateListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.shape.Axis._
-import utopia.genesis.shape.{Axis2D, Vector3D, VectorLike}
+import utopia.genesis.shape.{Axis2D, LinearAcceleration, Vector3D, VectorLike, Velocity}
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
@@ -20,6 +21,15 @@ import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.shape.{ScrollBarBounds, StackLengthLimit, StackSize}
 
 import scala.collection.immutable.HashMap
+import scala.concurrent.duration.{Duration, FiniteDuration}
+
+object ScrollAreaLike
+{
+	/**
+	  * The scrolling friction that should be used by default (= 2000 pixels/s&#94;2)
+	  */
+	val defaultFriction = LinearAcceleration(2000)(TimeUnit.SECONDS)
+}
 
 /**
   * Scroll areas are containers that allow horizontal and / or vertical content scrolling
@@ -31,6 +41,7 @@ trait ScrollAreaLike extends CachingStackable
 	// ATTRIBUTES	----------------
 	
 	private var barBounds: Map[Axis2D, ScrollBarBounds] = HashMap()
+	private var scroller: Option[AnimatedScroller] = None
 	
 	
 	// ABSTRACT	--------------------
@@ -67,6 +78,11 @@ trait ScrollAreaLike extends CachingStackable
 	  */
 	def contentStackSize: StackSize
 	
+	/**
+	  * @return Amount of friction applied in pixels / millisecond&#94;2
+	  */
+	def friction: LinearAcceleration
+	
 	
 	// COMPUTED	--------------------
 	
@@ -93,7 +109,7 @@ trait ScrollAreaLike extends CachingStackable
 	  * @return The current scroll modifier / percentage [0, 1]
 	  */
 	def scrollPercents = -contentOrigin / contentSize
-	def scrollPercents_=(newPercents: VectorLike[_]) = scrollTo(newPercents)
+	def scrollPercents_=(newPercents: VectorLike[_]) = scrollTo(newPercents, animated = false)
 	
 	/**
 	  * @return The currently visible area inside the content
@@ -191,15 +207,39 @@ trait ScrollAreaLike extends CachingStackable
 	/**
 	  * Scrolls to a specific percentage
 	  * @param abovePercents The portion of the content that should be above this view [0, 1]
+	  * @param animated Whether scrolling should be animated (default = true). If false, scrolling will be completed at once.
 	  */
-	def scrollTo(abovePercents: VectorLike[_]) = contentOrigin = -contentSize.toPoint * abovePercents
+	def scrollTo(abovePercents: VectorLike[_], animated: Boolean = true) =
+	{
+		val target = -contentSize.toPoint * abovePercents
+		if (animated)
+			animateScrollTo(target)
+		else
+			contentOrigin = target
+	}
+	
+	/**
+	  * Scrolls to a specific percentage on a single axis
+	  * @param abovePercent The portion of the content that should be above this view [0, 1]
+	  * @param axis The axis on which the scrolling is applied
+	  * @param animated Whether scrolling should be animated (default = true). If false, scrolling will be completed at once.
+	  */
+	def scrollTo(abovePercent: Double, axis: Axis2D, animated: Boolean) =
+	{
+		val target = contentOrigin.withCoordinate(-contentSize.along(axis) * abovePercent, axis)
+		if (animated)
+			animateScrollTo(target)
+		else
+			contentOrigin = target
+	}
+	
 	/**
 	  * Scrolls to a specific percentage on a single axis
 	  * @param abovePercent The portion of the content that should be above this view [0, 1]
 	  * @param axis The axis on which the scrolling is applied
 	  */
-	def scrollTo(abovePercent: Double, axis: Axis2D) = contentOrigin =
-		contentOrigin.withCoordinate(-contentSize.along(axis) * abovePercent, axis)
+	def scrollTo(abovePercent: Double, axis: Axis2D): Unit = scrollTo(abovePercent, axis, true)
+	
 	/**
 	  * Scrolls this view a certain amount
 	  * @param amounts The scroll vector
@@ -210,19 +250,33 @@ trait ScrollAreaLike extends CachingStackable
 	  * Makes sure the specified area is (fully) visible in this scroll view
 	  * @param area The target area
 	  */
-	def ensureAreaIsVisible(area: Bounds) =
+	def ensureAreaIsVisible(area: Bounds, animated: Boolean = true) =
 	{
 		val areaWithinContent = area + contentOrigin
 		
-		if (areaWithinContent.x < 0)
-			content.x = -area.position.x
-		else if (areaWithinContent.rightX > width)
-			content.x = width - areaWithinContent.rightX
+		val targetX =
+		{
+			if (areaWithinContent.x < 0)
+				-area.position.x
+			else if (areaWithinContent.rightX > width)
+				width - areaWithinContent.rightX
+			else
+				content.x
+		}
+		val targetY =
+		{
+			if (areaWithinContent.y < 0)
+				-area.position.y
+			else if (areaWithinContent.bottomY > height)
+				height - areaWithinContent.bottomY
+			else
+				content.y
+		}
 		
-		if (areaWithinContent.y < 0)
-			content.y = -area.position.y
-		else if (areaWithinContent.bottomY > height)
-			content.y = height - areaWithinContent.bottomY
+		if (animated)
+			animateScrollTo(Point(targetX, targetY))
+		else
+			contentOrigin = Point(targetX, targetY)
 	}
 	
 	protected def drawWith(barDrawer: ScrollBarDrawer, drawer: Drawer) = Axis2D.values.foreach
@@ -241,6 +295,21 @@ trait ScrollAreaLike extends CachingStackable
 		(d, _) => drawWith(barDrawer, d))
 	
 	/**
+	  * Sets up animated scrolling for this scroll area. This method doesn't need to be called if
+	  * setupMouseHandling is called
+	  * @param actorHandler The actor handler that will deliver action events
+	  */
+	private def setupAnimatedScrolling(actorHandler: ActorHandler) =
+	{
+		if (scroller.isEmpty)
+		{
+			val newScroller = new AnimatedScroller
+			scroller = Some(newScroller)
+			actorHandler += newScroller
+		}
+	}
+	
+	/**
 	  * Sets up mouse handling for this view
 	  * @param actorHandler Actor handler that will allow velocity handling
 	  * @param scrollPerWheelClick How many pixels should be scrolled at each wheel "click"
@@ -249,16 +318,39 @@ trait ScrollAreaLike extends CachingStackable
 	  * @param velocityMod A modifier applied to velocity (default = 1.0)
 	  */
 	protected def setupMouseHandling(actorHandler: ActorHandler, scrollPerWheelClick: Double,
-									 dragDuration: Duration = Duration.ofMillis(300), friction: Double = 0.1,
+									 dragDuration: Duration = 300.millis, friction: Double = 0.1,
 									 velocityMod: Double = 1.0) =
 	{
-		val listener = new MouseListener(scrollPerWheelClick, dragDuration, friction, velocityMod)
+		setupAnimatedScrolling(actorHandler)
+		val listener = new MouseListener(scrollPerWheelClick, dragDuration, velocityMod, scroller.get)
 		
 		addMouseButtonListener(listener)
 		addMouseMoveListener(listener)
 		addMouseWheelListener(listener)
 		addKeyStateListener(listener)
-		actorHandler += listener
+	}
+	
+	/**
+	  * Scrolls content to certain position by affecting scrolling speed. This way the scrolling is animated.
+	  * @param newContentOrigin Targeted new content origin
+	  */
+	protected def animateScrollTo(newContentOrigin: Point) =
+	{
+		if (scroller.isDefined)
+		{
+			// Calculates duration first (in milliseconds)
+			// t = Sqrt(2D/a)
+			val distanceVector = (newContentOrigin - contentOrigin).toVector
+			val durationMillis = Math.sqrt(2 * distanceVector.length / friction.abs.perMilliSecond.perMilliSecond)
+			// Then calculates the required velocity so that movement ends at target position after duration t
+			// V = at
+			val newVelocity = friction(durationMillis.millis).abs
+			
+			// Sets new velocity
+			scroller.get.velocity = newVelocity.withDirection(distanceVector.direction)
+		}
+		else
+			contentOrigin = newContentOrigin
 	}
 	
 	private def updateScrollBarBounds() =
@@ -303,9 +395,44 @@ trait ScrollAreaLike extends CachingStackable
 	
 	// NESTED CLASSES	-----------------------
 	
-	private class MouseListener(val scrollPerWheelClick: Double, val dragDuration: Duration, val friction: Double,
-								val velocityMod: Double) extends MouseButtonStateListener with MouseMoveListener
-		with MouseWheelListener with Handleable with Actor with KeyStateListener
+	private class AnimatedScroller extends Actor with Handleable
+	{
+		// ATTRIBUTES	-----------------------
+		
+		var velocity = Velocity.zero
+		
+		
+		// IMPLEMENTED	-----------------------
+		
+		override def act(duration: FiniteDuration) =
+		{
+			if (velocity.amount != Vector3D.zero)
+			{
+				// Calculates the amount of scrolling and velocity after applying friction
+				val (transition, newVelocity) = velocity(duration, -friction.abs, preserveDirection = true)
+				
+				// Applies velocity
+				if (allows2DScrolling)
+					scroll(transition)
+				else
+					axes.foreach { axis => scroll(transition.projectedOver(axis)) }
+				
+				// Applies friction to velocity
+				velocity = newVelocity
+			}
+		}
+		
+		
+		// OTHER	---------------------------
+		
+		def stop() = velocity = Velocity.zero
+		
+		def accelerate(acceleration: Velocity) = velocity += acceleration
+	}
+	
+	private class MouseListener(val scrollPerWheelClick: Double, val dragDuration: Duration, val velocityMod: Double,
+								val scroller: AnimatedScroller) extends MouseButtonStateListener with MouseMoveListener
+		with MouseWheelListener with Handleable with KeyStateListener
 	{
 		// ATTRIBUTES	-----------------------
 		
@@ -316,8 +443,7 @@ trait ScrollAreaLike extends CachingStackable
 		private var isDraggingContent = false
 		private var contentDragPosition = Point.origin
 		
-		private var velocities = Vector[(Instant, Vector3D, Duration)]()
-		private var currentVelocity = Vector3D.zero
+		private var velocities = Vector[(Instant, Velocity, Duration)]()
 		
 		private var keyState = KeyStatus.empty
 		
@@ -338,13 +464,8 @@ trait ScrollAreaLike extends CachingStackable
 				if (!event.isConsumed)
 				{
 					// If mouse was pressed inside inside scroll bar, starts dragging the bar
-					val barUnderEvent = axes.findMap
-					{ axis =>
-						barBounds.get(axis).filter
-						{
-							b => event.isOverArea(b.bar)
-						}.map
-						{ axis -> _.bar }
+					val barUnderEvent = axes.findMap { axis =>
+						barBounds.get(axis).filter { b => event.isOverArea(b.bar) }.map { axis -> _.bar }
 					}
 					
 					if (barUnderEvent.isDefined)
@@ -353,7 +474,7 @@ trait ScrollAreaLike extends CachingStackable
 						barDragAxis = barUnderEvent.get._1
 						barDragPosition = event.positionOverArea(barUnderEvent.get._2)
 						isDraggingBar = true
-						currentVelocity = Vector3D.zero
+						scroller.stop()
 					}
 					// if outside, starts drag scrolling
 					else if (event.isOverArea(bounds))
@@ -361,7 +482,7 @@ trait ScrollAreaLike extends CachingStackable
 						isDraggingBar = false
 						contentDragPosition = event.mousePosition
 						isDraggingContent = true
-						currentVelocity = Vector3D.zero
+						scroller.stop()
 					}
 				}
 				true
@@ -382,10 +503,12 @@ trait ScrollAreaLike extends CachingStackable
 					
 					if (velocityData.nonEmpty)
 					{
-						val actualDragDutationMillis = (now - velocityData.head._1).toPreciseMillis
-						val averageVelocity = velocityData.map { v => v._2 * v._3.toPreciseMillis }.reduce { _ + _ } /
-							actualDragDutationMillis
-						currentVelocity += averageVelocity * velocityMod
+						val actualDragDuration = now - velocityData.head._1
+						val averageTranslationPerMilli = velocityData.map {
+							case (_, v, d) => v.perMilliSecond * d.toPreciseMillis }
+							.reduce { _ + _ } / actualDragDuration.toPreciseMillis
+						
+						scroller.accelerate(Velocity(averageTranslationPerMilli)(TimeUnit.MILLISECONDS) * velocityMod)
 					}
 				}
 				false
@@ -398,7 +521,7 @@ trait ScrollAreaLike extends CachingStackable
 			if (isDraggingBar)
 			{
 				val newBarOrigin = event.positionOverArea(bounds) - barDragPosition
-				scrollTo(newBarOrigin.along(barDragAxis) / lengthAlong(barDragAxis), barDragAxis)
+				scrollTo(newBarOrigin.along(barDragAxis) / lengthAlong(barDragAxis), barDragAxis, animated = false)
 			}
 			// If dragging content, updates scrolling and remembers velocity
 			else if (isDraggingContent)
@@ -433,24 +556,6 @@ trait ScrollAreaLike extends CachingStackable
 			
 			scroll(scrollAxis(-event.wheelTurn * scrollPerWheelClick))
 			true
-		}
-		
-		override def act(duration: Duration) =
-		{
-			if (currentVelocity != Vector3D.zero)
-			{
-				// Applies velocity
-				if (allows2DScrolling)
-					scroll(currentVelocity * duration.toPreciseMillis)
-				else
-					axes.foreach { axis => scroll(currentVelocity.projectedOver(axis) * duration.toPreciseMillis) }
-				
-				// Applies friction to velocity
-				if (currentVelocity.length <= friction)
-					currentVelocity = Vector3D.zero
-				else
-					currentVelocity -= friction
-			}
 		}
 		
 		override def onKeyState(event: KeyStateEvent) = keyState = event.keyStatus
