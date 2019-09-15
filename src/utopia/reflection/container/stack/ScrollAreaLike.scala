@@ -247,6 +247,41 @@ trait ScrollAreaLike extends CachingStackable
 	def scroll(amounts: VectorLike[_]) = contentOrigin += amounts
 	
 	/**
+	  * Scrolls to the left edge, if horizontal scrolling is supported
+	  * @param animated Whether scrolling should be animated
+	  */
+	def scrollToLeft(animated: Boolean = true) = scrollTo(0, X, animated)
+	/**
+	  * Scrolls to the right edge, if horizontal scrolling is supported
+	  * @param animated Whether scrolling should be animated
+	  */
+	def scrollToRight(animated: Boolean = true) =
+	{
+		val target = contentOrigin.withX(minContentOrigin.x)
+		if (animated)
+			animateScrollTo(target)
+		else
+			contentOrigin = target
+	}
+	/**
+	  * Scrolls to the top, if vertical scrolling is supported
+	  * @param animated Whether scrolling should be animated
+	  */
+	def scrollToTop(animated: Boolean = true) = scrollTo(0, Y, animated)
+	/**
+	  * Scrolls to the bottom, if vertical scrolling is supported
+	  * @param animated Whether scrolling should be animated
+	  */
+	def scrollToBottom(animated: Boolean = true) =
+	{
+		val target = contentOrigin.withY(minContentOrigin.y)
+		if (animated)
+			animateScrollTo(target)
+		else
+			contentOrigin = target
+	}
+	
+	/**
 	  * Makes sure the specified area is (fully) visible in this scroll view
 	  * @param area The target area
 	  */

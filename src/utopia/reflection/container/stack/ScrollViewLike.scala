@@ -94,14 +94,6 @@ trait ScrollViewLike extends ScrollAreaLike
 	  */
 	def scrollTo(abovePercent: Double): Unit = scrollTo(abovePercent, true)
 	/**
-	  * Scrolls this scroll view to display content top
-	  */
-	def scrollToTop(animated: Boolean = true) = scrollTo(0, animated)
-	/**
-	  * Scrolls this scroll view to display content bottom
-	  */
-	def scrollToBottom(animated: Boolean = true) = scrollTo(100, animated)
-	/**
 	  * Scrolls this view a certain amount
 	  * @param amount The amount of pixels scrolled
 	  */

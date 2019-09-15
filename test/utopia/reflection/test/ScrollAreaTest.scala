@@ -1,13 +1,14 @@
 package utopia.reflection.test
 
+import java.awt.event.KeyEvent
 import java.util.concurrent.TimeUnit
 
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
-import utopia.genesis.handling.ActorLoop
+import utopia.genesis.handling.{ActorLoop, KeyStateListener}
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.LinearAcceleration
+import utopia.genesis.shape.{Axis, LinearAcceleration}
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.swing.label.ItemLabel
 import utopia.reflection.container.stack.{BoxScrollBarDrawer, StackHierarchyManager}
@@ -64,6 +65,9 @@ object ScrollAreaTest extends App
 	
 	val frame = Frame.windowed(scrollArea, "Scroll View Test", User)
 	frame.setToExitOnClose()
+	
+	// Adds additional action on END key
+	scrollArea.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_END, _ => scrollArea.scrollToBottom()))
 	
 	actionLoop.registerToStopOnceJVMCloses()
 	actionLoop.startAsync()

@@ -2,19 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/KeyStateListener.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/KeyStateListener.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ScrollCanvas.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/ScrollCanvas.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollViewLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollViewLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollArea.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollArea.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollView.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/ScrollView.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContext.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/util/ComponentContextBuilder.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollCanvasTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollCanvasTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +89,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ScrollViewTest">
+  <component name="RunManager" selected="Application.ScrollAreaTest">
     <configuration name="CalendarTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.CalendarTest" />
       <module name="Utopia-Reflection" />
@@ -165,8 +157,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ScrollViewTest" />
         <item itemvalue="Application.ScrollAreaTest" />
+        <item itemvalue="Application.ScrollViewTest" />
         <item itemvalue="Application.DialogTest" />
         <item itemvalue="Application.TextFieldTest" />
         <item itemvalue="Application.CalendarTest" />
@@ -187,13 +179,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00066" summary="Tested and fixed Regex &amp; Text Field">
-      <created>1556900373506</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1556900373506</updated>
     </task>
     <task id="LOCAL-00067" summary="Updated border handling in text field + added utility constructors">
       <created>1556963583077</created>
@@ -514,7 +499,13 @@
       <option name="presentableId" value="LOCAL−00114" />
       <updated>1565507786214</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL−00115" summary="Added animated scrolling to ScrollAreas and ScrollViews">
+      <created>1568560594027</created>
+      <option name="number" value="LOCAL−00115" />
+      <option name="presentableId" value="LOCAL−00115" />
+      <updated>1568560594029</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TodoView">
@@ -540,7 +531,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Debugged empty stack bug" />
     <MESSAGE value="Genesis: Comments added to KeyStateEvent, utility method added to Drawer&#10;Reflection: Testing &amp; debugging stack selection management" />
     <MESSAGE value="Flow: Added repeating iteration to iterable&#10;Reflection: Added alternating background option for stack" />
     <MESSAGE value="Flow: Added a simple cache trait" />
@@ -565,6 +555,7 @@
     <MESSAGE value="Added contextual creation options to scroll components and stack" />
     <MESSAGE value="Tested contextual component creation" />
     <MESSAGE value="Shortly tested text fields once again" />
-    <option name="LAST_COMMIT_MESSAGE" value="Shortly tested text fields once again" />
+    <MESSAGE value="Added animated scrolling to ScrollAreas and ScrollViews" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added animated scrolling to ScrollAreas and ScrollViews" />
   </component>
 </project>
