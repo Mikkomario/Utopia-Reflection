@@ -238,7 +238,7 @@ trait ScrollAreaLike extends CachingStackable
 	  * @param abovePercent The portion of the content that should be above this view [0, 1]
 	  * @param axis The axis on which the scrolling is applied
 	  */
-	def scrollTo(abovePercent: Double, axis: Axis2D): Unit = scrollTo(abovePercent, axis, true)
+	def scrollTo(abovePercent: Double, axis: Axis2D): Unit = scrollTo(abovePercent, axis, animated = true)
 	
 	/**
 	  * Scrolls this view a certain amount
