@@ -1,7 +1,5 @@
 package utopia.reflection.util
 
-import java.util.concurrent.TimeUnit
-
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.{Axis2D, LinearAcceleration}
