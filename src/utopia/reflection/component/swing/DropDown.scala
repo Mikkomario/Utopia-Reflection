@@ -64,9 +64,9 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	// ATTRIBUTES	-------------------
 	
 	private val field = new JComboBox[String]()
-	// private var _content = initialContent
 	private var _displayValues = Vector[LocalizedString]()
 	private var isShowingSelectOption = true
+	private var isUpdatingSelection = false // Consider using a thread-safe solution
 	
 	override val valuePointer = new PointerWithEvents[Option[A]](None)
 	override val contentPointer = new PointerWithEvents[Vector[A]](Vector())
@@ -157,8 +157,12 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	
 	override def updateLayout() = component.revalidate()
 	
+	
+	// OTHER	----------------------
+	
 	private def updateContent(newContent: Vector[A]) =
 	{
+		isUpdatingSelection = true
 		// Preserves selection
 		val oldSelected = selected
 		
@@ -187,6 +191,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		value = newSelection
 		
 		revalidate()
+		isUpdatingSelection = false
 	}
 	
 	
@@ -199,9 +204,9 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	
 	private class SelectionUpdateListener extends ChangeListener[Option[A]]
 	{
-		// TODO: This may possibly be broken on select None case. Problems with indexOutOfBounds and update order
 		override def onChangeEvent(event: ChangeEvent[Option[A]]) =
 		{
+			isUpdatingSelection = true
 			if (event.newValue.isDefined)
 			{
 				val newIndex = event.newValue.flatMap(content.optionIndexOf) getOrElse -1
@@ -213,11 +218,8 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 				// Doesn't show selection onption once a selection is made
 				if (isShowingSelectOption && trueIndex >= indexMod)
 					updateContent(content)
-			}/*
-			else if (isShowingSelectOption)
-				field.setSelectedIndex(0)
-			else
-				field.setSelectedIndex(-1)*/
+			}
+			isUpdatingSelection = false
 		}
 	}
 	
@@ -225,7 +227,8 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	{
 		override def actionPerformed(e: ActionEvent) =
 		{
-			value = selectedIndex.flatMap { i => content.getOption(i) }
+			if (!isUpdatingSelection)
+				value = selectedIndex.flatMap { i => content.getOption(i) }
 		}
 	}
 	
