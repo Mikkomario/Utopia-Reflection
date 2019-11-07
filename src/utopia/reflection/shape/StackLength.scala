@@ -105,9 +105,14 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	// COMPUTED	-----------------------------
 	
 	/**
+	 * @return Whether this length has a maximum limit
+	 */
+	def hasMax = max.isDefined
+	
+	/**
 	  * @return A version of this stack length that has low priority
 	  */
-	def withLowPriority = withPriority(false)
+	def withLowPriority = withPriority(true)
 	
 	/**
 	  * @return A version of this stack length that has no mimimum (set to 0)
@@ -232,10 +237,11 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	def withMax(newMax: Int): StackLength = withMax(Some(newMax))
 	
 	/**
-	  * @param newPriority Whether the new length should be considered a low priority constraint
+	  * @param isLowPriority Whether the new length should be considered a low priority constraint
 	  * @return A copy of this stack length with specified priority status
 	  */
-	def withPriority(newPriority: Boolean) = if (isLowPriority == newPriority) this else StackLength(min, optimal, max, newPriority)
+	def withPriority(isLowPriority: Boolean) = if (this.isLowPriority == isLowPriority) this else
+		StackLength(min, optimal, max, isLowPriority)
 	
 	/**
 	  * @param other Another stack length

@@ -16,10 +16,13 @@ object TextLabel
 	  * @param font The text font
 	  * @param margins The margins around the text in this label
 	  * @param hasMinWidth Whether this label always presents the whole text (default = true)
+	 *  @param alignment Alignment used for the text (default = left)
+	 *  @param textColor Color used for the text (default = black)
 	  * @return A new label with specified text
 	  */
 	def apply(text: LocalizedString, font: Font, margins: StackSize = StackSize.any, hasMinWidth: Boolean = true,
-			  alignment: Alignment = Alignment.Left) = new TextLabel(text, font, margins, hasMinWidth, alignment)
+			  alignment: Alignment = Alignment.Left, textColor: Color = Color.textBlack) = new TextLabel(text, font, margins, hasMinWidth,
+		alignment, textColor)
 	
 	/**
 	  * Creates a new label using contextual information
@@ -30,9 +33,8 @@ object TextLabel
 	def contextual(text: LocalizedString, isHint: Boolean = false)(implicit context: ComponentContext) =
 	{
 		val label = new TextLabel(text, context.font, context.insideMargins, context.textHasMinWidth,
-			context.textAlignment)
+			context.textAlignment, if (isHint) context.hintTextColor else context.textColor)
 		context.setBorderAndBackground(label)
-		label.textColor = if (isHint) context.hintTextColor else context.textColor
 		label
 	}
 }
@@ -45,9 +47,11 @@ object TextLabel
   * @param font The font used in this label
   * @param margins The margins placed around the text
   * @param hasMinWidth Whether this text label always presents the whole text (default = true)
+ *  @param initialTextColor Color used in this label's text
   */
 class TextLabel(initialText: LocalizedString, override val font: Font, override val margins: StackSize = StackSize.any,
-					 override val hasMinWidth: Boolean = true, initialAlignment: Alignment = Alignment.Left)
+				override val hasMinWidth: Boolean = true, initialAlignment: Alignment = Alignment.Left,
+				initialTextColor: Color = Color.textBlack)
 	extends Label with AwtTextComponentWrapper with Alignable
 {
 	// ATTRIBUTES	------------------
@@ -59,7 +63,7 @@ class TextLabel(initialText: LocalizedString, override val font: Font, override 
 	
 	label.setText(initialText.string)
 	label.setFont(font.toAwt)
-	textColor = Color.textBlack
+	textColor = initialTextColor
 	align(initialAlignment)
 	
 	

@@ -6,7 +6,7 @@ import utopia.reflection.component.ComponentLike
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.{StackHierarchyManager, StackLayout}
-import utopia.reflection.container.swing.{Framing, SideFrame, Stack}
+import utopia.reflection.container.swing.{CenterFrame, Framing, SideFrame, Stack}
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Direction2D
@@ -87,6 +87,11 @@ object Stackable
 		 * @return This item framed so that it will be placed to specified side of container
 		 */
 		def alignedToSide(side: Direction2D) = new SideFrame(s, side)
+		
+		/**
+		 * @return This item wrapped in a frame that places it at the center
+		 */
+		def alignedToCenter = new CenterFrame(s)
 	}
 }
 

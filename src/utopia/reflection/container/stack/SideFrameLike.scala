@@ -22,6 +22,9 @@ trait SideFrameLike[C <: Stackable] extends SingleStackContainer[C] with Compone
 	
 	protected def container: Container[C]
 	
+	
+	// IMPLEMENTED	------------------
+	
 	override protected def wrapped = container
 	
 	override protected def updateVisibility(visible: Boolean) = super[CachingStackable].isVisible_=(visible)

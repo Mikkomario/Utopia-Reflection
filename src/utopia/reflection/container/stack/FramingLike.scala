@@ -65,7 +65,7 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 		}
 	}
 	
-	override protected def calculatedStackSize = content.map { _.stackSize + margins * 2 } getOrElse StackSize.any.withLowPriority
+	override protected def calculatedStackSize = content.map { _.stackSize + margins * 2 } getOrElse StackSize.any
 	
 	
 	// OTHER	-----------------------

@@ -175,6 +175,21 @@ case class StackSize(width: StackLength, height: StackLength)
     def withAnyHeight = mapHeight { _.noLimits }
     
     /**
+     * @return A copy of this size with no maximum width
+     */
+    def withNoMaxWidth = if (width.hasMax) mapWidth { _.noMax } else this
+    
+    /**
+     * @return A copy of this size with no maximum height
+     */
+    def withNoMaxHeight = if (height.hasMax) mapHeight { _.noMax } else this
+    
+    /**
+     * @return A copy of this size with no maximum width or height
+     */
+    def withNoMax = withNoMaxWidth.withNoMaxHeight
+    
+    /**
       * @return A copy of this size with low priority for both width and height
       */
     def withLowPriority = mapWidth { _.withLowPriority }.mapHeight { _.withLowPriority }

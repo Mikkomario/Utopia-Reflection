@@ -1,5 +1,6 @@
 package utopia.reflection.test
 
+import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.shape.StackSize
 import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.shape.StackLength
@@ -27,7 +28,13 @@ object StackTest extends App
     }
     
     // Creates the stack
-    val items = Vector.fill(3)(makeItem())
+    val items = Vector.fill(3)(makeItem()) :+
+        {
+            val item = new EmptyLabel().withStackSize(64.any.withLowPriority x 64.any)
+            item.background = Color.cyan
+            item
+        }
+    items.foreach { i => println(i.stackSize) }
     val stack = Stack.rowWithItems(items, StackLength.fixed(16), StackLength.fixed(16))
     
     stack.addResizeListener(e => println(e.newSize))

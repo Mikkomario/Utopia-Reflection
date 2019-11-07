@@ -12,6 +12,36 @@ import utopia.reflection.text.Font
   * Used for configuring component style at creation time
   * @author Mikko Hilpinen
   * @since 4.8.2019, v1+
+ *  @param actorHandler Handler that relays action events to components (required)
+ *  @param font The font used in most components (required)
+ *  @param highlightColor A color used for highlighting certain values in some components (required)
+ *  @param focusColor A color used for specifying user focus (required)
+ *  @param normalWidth Standard width of components whose size is not determined by text only (required)
+ * @param textColor Color used in all text (default = slightly opaque black)
+ * @param promptFont Font used in prompts (default = normally used font)
+ * @param promptTextColor Text color used in prompts (default = normal text color with lower alpha value)
+ * @param textHasMinWidth Whether text shouldn't be cut when resizing components (default = true)
+ * @param textAlignment Alignment used for most text-based components (default = left alignment)
+ * @param background Background color used for nearly all components, if any (default = None = transparent background)
+ * @param barBackground Background color for bars (scroll, progress, etc.) (default = specified background color or
+ *                      gray if that's not specified either)
+ * @param insideMargins Margins placed inside components that support it (default = any margin, preferring zero)
+ * @param border Border used for nearly all components (default = None = no special border)
+ * @param borderWidth Border width used for some components that create their own borders
+ *                    (default = width of overall border or half of inside margins (with minimum of 4 px))
+ * @param stackMargin Margin used in almost all stacks (default = any margin, preferring zero)
+ * @param relatedItemsStackMargin Margin used for items that are considered closely related (default = specified overall stack margin)
+ * @param stackCap Cap at each end of each stack (default = fixed to zero)
+ * @param dropDownWidthLimit Maximum width for drop down fields, if any (default = None = no limit)
+ * @param switchWidth Width used for switch components (default = any width, preferring 1/4 of specified normal width)
+ * @param textFieldWidth Width used for text field components (default = any width, preferring specified normal width)
+ * @param scrollPerWheelClick How many pixels each "click" of mouse wheel represents (default = 32 px)
+ * @param scrollBarWidth Width of scroll bars (default = 24 px)
+ * @param scrollBarDrawer Drawer used for drawing scroll bars (default = box drawer using highlight color and gray
+ *                        background if bar is outside content and slightly transparent gray bar if is inside content)
+ * @param scrollBarIsInsideContent Whether scroll bar should be drawn inside the content (default = false)
+ * @param scrollFriction Friction used when drag-scrolling (default = default scroll area friction (2000 px/s&#94;2))
+ * @param allowImageUpscaling Whether images should be allowed to scale above their original source resolution (default = false)
   */
 case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highlightColor: Color, focusColor: Color,
 								   normalWidth: Int, textColor: Color = Color.textBlack, promptFont: Option[Font] = None,
@@ -29,6 +59,9 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 {
 	// ATTRIBUTES	-------------------------
 	
+	/**
+	 * A complete context based on this builder
+	 */
 	lazy val result = ComponentContext(actorHandler, font, highlightColor, focusColor, normalWidth, textColor,
 		promptFont.getOrElse(font), promptTextColor.getOrElse(textColor.timesAlpha(0.625)), textHasMinWidth,
 		textAlignment, background, barBackground.orElse(background).getOrElse(Color.gray(0.5)), insideMargins,
@@ -62,6 +95,8 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	// OTHER	-----------------------------
 	
 	def withFont(font: Font) = copy(font = font)
+	
+	def withScaledFont(scaling: Double) = copy(font = font * scaling)
 	
 	def withHighlightColor(color: Color) = copy(highlightColor = color)
 	
