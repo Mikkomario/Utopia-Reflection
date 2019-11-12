@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/KeyStateListener.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/KeyStateListener.scala" afterDir="false" />
+    <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Tested and debugged animated scrolling">
+      <change beforePath="$PROJECT_DIR$/../Utopia-Flow-Scala/test/XmlTest.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollViewLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollViewLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,6 +34,7 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="UPDATE_CHANGES_POLICY" value="SHELVE" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
@@ -49,8 +47,8 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/test" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/test-images" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
@@ -179,13 +177,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00067" summary="Updated border handling in text field + added utility constructors">
-      <created>1556963583077</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1556963583078</updated>
     </task>
     <task id="LOCAL-00068" summary="Added a switch component">
       <created>1556972535275</created>
@@ -505,7 +496,13 @@
       <option name="presentableId" value="LOCAL−00115" />
       <updated>1568560594029</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL−00116" summary="Tested and debugged animated scrolling">
+      <created>1568562242130</created>
+      <option name="number" value="LOCAL−00116" />
+      <option name="presentableId" value="LOCAL−00116" />
+      <updated>1568562242130</updated>
+    </task>
+    <option name="localTasksCounter" value="117" />
     <servers />
   </component>
   <component name="TodoView">
@@ -531,7 +528,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Genesis: Comments added to KeyStateEvent, utility method added to Drawer&#10;Reflection: Testing &amp; debugging stack selection management" />
     <MESSAGE value="Flow: Added repeating iteration to iterable&#10;Reflection: Added alternating background option for stack" />
     <MESSAGE value="Flow: Added a simple cache trait" />
     <MESSAGE value="Working on cache classes" />
@@ -556,6 +552,7 @@
     <MESSAGE value="Tested contextual component creation" />
     <MESSAGE value="Shortly tested text fields once again" />
     <MESSAGE value="Added animated scrolling to ScrollAreas and ScrollViews" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added animated scrolling to ScrollAreas and ScrollViews" />
+    <MESSAGE value="Tested and debugged animated scrolling" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tested and debugged animated scrolling" />
   </component>
 </project>
