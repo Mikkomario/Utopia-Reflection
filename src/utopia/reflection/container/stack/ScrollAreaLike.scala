@@ -519,6 +519,8 @@ trait ScrollAreaLike extends CachingStackable
 		
 		override def onMouseButtonState(event: MouseButtonStateEvent) =
 		{
+			// FIXME: Event position context is wrong. This function assumes relative context even though it's
+			// in parent's context
 			if (event.wasPressed)
 			{
 				// If mouse was pressed inside inside scroll bar, starts dragging the bar

@@ -7,15 +7,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/Acceleration.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/Acceleration.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/VectorLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/VectorLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/Velocity.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/Velocity.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/shape2D/Size.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/shape2D/Size.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -189,13 +183,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00071" summary="Moved flow tests under separate source. Added AllTest">
-      <created>1557314774519</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1557314774519</updated>
     </task>
     <task id="LOCAL-00072" summary="Added dialog class. Moved tests to different source">
       <created>1557319020492</created>
@@ -511,7 +498,13 @@
       <option name="presentableId" value="LOCAL−00119" />
       <updated>1573744262727</updated>
     </task>
-    <option name="localTasksCounter" value="120" />
+    <task id="LOCAL−00120" summary="Debugged scrollArea's ensure area is visible -method added added animation option to remaining scrolling events">
+      <created>1573751765504</created>
+      <option name="number" value="LOCAL−00120" />
+      <option name="presentableId" value="LOCAL−00120" />
+      <updated>1573751765504</updated>
+    </task>
+    <option name="localTasksCounter" value="121" />
     <servers />
   </component>
   <component name="TodoView">
@@ -537,7 +530,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added new pointer functionality to selectable items. Currently debugging." />
     <MESSAGE value="Fixed stack selection manager" />
     <MESSAGE value="Refacted ItemLabel and Switch to use pointers" />
     <MESSAGE value="Flow: Lazy.set(...) no longer deprecated&#10;Genesis: Gitignore updated&#10;Reflection: Removed InputListener, removed test print from ImageLabel. Fixed errors in tests." />
@@ -562,6 +554,7 @@
     <MESSAGE value="Added new artifact" />
     <MESSAGE value="Changed how event consuming works" />
     <MESSAGE value="Updated selection handling so that keyboard functions are more customizable and support continuous scrolling" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated selection handling so that keyboard functions are more customizable and support continuous scrolling" />
+    <MESSAGE value="Debugged scrollArea's ensure area is visible -method added added animation option to remaining scrolling events" />
+    <option name="LAST_COMMIT_MESSAGE" value="Debugged scrollArea's ensure area is visible -method added added animation option to remaining scrolling events" />
   </component>
 </project>
