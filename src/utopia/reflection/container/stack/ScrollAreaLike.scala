@@ -244,7 +244,13 @@ trait ScrollAreaLike extends CachingStackable
 	  * Scrolls this view a certain amount
 	  * @param amounts The scroll vector
 	  */
-	def scroll(amounts: VectorLike[_]) = contentOrigin += amounts
+	def scroll(amounts: VectorLike[_], animated: Boolean = true, preservePreviousMomentum: Boolean = true) =
+	{
+		if (animated)
+			animateScrollTo(contentOrigin + amounts, preservePreviousMomentum)
+		else
+			contentOrigin += amounts
+	}
 	
 	/**
 	  * Scrolls to the left edge, if horizontal scrolling is supported
@@ -283,35 +289,36 @@ trait ScrollAreaLike extends CachingStackable
 	
 	/**
 	  * Makes sure the specified area is (fully) visible in this scroll view
-	  * @param area The target area
+	  * @param area The target area (within content's relative space
+	  *             (Eg. position (0, 0) is considered the top left corner of content))
 	  */
 	def ensureAreaIsVisible(area: Bounds, animated: Boolean = true) =
 	{
-		val areaWithinContent = area + contentOrigin
+		// Performs calculations in scroll view's relative space
+		val areaInViewSpace = area + contentOrigin
 		
-		val targetX =
+		// Calculates how much scrolling is required
+		val xTransition =
 		{
-			if (areaWithinContent.x < 0)
-				-area.position.x
-			else if (areaWithinContent.rightX > width)
-				width - areaWithinContent.rightX
+			if (areaInViewSpace.x < 0)
+				areaInViewSpace.x
+			else if (areaInViewSpace.rightX > width)
+				areaInViewSpace.rightX - width
 			else
-				content.x
+				0
 		}
-		val targetY =
+		val yTransition =
 		{
-			if (areaWithinContent.y < 0)
-				-area.position.y
-			else if (areaWithinContent.bottomY > height)
-				height - areaWithinContent.bottomY
+			if (areaInViewSpace.y < 0)
+				areaInViewSpace.y
+			else if (areaInViewSpace.bottomY > height)
+				areaInViewSpace.bottomY - height
 			else
-				content.y
+				0
 		}
 		
-		if (animated)
-			animateScrollTo(Point(targetX, targetY))
-		else
-			contentOrigin = Point(targetX, targetY)
+		// Performs actual scrolling
+		scroll(Vector3D(xTransition, yTransition), animated, false)
 	}
 	
 	protected def drawWith(barDrawer: ScrollBarDrawer, drawer: Drawer) = Axis2D.values.foreach
@@ -369,7 +376,7 @@ trait ScrollAreaLike extends CachingStackable
 	  * Scrolls content to certain position by affecting scrolling speed. This way the scrolling is animated.
 	  * @param newContentOrigin Targeted new content origin
 	  */
-	protected def animateScrollTo(newContentOrigin: Point) =
+	protected def animateScrollTo(newContentOrigin: Point, preservePreviousMomentum: Boolean = false) =
 	{
 		if (scroller.isDefined)
 		{
@@ -382,7 +389,24 @@ trait ScrollAreaLike extends CachingStackable
 			val newVelocity = friction(durationMillis.millis).abs
 			
 			// Sets new velocity
-			scroller.get.velocity = newVelocity.withDirection(distanceVector.direction)
+			val newVelocityVector = newVelocity.withDirection(distanceVector.direction)
+			/*
+			if (preservePreviousMomentum && !currentVelocity.isZero)
+			{
+				if (!newVelocityVector.isZero)
+				{
+					// Won't continue traversing to opposite direction
+					if ((newVelocityVector.direction - currentVelocity.direction).degrees.abs <= 90 ||
+						newVelocity > currentVelocity.linear)
+						scroller.get.velocity += newVelocityVector
+					else
+						scroller.get.velocity = Velocity.zero
+				}
+			}*/
+			if (preservePreviousMomentum)
+				scroller.get.velocity += newVelocityVector
+			else
+				scroller.get.velocity = newVelocityVector
 		}
 		else
 			contentOrigin = newContentOrigin
@@ -448,13 +472,15 @@ trait ScrollAreaLike extends CachingStackable
 				
 				// Applies velocity
 				if (allows2DScrolling)
-					scroll(transition)
+					scroll(transition, false)
 				else
-					axes.foreach { axis => scroll(transition.projectedOver(axis)) }
+					axes.foreach { axis => scroll(transition.projectedOver(axis), false) }
 				
 				// Applies friction to velocity
 				velocity = newVelocity
 			}
+			
+			// TODO: Should probably stop momentum once edge of scroll area is reached
 		}
 		
 		
@@ -559,9 +585,9 @@ trait ScrollAreaLike extends CachingStackable
 			{
 				// Drag scrolling is different when both axes are being scrolled
 				if (allows2DScrolling)
-					scroll(event.transition)
+					scroll(event.transition, false)
 				else
-					axes.foreach { axis => scroll(event.transition.projectedOver(axis)) }
+					axes.foreach { axis => scroll(event.transition.projectedOver(axis), false) }
 				
 				val now = Instant.now
 				velocities = velocities.dropWhile { _._1 < now - dragDuration } :+ (now, event.velocity, event.duration)
@@ -585,8 +611,8 @@ trait ScrollAreaLike extends CachingStackable
 					axes.headOption getOrElse Y
 			}
 			
-			scroll(scrollAxis(-event.wheelTurn * scrollPerWheelClick))
-			Some(ConsumeEvent("Horizontal scroll area scrolling"))
+			scroll(scrollAxis(-event.wheelTurn * scrollPerWheelClick), animated = false)
+			Some(ConsumeEvent(s"Scroll area scrolling along axis $scrollAxis"))
 		}
 		
 		override def onKeyState(event: KeyStateEvent) = keyState = event.keyStatus

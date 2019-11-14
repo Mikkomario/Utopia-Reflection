@@ -55,7 +55,7 @@ object ScrollAreaTest extends App
 	
 	// Creates the scroll area
 	val barDrawer = BoxScrollBarDrawer.roundedBarOnly(Color.black.withAlpha(0.55))
-	val scrollArea = new ScrollArea(stack, actorHandler, 16, barDrawer, 16,
+	val scrollArea = new ScrollArea(stack, actorHandler, 64, barDrawer, 16,
 		true, friction = LinearAcceleration(2000)(TimeUnit.SECONDS),
 		lengthLimits = StackLengthLimit.sizeLimit(maxOptimal =  Some(Size.square(480))))
 	
