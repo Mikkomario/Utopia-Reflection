@@ -5,7 +5,7 @@ import java.awt.FontMetrics
 
 import utopia.reflection.event.ResizeListener
 import utopia.genesis.color.Color
-import utopia.genesis.event.{Consumable, KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
+import utopia.genesis.event.{Consumable, ConsumeEvent, KeyStateEvent, KeyTypedEvent, MouseButtonStateEvent, MouseEvent, MouseMoveEvent, MouseWheelEvent}
 import utopia.genesis.handling.{KeyStateListener, KeyTypedListener, MouseButtonStateListener, MouseMoveListener, MouseWheelListener}
 import utopia.genesis.handling.mutable.{KeyStateHandler, KeyTypedHandler, MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
 import utopia.inception.handling.Handleable
@@ -112,14 +112,14 @@ trait ComponentLike extends Area
       *              (origin should be at the parent component's position). Events outside parent context shouldn't be
       *              distributed.
       */
-    def distributeMouseButtonEvent(event: MouseButtonStateEvent): Boolean =
+    def distributeMouseButtonEvent(event: MouseButtonStateEvent): Option[ConsumeEvent] =
     {
         // Informs children first
-        val isConsumed = distributeConsumableMouseEvent[MouseButtonStateEvent](event, (e, p) => e.copy(mousePosition = p),
+        val consumeEvent = distributeConsumableMouseEvent[MouseButtonStateEvent](event, (e, p) => e.copy(mousePosition = p),
             _.distributeMouseButtonEvent(_))
         
         // Then informs own handler
-        mouseButtonHandler.onMouseButtonState(if (isConsumed) event.consumed else event)
+        mouseButtonHandler.onMouseButtonState(consumeEvent.map(event.consumed).getOrElse(event))
     }
     
     /**
@@ -144,14 +144,14 @@ trait ComponentLike extends Area
       *              (origin should be at the parent component's position). Events outside parent context shouldn't be
       *              distributed.
       */
-    def distributeMouseWheelEvent(event: MouseWheelEvent): Boolean =
+    def distributeMouseWheelEvent(event: MouseWheelEvent): Option[ConsumeEvent] =
     {
         // Informs children first
-        val isConsumed = distributeConsumableMouseEvent[MouseWheelEvent](event, (e, p) =>  e.copy(mousePosition = p),
+        val consumeEvent = distributeConsumableMouseEvent[MouseWheelEvent](event, (e, p) =>  e.copy(mousePosition = p),
             _.distributeMouseWheelEvent(_))
         
         // Then informs own handler
-        mouseWheelHandler.onMouseWheelRotated(if (isConsumed) event.consumed else event)
+        mouseWheelHandler.onMouseWheelRotated(consumeEvent.map(event.consumed).getOrElse(event))
     }
     
     /**
@@ -258,7 +258,7 @@ trait ComponentLike extends Area
     }
     
     private def distributeConsumableMouseEvent[E <: MouseEvent with Consumable[E]](event: E, withPosition: (E, Point) => E,
-                                                                                   childAccept: (ComponentLike, E) => Boolean) =
+                                                                                   childAccept: (ComponentLike, E) => Option[ConsumeEvent]) =
     {
         val myBounds = bounds
         if (myBounds.contains(event.mousePosition))
@@ -269,7 +269,7 @@ trait ComponentLike extends Area
             translatedEvent.distributeAmong(visibleChildren)(childAccept)
         }
         else
-            event.isConsumed
+            None
     }
     
     

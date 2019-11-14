@@ -2,7 +2,7 @@ package utopia.reflection.component.swing.button
 
 import java.awt.event.{FocusEvent, FocusListener, KeyEvent}
 
-import utopia.genesis.event.{KeyStateEvent, MouseButton, MouseButtonStateEvent, MouseMoveEvent}
+import utopia.genesis.event.{ConsumeEvent, KeyStateEvent, MouseButton, MouseButtonStateEvent, MouseMoveEvent}
 import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener, MouseMoveListener}
 import utopia.inception.handling.HandlerType
 import utopia.reflection.component.ComponentLike
@@ -156,18 +156,18 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 				{
 					trigger()
 					isDown = false
-					true
+					Some(ConsumeEvent("Button released"))
 				}
 				else
-					false
+					None
 			}
 			else if (event.isOverArea(bounds))
 			{
 				isDown = true
-				true
+				Some(ConsumeEvent("Button pressed"))
 			}
 			else
-				false
+				None
 		}
 		
 		// When mouse enters, brightens, when mouse leaves, returns

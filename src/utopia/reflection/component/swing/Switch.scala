@@ -3,7 +3,7 @@ package utopia.reflection.component.swing
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.util.TimeExtensions._
 import utopia.genesis.color.Color
-import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent}
+import utopia.genesis.event.{ConsumeEvent, MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.{Actor, MouseButtonStateListener}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.{Bounds, Circle, Point}
@@ -105,7 +105,7 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 		override def onMouseButtonState(event: MouseButtonStateEvent) =
 		{
 			value = !value
-			true
+			Some(ConsumeEvent("Switch activation"))
 		}
 		
 		override def parent = None

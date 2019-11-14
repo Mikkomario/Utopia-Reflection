@@ -59,8 +59,8 @@ object MouseTest extends App
 	items(1).addMouseMoveListener(MouseMoveListener(e => println("Moving " + e.mousePosition),
 		MouseEvent.isOverAreaFilter(items(1).bounds)))
 	items(2).addMouseButtonListener(MouseButtonStateListener.onLeftPressedInside(items(2).bounds,
-		e => { println(e.mousePosition); false }))
-	items(2).addMouseWheelListener(MouseWheelListener.onWheelInsideArea(items(2).bounds, { e => println(e.wheelTurn); false }))
+		e => { println(e.mousePosition); None }))
+	items(2).addMouseWheelListener(MouseWheelListener.onWheelInsideArea(items(2).bounds, { e => println(e.wheelTurn); None }))
 	
 	frame.addKeyStateListener(KeyStateListener(println))
 	

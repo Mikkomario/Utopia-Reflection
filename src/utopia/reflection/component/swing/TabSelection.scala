@@ -3,7 +3,7 @@ package utopia.reflection.component.swing
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
-import utopia.genesis.event.{MouseButtonStateEvent, MouseEvent}
+import utopia.genesis.event.{ConsumeEvent, MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.MouseButtonStateListener
 import utopia.genesis.shape.Axis.{X, Y}
 import utopia.inception.handling.immutable.Handleable
@@ -183,10 +183,10 @@ class TabSelection[A](val font: Font, val color: Color, val optimalHMargin: Int,
 			if (newValue.isDefined)
 			{
 				value = newValue
-				true
+				Some(ConsumeEvent(s"$newValue selected in TabSelection"))
 			}
 			else
-				false
+				None
 		}
 	}
 }

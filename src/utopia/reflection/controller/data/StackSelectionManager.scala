@@ -2,7 +2,7 @@ package utopia.reflection.controller.data
 
 import java.awt.event.KeyEvent
 
-import utopia.genesis.event.{KeyStateEvent, MouseButtonStateEvent, MouseEvent}
+import utopia.genesis.event.{ConsumeEvent, KeyStateEvent, MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener}
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
@@ -74,7 +74,11 @@ class StackSelectionManager[A, C <: Stackable with Refreshable[A]](stack: StackL
 		{
 			val nearest = stack.itemNearestTo(event.mousePosition - stack.position)
 			nearest.foreach(handleMouseClick)
-			consumeEvents && nearest.isDefined
+			
+			if (consumeEvents && nearest.isDefined)
+				Some(ConsumeEvent("Stack selection change"))
+			else
+				None
 		}
 	}
 	

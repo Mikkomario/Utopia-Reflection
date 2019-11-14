@@ -1,15 +1,13 @@
 package utopia.reflection.test
 
 import java.awt.event.KeyEvent
-import java.util.concurrent.TimeUnit
 
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
-import utopia.genesis.event.{Consumable, KeyStateEvent, MouseButtonStateEvent, MouseEvent, MouseWheelEvent}
+import utopia.genesis.event.{Consumable, ConsumeEvent, KeyStateEvent, MouseButtonStateEvent, MouseEvent, MouseWheelEvent}
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.{ActorLoop, Drawable, KeyStateListener, MouseButtonStateListener, MouseWheelListener}
 import utopia.genesis.handling.mutable.{ActorHandler, DrawableHandler, MouseButtonStateHandler, MouseMoveHandler, MouseWheelHandler}
-import utopia.genesis.shape.LinearAcceleration
 import utopia.genesis.shape.shape2D.{Bounds, Circle, Point, Size}
 import utopia.genesis.util.{Drawer, FPS}
 import utopia.inception.handling.immutable.Handleable
@@ -21,7 +19,6 @@ import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.shape.LengthExtensions._
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.TimeUnit
 
 /**
   * This is a simple test implementation of scroll view
@@ -96,7 +93,7 @@ private class TestCircle(val position: Point) extends Drawable with Handleable w
 	override def onMouseButtonState(event: MouseButtonStateEvent) =
 	{
 		circle = Circle(position, circle.radius * 0.8)
-		true
+		Some(ConsumeEvent("Circle was clicked"))
 	}
 }
 
@@ -117,10 +114,10 @@ private class Zoomer(private val canvas: ScrollCanvas) extends MouseWheelListene
 		if (listening)
 		{
 			canvas.scaling *= (1 + event.wheelTurn * 0.1)
-			true
+			Some(ConsumeEvent("Canvas zoom"))
 		}
 		else
-			false
+			None
 	}
 	
 	override def keyStateEventFilter = KeyStateEvent.keyFilter(KeyEvent.VK_CONTROL)

@@ -495,32 +495,28 @@ trait ScrollAreaLike extends CachingStackable
 		{
 			if (event.wasPressed)
 			{
-				// Consumed pressed events are ignored
-				if (!event.isConsumed)
-				{
-					// If mouse was pressed inside inside scroll bar, starts dragging the bar
-					val barUnderEvent = axes.findMap { axis =>
-						barBounds.get(axis).filter { b => event.isOverArea(b.bar) }.map { axis -> _.bar }
-					}
-					
-					if (barUnderEvent.isDefined)
-					{
-						isDraggingContent = false
-						barDragAxis = barUnderEvent.get._1
-						barDragPosition = event.positionOverArea(barUnderEvent.get._2)
-						isDraggingBar = true
-						scroller.stop()
-					}
-					// if outside, starts drag scrolling
-					else if (event.isOverArea(bounds))
-					{
-						isDraggingBar = false
-						contentDragPosition = event.mousePosition
-						isDraggingContent = true
-						scroller.stop()
-					}
+				// If mouse was pressed inside inside scroll bar, starts dragging the bar
+				val barUnderEvent = axes.findMap { axis =>
+					barBounds.get(axis).filter { b => event.isOverArea(b.bar) }.map { axis -> _.bar }
 				}
-				true
+				
+				if (barUnderEvent.isDefined)
+				{
+					isDraggingContent = false
+					barDragAxis = barUnderEvent.get._1
+					barDragPosition = event.positionOverArea(barUnderEvent.get._2)
+					isDraggingBar = true
+					scroller.stop()
+				}
+				// Consumed pressed events are only considered in scroll bar(s)
+				// if outside, starts drag scrolling
+				else if (event.isOverArea(bounds) && !event.isConsumed)
+				{
+					isDraggingBar = false
+					contentDragPosition = event.mousePosition
+					isDraggingContent = true
+					scroller.stop()
+				}
 			}
 			else
 			{
@@ -546,8 +542,8 @@ trait ScrollAreaLike extends CachingStackable
 						scroller.accelerate(Velocity(averageTranslationPerMilli)(TimeUnit.MILLISECONDS) * velocityMod)
 					}
 				}
-				false
 			}
+			None
 		}
 		
 		override def onMouseMove(event: MouseMoveEvent) =
@@ -590,7 +586,7 @@ trait ScrollAreaLike extends CachingStackable
 			}
 			
 			scroll(scrollAxis(-event.wheelTurn * scrollPerWheelClick))
-			true
+			Some(ConsumeEvent("Horizontal scroll area scrolling"))
 		}
 		
 		override def onKeyState(event: KeyStateEvent) = keyState = event.keyStatus
