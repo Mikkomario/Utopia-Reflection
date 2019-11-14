@@ -7,28 +7,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/ConsumeEvent.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/Consumable.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/Consumable.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseButtonStateEvent.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseButtonStateEvent.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseWheelEvent.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseWheelEvent.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/ConsumableEventHandler.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/ConsumableEventHandler.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/MouseButtonStateListener.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/MouseButtonStateListener.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/MouseWheelListener.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/handling/MouseWheelListener.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/view/MouseEventGenerator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/view/MouseEventGenerator.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/test/utopia/genesis/test/MouseTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/test/utopia/genesis/test/MouseTest.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionKeyListener.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/Switch.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/TabSelection.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ButtonLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/swing/button/ButtonLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/swing/window/Window.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionManager.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/MouseTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/MouseTest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollCanvasTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollCanvasTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +96,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ScrollCanvasTest">
+  <component name="RunManager" selected="Application.ScrollViewTest">
     <configuration name="CalendarTest" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="utopia.reflection.test.CalendarTest" />
       <module name="Utopia-Reflection" />
@@ -180,11 +164,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ScrollViewTest" />
         <item itemvalue="Application.ScrollCanvasTest" />
         <item itemvalue="Application.MouseTest" />
         <item itemvalue="Application.CalendarTest" />
         <item itemvalue="Application.ScrollAreaTest" />
-        <item itemvalue="Application.ScrollViewTest" />
       </list>
     </recent_temporary>
   </component>
@@ -202,13 +186,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00069" summary="Finished debugging tab selection">
-      <created>1557042719970</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1557042719970</updated>
     </task>
     <task id="LOCAL-00070" summary="Debugged tab selection">
       <created>1557079865244</created>
@@ -526,7 +503,13 @@
       <option name="presentableId" value="LOCAL−00117" />
       <updated>1573561198523</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL−00118" summary="Changed how event consuming works">
+      <created>1573740023036</created>
+      <option name="number" value="LOCAL−00118" />
+      <option name="presentableId" value="LOCAL−00118" />
+      <updated>1573740023037</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="TodoView">
@@ -552,7 +535,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Flow: Added a simple cache trait" />
     <MESSAGE value="Working on cache classes" />
     <MESSAGE value="Added new pointer functionality to selectable items. Currently debugging." />
     <MESSAGE value="Fixed stack selection manager" />
@@ -577,6 +559,7 @@
     <MESSAGE value="Added animated scrolling to ScrollAreas and ScrollViews" />
     <MESSAGE value="Tested and debugged animated scrolling" />
     <MESSAGE value="Added new artifact" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added new artifact" />
+    <MESSAGE value="Changed how event consuming works" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed how event consuming works" />
   </component>
 </project>

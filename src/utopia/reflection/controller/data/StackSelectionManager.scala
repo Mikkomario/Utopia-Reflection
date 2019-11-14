@@ -2,8 +2,10 @@ package utopia.reflection.controller.data
 
 import java.awt.event.KeyEvent
 
-import utopia.genesis.event.{ConsumeEvent, KeyStateEvent, MouseButtonStateEvent, MouseEvent}
-import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener}
+import utopia.flow.util.TimeExtensions._
+import utopia.genesis.event.{ConsumeEvent, MouseButtonStateEvent, MouseEvent}
+import utopia.genesis.handling.MouseButtonStateListener
+import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
@@ -11,6 +13,8 @@ import utopia.reflection.component.Refreshable
 import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawer}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.stack.StackLike
+
+import scala.concurrent.duration.Duration
 
 /**
   * This class handles content and selection in a stack
@@ -47,7 +51,16 @@ class StackSelectionManager[A, C <: Stackable with Refreshable[A]](stack: StackL
 	/**
 	  * Enables key state handling for the stack (allows selection change with up & down arrows)
 	  */
-	def enableKeyHandling() = stack.addKeyStateListener(new KeyHandler)
+	def enableKeyHandling(actorHandler: ActorHandler, nextKeyCode: Int = KeyEvent.VK_DOWN, prevKeyCode: Int = KeyEvent.VK_UP,
+						  initialScrollDelay: Duration = 0.6.seconds, scrollDelayModifier: Double = 0.75,
+						  minScrollDelay: Duration = 0.05.seconds,
+						  listenEnabledCondition: Option[() => Boolean] = None) =
+	{
+		val listener = new SelectionKeyListener(nextKeyCode, prevKeyCode, initialScrollDelay, scrollDelayModifier,
+			minScrollDelay, listenEnabledCondition)(amount => moveSelection(amount))
+		stack.addKeyStateListener(listener)
+		actorHandler += listener
+	}
 	
 	
 	// NESTED CLASSES	----------------
@@ -80,14 +93,5 @@ class StackSelectionManager[A, C <: Stackable with Refreshable[A]](stack: StackL
 			else
 				None
 		}
-	}
-	
-	private class KeyHandler extends KeyStateListener with Handleable
-	{
-		// Only checks for up & down key presses
-		override def keyStateEventFilter = KeyStateEvent.wasPressedFilter &&
-			KeyStateEvent.keysFilter(KeyEvent.VK_UP, KeyEvent.VK_DOWN)
-		
-		override def onKeyState(event: KeyStateEvent) = handleKeyPress(event.index)
 	}
 }

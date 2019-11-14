@@ -1,7 +1,5 @@
 package utopia.reflection.controller.data
 
-import java.awt.event.KeyEvent
-
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.flow.util.CollectionExtensions._
@@ -18,7 +16,6 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 	// ATTRIBUTES	-------------------
 	
 	private var _selectedDisplay: Option[C] = None
-	
 	override val valuePointer = new PointerWithEvents[Option[A]](None)
 	
 	
@@ -49,31 +46,23 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 	// OTHER	-------------------
 	
 	/**
-	  * Handles mouse click event
-	  * @param displayAtMousePosition The display closest to / under the mouse cursor
+	  * Moves the selection (cursor) by specified amount (of items)
+	  * @param amount Number of items to progress
 	  */
-	protected def handleMouseClick(displayAtMousePosition: C) = selectDisplay(displayAtMousePosition)
-	
-	/**
-	  * Handles key pressed event
-	  * @param keyCode The key code that was pressed (only up and down arrow keys count)
-	  */
-	protected def handleKeyPress(keyCode: Int) =
+	def moveSelection(amount: Int) =
 	{
-		val displays = this.displays
-		
-		if (displays.nonEmpty)
+		if (amount != 0)
 		{
-			val transition = if (keyCode == KeyEvent.VK_UP) - 1 else if (keyCode == KeyEvent.VK_DOWN) 1 else 0
-			
-			if (transition != 0)
+			val displays = this.displays
+			if (displays.nonEmpty)
 			{
-				val oldIndex = _selectedDisplay.flatMap { displays.optionIndexOf(_) }
+				
+				val oldIndex = _selectedDisplay.flatMap{ displays.optionIndexOf(_) }
 				
 				if (oldIndex.isDefined)
 				{
 					// Moves the selection by one
-					val newIndex = (oldIndex.get + transition) % displays.size
+					val newIndex = (oldIndex.get + amount) % displays.size
 					
 					if (newIndex < 0)
 						selectDisplay(displays(newIndex + displays.size))
@@ -81,13 +70,29 @@ trait SelectionManager[A, C <: Refreshable[A]] extends ContentManager[A, C] with
 						selectDisplay(displays(newIndex))
 				}
 				// If no item was selected previously, either selects the first or last item
-				else if (transition > 0)
+				else if (amount > 0)
 					selectDisplay(displays.head)
 				else
 					selectDisplay(displays.last)
 			}
 		}
 	}
+	
+	/**
+	  * Moves selection one step forward
+	  */
+	def selectNext() = moveSelection(1)
+	
+	/**
+	  * Moves selection one step backwards
+	  */
+	def selectPrevious() = moveSelection(-1)
+	
+	/**
+	  * Handles mouse click event
+	  * @param displayAtMousePosition The display closest to / under the mouse cursor
+	  */
+	protected def handleMouseClick(displayAtMousePosition: C) = selectDisplay(displayAtMousePosition)
 	
 	private def updateSelection(newValue: Option[A]): Unit =
 	{

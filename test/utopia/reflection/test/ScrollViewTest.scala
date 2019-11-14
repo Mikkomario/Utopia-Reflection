@@ -60,13 +60,13 @@ object ScrollViewTest extends App
 		d.withColor(Color.black.withAlpha(0.33), Color.black.withAlpha(0.8)).withStroke(2).draw(b)
 	})
 	
+	val actorHandler = ActorHandler()
+	
 	val contentManager = new StackSelectionManager[Int, ItemLabel[Int]](stack, makeLabel, selectionDrawer)
 	contentManager.addValueListener(i => println("Selected " + i.newValue))
-	contentManager.enableKeyHandling()
+	contentManager.enableKeyHandling(actorHandler)
 	contentManager.enableMouseHandling(false)
 	private val contentUpdateLoop = new ContentUpdateLoop(contentManager)
-	
-	val actorHandler = ActorHandler()
 	
 	// Creates the scroll view
 	val barDrawer = BoxScrollBarDrawer(Color.black.withAlpha(0.55), Color.red)
