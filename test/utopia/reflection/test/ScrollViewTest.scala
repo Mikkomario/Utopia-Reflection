@@ -62,7 +62,7 @@ object ScrollViewTest extends App
 	
 	val actorHandler = ActorHandler()
 	
-	val contentManager = new StackSelectionManager[Int, ItemLabel[Int]](stack, makeLabel, selectionDrawer)
+	val contentManager = new StackSelectionManager[Int, ItemLabel[Int]](stack, selectionDrawer)(makeLabel)
 	contentManager.addValueListener(i => println("Selected " + i.newValue))
 	contentManager.enableKeyHandling(actorHandler)
 	contentManager.enableMouseHandling(false)

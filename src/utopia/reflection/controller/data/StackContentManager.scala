@@ -12,11 +12,16 @@ import utopia.reflection.container.stack.StackLike
   * @tparam C The type of display where a single item is displayed
   * @param stack The stack managed through this manager
   * @param makeItem A function for producing new displays
+  * @param equalsCheck A function for checking whether two items should be considered equal (default = standard equals)
   */
 class StackContentManager[A, C <: Stackable with Refreshable[A]](protected val stack: StackLike[C],
-																 private val makeItem: A => C) extends ContentManager[A, C]
+																 protected val equalsCheck: (A, A) => Boolean = { (a: A, b: A) =>  a == b })
+																(private val makeItem: A => C)
+	extends ContentManager[A, C]
 {
 	// IMPLEMENTED	-----------------------
+	
+	override protected def itemsAreEqual(a: A, b: A) = equalsCheck(a, b)
 	
 	override def displays = stack.components
 	

@@ -7,13 +7,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Added one todo to remind">
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/VectorLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/VectorLike.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionKeyListener.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionKeyListener.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/ContentManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/ContentManager.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionManager.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackContentManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackContentManager.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollViewTest.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -187,13 +187,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00074" summary="Added key handling to buttons and also default key handling to windows">
-      <created>1557324169475</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1557324169475</updated>
     </task>
     <task id="LOCAL-00075" summary="Added iconLabel class">
       <created>1557328735320</created>
@@ -506,7 +499,13 @@
       <option name="presentableId" value="LOCAL−00122" />
       <updated>1573803080085</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL−00123" summary="Genesis: Changed VectorLike combineWith syntax&#10;Reflection: Bugfix to scrollArea's ensureAreaIsVisible">
+      <created>1573805082761</created>
+      <option name="number" value="LOCAL−00123" />
+      <option name="presentableId" value="LOCAL−00123" />
+      <updated>1573805082761</updated>
+    </task>
+    <option name="localTasksCounter" value="124" />
     <servers />
   </component>
   <component name="TodoView">
@@ -532,7 +531,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Flow: Lazy.set(...) no longer deprecated&#10;Genesis: Gitignore updated&#10;Reflection: Removed InputListener, removed test print from ImageLabel. Fixed errors in tests." />
     <MESSAGE value="Moved some of button functionality to a separate trait" />
     <MESSAGE value="Added a new image button class (not tested yet)" />
     <MESSAGE value="Added button for image and text content" />
@@ -557,6 +555,7 @@
     <MESSAGE value="Debugged scrollArea's ensure area is visible -method added added animation option to remaining scrolling events" />
     <MESSAGE value="Added one todo to remind" />
     <MESSAGE value="Genesis: Added translation to mouse events&#10;Reflection: Fixed issue with scroll area's bar drag scrolling positioning" />
-    <option name="LAST_COMMIT_MESSAGE" value="Genesis: Added translation to mouse events&#10;Reflection: Fixed issue with scroll area's bar drag scrolling positioning" />
+    <MESSAGE value="Genesis: Changed VectorLike combineWith syntax&#10;Reflection: Bugfix to scrollArea's ensureAreaIsVisible" />
+    <option name="LAST_COMMIT_MESSAGE" value="Genesis: Changed VectorLike combineWith syntax&#10;Reflection: Bugfix to scrollArea's ensureAreaIsVisible" />
   </component>
 </project>

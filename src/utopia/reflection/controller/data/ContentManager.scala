@@ -16,6 +16,7 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 	// ATTRIBUTES	------------------
 	
 	override val contentPointer = new PointerWithEvents[Vector[A]](Vector())
+	private var updatingOnly: Option[A] = None
 	
 	
 	// INITIAL CODE	------------------
@@ -47,6 +48,14 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 	  */
 	protected def finalizeRefresh(): Unit
 	
+	/**
+	  * Checks whether these two items should be considered equal by this content manager's standards
+	  * @param a First item
+	  * @param b Second item
+	  * @return Whether the two items should be considered equal in this context
+	  */
+	protected def itemsAreEqual(a: A, b: A): Boolean
+	
 	
 	// OTHER	--------------------
 	
@@ -57,14 +66,43 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 	  * @tparam B Type of tested item
 	  * @return The display currently showing the provided item. None if no such display was found.
 	  */
-	def displayFor[B](item: B, equals: (A, B) => Boolean) = displays.find { d => equals(d.content, item) }
+	def displayMatching[B](item: B)(equals: (A, B) => Boolean) = displays.find { d => equals(d.content, item) }
 	
 	/**
 	  * Finds a display currently showing provided element (uses equals to find the element)
 	  * @param item A searched item
 	  * @return The display currently showing the provided item. None if no such display was found.
 	  */
-	def displayFor(item: Any): Option[C] = displayFor[Any](item, _ == _)
+	def displayFor(item: A): Option[C] = displayMatching(item)(itemsAreEqual)
+	
+	/**
+	  * Replaces a single item in content
+	  * @param oldItem Item to be replaced
+	  * @param newItem The item that will replace the old item
+	  */
+	def replace(oldItem: A, newItem: A) =
+	{
+		content.indexWhereOption { itemsAreEqual(oldItem, _) }.foreach { targetIndex =>
+			updatingOnly = Some(newItem)
+			content = content.updated(targetIndex, newItem)
+			updatingOnly = None
+		}
+	}
+	
+	/**
+	  * Updates a single item in this display's content (only useful for mutable entities)
+	  * @param item Item to be updated
+	  */
+	def updateSingle(item: A) =
+	{
+		updatingOnly = Some(item)
+		content.indexWhereOption { itemsAreEqual(item, _) } match
+		{
+			case Some(index) => content = content.updated(index, item)
+			case None => content :+= item
+		}
+		updatingOnly = None
+	}
 	
 	
 	// NESTED CLASSES	-------------
@@ -73,16 +111,23 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 	{
 		override def onChangeEvent(event: ChangeEvent[Vector[A]]) =
 		{
+			val d = displays
 			val newContent = event.newValue
 			
-			// Existing rows are updated
-			displays.foreachWith(newContent) { _.content = _ }
+			// Existing rows are updated (may skip update if targeting only a single row)
+			updatingOnly match
+			{
+				// The individual target row is found with content's index
+				case Some(onlyTarget) => newContent.optionIndexOf(onlyTarget).filter { _ < d.size }.foreach { i =>
+					d(i).content = onlyTarget }
+				case None => d.foreachWith(newContent) { _.content = _ }
+			}
 			
-			val size = displays.size
+			val size = d.size
 			
 			// Unnecessary rows are removed and new rows may be added
 			if (size > newContent.size)
-				dropDisplays(displays.drop(newContent.size))
+				dropDisplays(d.drop(newContent.size))
 			else if (size < newContent.size)
 				addDisplaysFor(newContent.drop(size))
 			
