@@ -519,20 +519,21 @@ trait ScrollAreaLike extends CachingStackable
 		
 		override def onMouseButtonState(event: MouseButtonStateEvent) =
 		{
-			// FIXME: Event position context is wrong. This function assumes relative context even though it's
-			// in parent's context
+			// Performs some calculations in this component's context
+			val relativeEvent = event.relativeTo(position)
+			
 			if (event.wasPressed)
 			{
 				// If mouse was pressed inside inside scroll bar, starts dragging the bar
 				val barUnderEvent = axes.findMap { axis =>
-					barBounds.get(axis).filter { b => event.isOverArea(b.bar) }.map { axis -> _.bar }
+					barBounds.get(axis).filter { b => relativeEvent.isOverArea(b.bar) }.map { axis -> _.bar }
 				}
 				
 				if (barUnderEvent.isDefined)
 				{
 					isDraggingContent = false
 					barDragAxis = barUnderEvent.get._1
-					barDragPosition = event.positionOverArea(barUnderEvent.get._2)
+					barDragPosition = relativeEvent.positionOverArea(barUnderEvent.get._2)
 					isDraggingBar = true
 					scroller.stop()
 				}

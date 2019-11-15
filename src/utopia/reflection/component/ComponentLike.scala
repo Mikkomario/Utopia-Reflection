@@ -115,8 +115,7 @@ trait ComponentLike extends Area
     def distributeMouseButtonEvent(event: MouseButtonStateEvent): Option[ConsumeEvent] =
     {
         // Informs children first
-        val consumeEvent = distributeConsumableMouseEvent[MouseButtonStateEvent](event, (e, p) => e.copy(mousePosition = p),
-            _.distributeMouseButtonEvent(_))
+        val consumeEvent = distributeConsumableMouseEvent[MouseButtonStateEvent](event, _.distributeMouseButtonEvent(_))
         
         // Then informs own handler
         mouseButtonHandler.onMouseButtonState(consumeEvent.map(event.consumed).getOrElse(event))
@@ -134,8 +133,7 @@ trait ComponentLike extends Area
         mouseMoveHandler.onMouseMove(event)
         
         distributeEvent[MouseMoveEvent](event, e => Vector(e.mousePosition, e.previousMousePosition),
-            (e, t) => e.copy(mousePosition = e.mousePosition - t, previousMousePosition = e.previousMousePosition - t),
-            _.distributeMouseMoveEvent(_))
+            _.relativeTo(_), _.distributeMouseMoveEvent(_))
     }
     
     /**
@@ -147,8 +145,7 @@ trait ComponentLike extends Area
     def distributeMouseWheelEvent(event: MouseWheelEvent): Option[ConsumeEvent] =
     {
         // Informs children first
-        val consumeEvent = distributeConsumableMouseEvent[MouseWheelEvent](event, (e, p) =>  e.copy(mousePosition = p),
-            _.distributeMouseWheelEvent(_))
+        val consumeEvent = distributeConsumableMouseEvent[MouseWheelEvent](event, _.distributeMouseWheelEvent(_))
         
         // Then informs own handler
         mouseWheelHandler.onMouseWheelRotated(consumeEvent.map(event.consumed).getOrElse(event))
@@ -257,13 +254,12 @@ trait ComponentLike extends Area
         }
     }
     
-    private def distributeConsumableMouseEvent[E <: MouseEvent with Consumable[E]](event: E, withPosition: (E, Point) => E,
-                                                                                   childAccept: (ComponentLike, E) => Option[ConsumeEvent]) =
+    private def distributeConsumableMouseEvent[E <: MouseEvent[E] with Consumable[E]](event: E, childAccept: (ComponentLike, E) => Option[ConsumeEvent]) =
     {
         val myBounds = bounds
         if (myBounds.contains(event.mousePosition))
         {
-            val translatedEvent = withPosition(event, event.mousePosition - myBounds.position)
+            val translatedEvent = event.relativeTo(myBounds.position)
             val visibleChildren = children.filter { _.isVisible }
             
             translatedEvent.distributeAmong(visibleChildren)(childAccept)
