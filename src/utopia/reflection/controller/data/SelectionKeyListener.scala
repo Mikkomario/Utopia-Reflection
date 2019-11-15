@@ -25,7 +25,7 @@ import utopia.inception.handling.immutable.Handleable
   * @param moveSelection A function for moving selection by specified amount
   */
 class SelectionKeyListener(val nextKeyCode: Int = KeyEvent.VK_DOWN, val prevKeyCode: Int = KeyEvent.VK_UP,
-						   val initialScrollDelay: Duration = 0.6.seconds, val scrollDelayModifier: Double = 0.75,
+						   val initialScrollDelay: Duration = 0.4.seconds, val scrollDelayModifier: Double = 0.8,
 						   val minScrollDelay: Duration = 0.05.seconds,
 						   private val listenEnabledCondition: Option[() => Boolean] = None)
 						  (private val moveSelection: Int => Unit) extends KeyStateListener with Actor with Handleable

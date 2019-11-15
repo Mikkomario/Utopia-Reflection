@@ -8,15 +8,12 @@
   <component name="ChangeListManager">
     <list default="true" id="7180467d-b6ea-4802-88c1-0c1b2c2599eb" name="Default Changelist" comment="Added one todo to remind">
       <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/README.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseButtonStateEvent.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseButtonStateEvent.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseEvent.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseEvent.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseMoveEvent.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseMoveEvent.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseWheelEvent.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/event/MouseWheelEvent.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/VectorLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Genesis-Scala/src/utopia/genesis/shape/VectorLike.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Utopia-Inception-Scala/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/component/ComponentLike.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/container/stack/ScrollAreaLike.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/test/utopia/reflection/test/ScrollAreaTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionKeyListener.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/SelectionKeyListener.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/utopia/reflection/controller/data/StackSelectionManager.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +42,7 @@
         <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../Utopia-Genesis-Scala" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
     <option name="UPDATE_CHANGES_POLICY" value="SHELVE" />
   </component>
@@ -190,13 +187,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1554880874773</updated>
-    </task>
-    <task id="LOCAL-00073" summary="Focus highlighting option added to text fields">
-      <created>1557320282617</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1557320282617</updated>
     </task>
     <task id="LOCAL-00074" summary="Added key handling to buttons and also default key handling to windows">
       <created>1557324169475</created>
@@ -510,7 +500,13 @@
       <option name="presentableId" value="LOCAL−00121" />
       <updated>1573751898405</updated>
     </task>
-    <option name="localTasksCounter" value="122" />
+    <task id="LOCAL−00122" summary="Genesis: Added translation to mouse events&#10;Reflection: Fixed issue with scroll area's bar drag scrolling positioning">
+      <created>1573803080084</created>
+      <option name="number" value="LOCAL−00122" />
+      <option name="presentableId" value="LOCAL−00122" />
+      <updated>1573803080085</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
     <servers />
   </component>
   <component name="TodoView">
@@ -536,7 +532,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refacted ItemLabel and Switch to use pointers" />
     <MESSAGE value="Flow: Lazy.set(...) no longer deprecated&#10;Genesis: Gitignore updated&#10;Reflection: Removed InputListener, removed test print from ImageLabel. Fixed errors in tests." />
     <MESSAGE value="Moved some of button functionality to a separate trait" />
     <MESSAGE value="Added a new image button class (not tested yet)" />
@@ -561,6 +556,7 @@
     <MESSAGE value="Updated selection handling so that keyboard functions are more customizable and support continuous scrolling" />
     <MESSAGE value="Debugged scrollArea's ensure area is visible -method added added animation option to remaining scrolling events" />
     <MESSAGE value="Added one todo to remind" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added one todo to remind" />
+    <MESSAGE value="Genesis: Added translation to mouse events&#10;Reflection: Fixed issue with scroll area's bar drag scrolling positioning" />
+    <option name="LAST_COMMIT_MESSAGE" value="Genesis: Added translation to mouse events&#10;Reflection: Fixed issue with scroll area's bar drag scrolling positioning" />
   </component>
 </project>

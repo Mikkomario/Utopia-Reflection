@@ -318,7 +318,7 @@ trait ScrollAreaLike extends CachingStackable
 		}
 		
 		// Performs actual scrolling
-		scroll(Vector3D(xTransition, yTransition), animated, false)
+		scroll(Vector3D(-xTransition, -yTransition), animated, false)
 	}
 	
 	protected def drawWith(barDrawer: ScrollBarDrawer, drawer: Drawer) = Axis2D.values.foreach

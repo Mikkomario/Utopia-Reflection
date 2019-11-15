@@ -52,7 +52,7 @@ class StackSelectionManager[A, C <: Stackable with Refreshable[A]](stack: StackL
 	  * Enables key state handling for the stack (allows selection change with up & down arrows)
 	  */
 	def enableKeyHandling(actorHandler: ActorHandler, nextKeyCode: Int = KeyEvent.VK_DOWN, prevKeyCode: Int = KeyEvent.VK_UP,
-						  initialScrollDelay: Duration = 0.6.seconds, scrollDelayModifier: Double = 0.75,
+						  initialScrollDelay: Duration = 0.4.seconds, scrollDelayModifier: Double = 0.8,
 						  minScrollDelay: Duration = 0.05.seconds,
 						  listenEnabledCondition: Option[() => Boolean] = None) =
 	{

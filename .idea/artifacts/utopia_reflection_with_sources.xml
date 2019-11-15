@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/utopia_reflection_with_sources</output-path>
     <root id="archive" name="utopia-reflection-with-sources.jar">
       <element id="module-output" name="Utopia-Reflection" />
-      <element id="dir-copy" path="$PROJECT_DIR$/src" />
+      <element id="module-source" name="Utopia-Reflection" />
     </root>
   </artifact>
 </component>
