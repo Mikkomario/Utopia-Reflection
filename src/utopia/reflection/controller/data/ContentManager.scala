@@ -21,7 +21,7 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 	
 	// INITIAL CODE	------------------
 	
-	contentPointer.addListener(new ContentUpdateListener)
+	contentPointer.addListener(ContentUpdateListener)
 	
 	
 	// ABSTRACT	----------------------
@@ -98,7 +98,13 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 		updatingOnly = Some(item)
 		content.indexWhereOption { itemsAreEqual(item, _) } match
 		{
-			case Some(index) => content = content.updated(index, item)
+			case Some(index) =>
+				val oldContent = content
+				val newContent = content.updated(index, item)
+				content = newContent
+				// Will have to manually trigger change event if the two content's are equal
+				if (oldContent == newContent)
+					ContentUpdateListener.onChangeEvent(new ChangeEvent[Vector[A]](oldContent, newContent))
 			case None => content :+= item
 		}
 		updatingOnly = None
@@ -107,7 +113,7 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 	
 	// NESTED CLASSES	-------------
 	
-	private class ContentUpdateListener extends ChangeListener[Vector[A]]
+	private object ContentUpdateListener extends ChangeListener[Vector[A]]
 	{
 		override def onChangeEvent(event: ChangeEvent[Vector[A]]) =
 		{
@@ -118,8 +124,8 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 			updatingOnly match
 			{
 				// The individual target row is found with content's index
-				case Some(onlyTarget) => newContent.optionIndexOf(onlyTarget).filter { _ < d.size }.foreach { i =>
-					d(i).content = onlyTarget }
+				case Some(onlyTarget) => newContent.optionIndexOf(onlyTarget).filter { _ < d.size }
+					.foreach { i => d(i).content = onlyTarget }
 				case None => d.foreachWith(newContent) { _.content = _ }
 			}
 			

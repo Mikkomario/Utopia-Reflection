@@ -1,11 +1,13 @@
 package utopia.reflection.test
 
+import java.awt.event.KeyEvent
+
 import utopia.flow.util.TimeExtensions._
 import utopia.flow.async.{Loop, ThreadPool}
 import utopia.flow.util.WaitTarget
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
-import utopia.genesis.handling.ActorLoop
+import utopia.genesis.handling.{ActorLoop, KeyStateListener}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis._
 import utopia.reflection.component.Refreshable
@@ -67,6 +69,8 @@ object ScrollViewTest extends App
 	contentManager.enableKeyHandling(actorHandler)
 	contentManager.enableMouseHandling(false)
 	private val contentUpdateLoop = new ContentUpdateLoop(contentManager)
+	
+	stack.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_RIGHT, e => contentManager.updateSingle(2)))
 	
 	// Creates the scroll view
 	val barDrawer = BoxScrollBarDrawer(Color.black.withAlpha(0.55), Color.red)
