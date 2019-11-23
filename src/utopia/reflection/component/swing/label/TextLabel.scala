@@ -26,11 +26,11 @@ object TextLabel
 	
 	/**
 	  * Creates a new label using contextual information
-	  * @param text Label text
+	  * @param text Label text (default = empty)
 	  * @param context Component creation context
 	  * @return A new label
 	  */
-	def contextual(text: LocalizedString, isHint: Boolean = false)(implicit context: ComponentContext) =
+	def contextual(text: LocalizedString = LocalizedString.empty, isHint: Boolean = false)(implicit context: ComponentContext) =
 	{
 		val label = new TextLabel(text, context.font, context.insideMargins, context.textHasMinWidth,
 			context.textAlignment, if (isHint) context.hintTextColor else context.textColor)
