@@ -2,9 +2,7 @@ package utopia.reflection.container.swing.window
 
 import javax.swing.{JFrame, WindowConstants}
 import utopia.reflection.component.stack.Stackable
-import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.AwtContainerRelated
-import utopia.reflection.util.Screen
 
 object Frame
 {
