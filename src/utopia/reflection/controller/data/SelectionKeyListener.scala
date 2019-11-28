@@ -42,14 +42,11 @@ class SelectionKeyListener(val nextKeyCode: Int = KeyEvent.VK_DOWN, val prevKeyC
 	
 	override val keyStateEventFilter = KeyStateEvent.keysFilter(nextKeyCode, prevKeyCode)
 	
-	override def allowsHandlingFrom(handlerType: HandlerType) = listenEnabledCondition.map { _() }.getOrElse
+	override def allowsHandlingFrom(handlerType: HandlerType) = handlerType match
 	{
-		handlerType match
-		{
-			// Action events are received only when a button is being held down
-			case ActorHandlerType => isButtonDown
-			case _ => super.allowsHandlingFrom(handlerType)
-		}
+		// Action events are received only when a button is being held down
+		case ActorHandlerType => isButtonDown
+		case _ => super.allowsHandlingFrom(handlerType)
 	}
 	
 	override def onKeyState(event: KeyStateEvent) =
@@ -60,13 +57,17 @@ class SelectionKeyListener(val nextKeyCode: Int = KeyEvent.VK_DOWN, val prevKeyC
 			// Case: Key press
 			if (event.isDown)
 			{
-				currentDirection = direction
-				remainingDelay = initialScrollDelay
-				nextDelay = initialScrollDelay * scrollDelayModifier
-				isButtonDown = true
-				
-				// Moves selection 1 step every key press
-				moveSelection(direction)
+				// Key presses may be ignored if a special condition is not met
+				if (listenEnabledCondition.forall { _() })
+				{
+					currentDirection = direction
+					remainingDelay = initialScrollDelay
+					nextDelay = initialScrollDelay * scrollDelayModifier
+					isButtonDown = true
+					
+					// Moves selection 1 step every key press
+					moveSelection(direction)
+				}
 			}
 			// Case: held key is being released
 			else if (direction == currentDirection)
