@@ -1,6 +1,6 @@
 package utopia.reflection.container.stack
 
-import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
+import utopia.genesis.shape.shape2D.Bounds
 import utopia.reflection.component.ComponentWrapper
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.container.Container
@@ -12,6 +12,7 @@ import utopia.reflection.shape.StackSize
  * @author Mikko Hilpinen
  * @since 7.11.2019, v1+
  */
+// TODO: Replace this and SideFrameLike with AlignableFrameLike (and possibly some utility objects)
 trait CenterFrameLike[C <: Stackable] extends SingleStackContainer[C] with ComponentWrapper with CachingStackable
 {
 	// ABSTRACT	-----------------------

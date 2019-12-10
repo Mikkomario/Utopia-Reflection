@@ -5,7 +5,7 @@ import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.{X, Y}
 import utopia.reflection.component.swing.AwtTextComponentWrapper
-import utopia.reflection.component.{Alignable, RefreshableWithPointer}
+import utopia.reflection.component.{Alignable, RefreshableWithPointer, SingleLineTextComponent}
 import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
@@ -44,7 +44,7 @@ object ItemLabel
 class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], override val font: Font,
 				   override val margins: StackSize = StackSize.any, override val hasMinWidth: Boolean = true,
 				   initialAlignment: Alignment = Alignment.Left)
-	extends Label with AwtTextComponentWrapper with Alignable with RefreshableWithPointer[A]
+	extends Label with AwtTextComponentWrapper with SingleLineTextComponent with Alignable with RefreshableWithPointer[A]
 {
 	// ATTRIBUTES	--------------------
 	

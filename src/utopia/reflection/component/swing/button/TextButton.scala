@@ -2,6 +2,7 @@ package utopia.reflection.component.swing.button
 
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.X
+import utopia.reflection.component.SingleLineTextComponent
 import utopia.reflection.util.Alignment.Center
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.swing.label.Label
@@ -66,7 +67,7 @@ object TextButton
   * @param borderWidth Width of the border inside this button (in pixels)
   */
 class TextButton(override val text: LocalizedString, override val font: Font, val color: Color, override val margins: StackSize,
-				 val borderWidth: Double) extends Label with AwtTextComponentWrapper with ButtonLike
+				 val borderWidth: Double) extends Label with AwtTextComponentWrapper with SingleLineTextComponent with ButtonLike
 {
 	// INITIAL CODE	------------------
 	
