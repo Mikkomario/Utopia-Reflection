@@ -1,8 +1,10 @@
 package utopia.reflection.component.swing.label
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.genesis.image.Image
 import utopia.genesis.shape.shape2D.{Bounds, Point}
 import utopia.genesis.util.Drawer
+import utopia.reflection.component.RefreshableWithPointer
 import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.stack.CachingStackable
@@ -36,11 +38,11 @@ object ImageLabel
   * @constructor Creates a new image label with specified settings (always fill area and upscaling allowing)
   */
 class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val allowUpscaling: Boolean = false)
-	extends Label with CachingStackable
+	extends Label with CachingStackable with RefreshableWithPointer[Image]
 {
 	// ATTRIBUTES	-----------------
 	
-	private var _image = initialImage
+	override val contentPointer = new PointerWithEvents(initialImage)
 	
 	private var scaledImage = initialImage
 	private var relativeImagePosition = Point.origin
@@ -51,25 +53,21 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 	addCustomDrawer(new ImageDrawer)
 	addResizeListener(updateLayout())
 	
+	// Revalidates this component whenever image changes
+	contentPointer.addListener { _ => revalidate() }
+	
 	
 	// COMPUTED	---------------------
 	
 	/**
 	  * @return The currently displayed image in this label
 	  */
-	def image = _image
+	def image = content
 	/**
 	  * Updates displayed image
 	  * @param newImage The new image to be displayed in this label
 	  */
-	def image_=(newImage: Image) =
-	{
-		if (_image != newImage)
-		{
-			_image = newImage
-			revalidate()
-		}
-	}
+	def image_=(newImage: Image) = content = newImage
 	
 	
 	// IMPLEMENTED	-----------------
@@ -79,12 +77,12 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 	override def updateLayout() =
 	{
 		// Updates image scaling to match this label's size
-		if (_image.size.ceil == size)
-			scaledImage = _image
-		else if (alwaysFillArea || !_image.size.fitsInto(size))
-			scaledImage = _image.withSize(size)
+		if (image.size.ceil == size)
+			scaledImage = image
+		else if (alwaysFillArea || !image.size.fitsInto(size))
+			scaledImage = image.withSize(size)
 		else
-			scaledImage = _image
+			scaledImage = image
 		
 		relativeImagePosition = (size - scaledImage.size).toPoint / 2
 		repaint()
@@ -94,7 +92,7 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 	{
 		// Optimal size is always set to image size
 		// Upscaling may also be allowed (limited if upscaling is not allowed and image must fill area)
-		val imageSize = _image.size.ceil
+		val imageSize = image.size.ceil
 		val isLimited = alwaysFillArea && !allowUpscaling
 		
 		if (isLimited)
