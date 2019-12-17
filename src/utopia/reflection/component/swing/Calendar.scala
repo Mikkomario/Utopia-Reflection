@@ -152,7 +152,7 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 	private val nextButton = ImageButton(forwardIcon) { () => nextMonth() }
 	
 	// Day selections are swapped each time month changes, hence the switch panel
-	private val selectionSwitch = new SwitchPanel(currentSelection)
+	private val selectionSwitch = SwitchPanel(currentSelection)
 	
 	// Creates contents
 	private val content: Stack[Stack[_]] =

@@ -12,6 +12,22 @@ import utopia.reflection.container.swing.{AlignFrame, Stack, SwitchPanel}
 import utopia.reflection.localization.{LocalString, LocalizedString}
 import utopia.reflection.shape.{Alignment, StackLength, StackSize}
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
+
+object MultiLineTextView
+{
+	/**
+	  * Creates a new contextual multi line text view (uses context.normalWidth as line split threshold)
+	  * @param text Text displayed on the new view
+	  * @param useLowPriorityForScalingSides Whether aligned sides should have low stack length priority (default = false)
+	  * @param context Component creation context
+	  * @return A new multi line text view
+	  */
+	def contextual(text: LocalizedString, useLowPriorityForScalingSides: Boolean = false)
+				  (implicit context: ComponentContext) = new MultiLineTextView(text, context.font, context.normalWidth,
+		context.insideMargins, context.relatedItemsStackMargin, useLowPriorityForScalingSides, context.textAlignment,
+		context.textColor)
+}
 
 /**
   * Presents text using multiple lines
@@ -43,7 +59,13 @@ class MultiLineTextView(initialText: LocalizedString, initialFont: Font, initial
 	private var _textColor = initialTextColor
 	private var _lineSplitThreshold = initialLineSplitThreshold
 	
-	private val panel = new SwitchPanel[AlignFrame[Stack[TextLabel]]](makeNewContent())
+	private val panel = new SwitchPanel[AlignFrame[Stack[TextLabel]]]
+	
+	
+	// INITIAL CODE	------------------------
+	
+	// Sets initial content
+	panel.set(makeNewContent())
 	
 	
 	// COMPUTED	----------------------------

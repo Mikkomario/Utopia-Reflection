@@ -5,14 +5,31 @@ import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.SingleStackContainer
+import utopia.reflection.container.swing.Stack.AwtStackable
 import utopia.reflection.shape.StackSize
+
+object SwitchPanel
+{
+	/**
+	  * Creates a new switch panel with initial content
+	  * @param initialContent Initial panel content
+	  * @tparam C Type of switch panel content
+	  * @return A new panel
+	  */
+	def apply[C <: AwtStackable](initialContent: C) =
+	{
+		val container = new SwitchPanel[C]
+		container.set(initialContent)
+		container
+	}
+}
 
 /**
   * Switch panels may switch the component they contain
   * @author Mikko Hilpinen
   * @since 27.4.2019, v1+
   */
-class SwitchPanel[C <: Stackable with AwtComponentRelated](initialContent: C) extends SingleStackContainer[C]
+class SwitchPanel[C <: Stackable with AwtComponentRelated] extends SingleStackContainer[C]
 	with AwtComponentWrapperWrapper with SwingComponentRelated with AwtContainerRelated with CachingStackable
 	with CustomDrawableWrapper
 {
@@ -23,7 +40,6 @@ class SwitchPanel[C <: Stackable with AwtComponentRelated](initialContent: C) ex
 	
 	// INITIAL CODE	-------------------
 	
-	set(initialContent)
 	addResizeListener(updateLayout())
 	
 	

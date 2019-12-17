@@ -4,7 +4,7 @@ import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.SingleContainer
 
 /**
-  * This single item container holds an stackable component
+  * This single item container holds a stackable component
   * @author Mikko Hilpinen
   * @since 21.4.2019, v1+
   */
