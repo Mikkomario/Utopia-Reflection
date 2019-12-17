@@ -2,9 +2,8 @@ package utopia.reflection.component.swing.button
 
 import utopia.genesis.color.Color
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, StackLength, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.Alignment
 
 /**
   * Used for creating buttons

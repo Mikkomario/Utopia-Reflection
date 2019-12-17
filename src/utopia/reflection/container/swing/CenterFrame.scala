@@ -10,8 +10,7 @@ import utopia.reflection.container.stack.CenterFrameLike
  * @author Mikko Hilpinen
  * @since 3.11.2019, v1+
  */
-// TODO: Contains a lot of copy-pasted code between this, SideFrame and Framing. Consider adding a common parent
-//  trait and/or class
+@deprecated("Replaced with AlignFrame", "v1")
 class CenterFrame[C <: Stackable with AwtComponentRelated](initialComponent: C)
 	extends CenterFrameLike[C] with SwingComponentRelated with AwtContainerRelated with CustomDrawableWrapper
 {

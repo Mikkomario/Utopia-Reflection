@@ -8,9 +8,8 @@ import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawableWrapper}
 import utopia.reflection.component.swing.{CustomDrawComponent, JWrapper}
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.StackSize
+import utopia.reflection.shape.{Alignment, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.Alignment
 
 object Label
 {

@@ -5,9 +5,9 @@ import utopia.genesis.shape.Axis.{X, Y}
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.{Alignable, SingleLineTextComponent}
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.StackSize
+import utopia.reflection.shape.{Alignment, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.{Alignment, ComponentContext}
+import utopia.reflection.util.ComponentContext
 
 object TextLabel
 {

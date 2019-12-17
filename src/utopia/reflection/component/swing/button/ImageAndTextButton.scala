@@ -4,9 +4,9 @@ import utopia.genesis.color.Color
 import utopia.reflection.component.swing.StackableAwtComponentWrapperWrapper
 import utopia.reflection.component.swing.label.{ImageLabel, TextLabel}
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.{Border, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, Border, StackLength, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.{Alignment, ComponentContext}
+import utopia.reflection.util.ComponentContext
 
 object ImageAndTextButton
 {

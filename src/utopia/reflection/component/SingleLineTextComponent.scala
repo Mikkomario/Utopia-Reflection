@@ -1,7 +1,7 @@
 package utopia.reflection.component
 
-import utopia.reflection.util.Alignment.Center
 import utopia.reflection.component.stack.StackSizeCalculating
+import utopia.reflection.shape.Alignment.Center
 import utopia.reflection.shape.{StackLength, StackSize}
 
 /**

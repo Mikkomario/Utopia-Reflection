@@ -1,8 +1,9 @@
-package utopia.reflection.util
+package utopia.reflection.shape
 
 import javax.swing.SwingConstants
 import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.Axis2D
+import utopia.genesis.shape.shape2D.Direction2D
 
 import scala.collection.immutable.HashMap
 
@@ -22,6 +23,8 @@ object Alignment
 		override def horizontal = this
 		
 		override def vertical = Center
+		
+		override def directions = Vector(Direction2D.Left)
 	}
 	
 	/**
@@ -38,6 +41,8 @@ object Alignment
 		override def horizontal = this
 		
 		override def vertical = Center
+		
+		override def directions = Vector(Direction2D.Right)
 	}
 	
 	/**
@@ -54,6 +59,8 @@ object Alignment
 		override def horizontal = Center
 		
 		override def vertical = this
+		
+		override def directions = Vector(Direction2D.Up)
 	}
 	
 	/**
@@ -70,6 +77,8 @@ object Alignment
 		override def horizontal = Center
 		
 		override def vertical = this
+		
+		override def directions = Vector(Direction2D.Down)
 	}
 	
 	/**
@@ -86,6 +95,8 @@ object Alignment
 		override def horizontal = this
 		
 		override def vertical = this
+		
+		override def directions = Vector[Direction2D]()
 	}
 	
 	case object TopLeft extends Alignment
@@ -99,6 +110,8 @@ object Alignment
 		override def horizontal = Left
 		
 		override def vertical = Top
+		
+		override def directions = Vector(Direction2D.Up, Direction2D.Left)
 	}
 	
 	case object TopRight extends Alignment
@@ -112,6 +125,8 @@ object Alignment
 		override def horizontal = Right
 		
 		override def vertical = Top
+		
+		override def directions = Vector(Direction2D.Up, Direction2D.Right)
 	}
 	
 	case object BottomLeft extends Alignment
@@ -125,6 +140,8 @@ object Alignment
 		override def horizontal = Left
 		
 		override def vertical = Bottom
+		
+		override def directions = Vector(Direction2D.Down, Direction2D.Left)
 	}
 	
 	case object BottomRight extends Alignment
@@ -138,6 +155,8 @@ object Alignment
 		override def horizontal = Right
 		
 		override def vertical = Bottom
+		
+		override def directions = Vector(Direction2D.Down, Direction2D.Right)
 	}
 	
 	
@@ -160,6 +179,18 @@ object Alignment
 	
 	
 	// OTHER	-----------------------
+	
+	/**
+	  * @param direction Target direction
+	  * @return An alignment that places items to that direction
+	  */
+	def forDirection(direction: Direction2D) = direction match
+	{
+		case Direction2D.Up => Top
+		case Direction2D.Down => Bottom
+		case Direction2D.Right => Right
+		case Direction2D.Left => Left
+	}
 	
 	/**
 	  * @param alignment Searched swing alignment
@@ -248,6 +279,11 @@ sealed trait Alignment
 	  */
 	def vertical: Alignment
 	
+	/**
+	  * @return Directions this alignment will try to move contents
+	  */
+	def directions: Vector[Direction2D]
+	
 	
 	// COMPUTED	----------------
 	
@@ -269,4 +305,11 @@ sealed trait Alignment
 	  * @return A version of this alignment that can be used for the specified axis
 	  */
 	def along(axis: Axis2D) = if (supportedAxes.contains(axis)) this else Center
+	
+	/**
+	  * @param axis Target axis
+	  * @return Direction determined by this alignment on specified axis. None if this alignment doesn't specify a
+	  *         direction along specified axis (centered)
+	  */
+	def directionAlong(axis: Axis2D) = directions.find { _.axis == axis }
 }

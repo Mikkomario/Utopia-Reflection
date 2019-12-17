@@ -3,13 +3,13 @@ package utopia.reflection.component.swing.button
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.X
 import utopia.reflection.component.SingleLineTextComponent
-import utopia.reflection.util.Alignment.Center
+import utopia.reflection.shape.Alignment.Center
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.swing.label.Label
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Border, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.{Alignment, ComponentContext}
+import utopia.reflection.util.ComponentContext
 
 object TextButton
 {
@@ -76,7 +76,7 @@ class TextButton(override val text: LocalizedString, override val font: Font, va
 	setHandCursor()
 	label.setText(text.string)
 	background = color
-	Alignment.Center.swingComponents.get(X).foreach(label.setHorizontalAlignment)
+	Center.swingComponents.get(X).foreach(label.setHorizontalAlignment)
 	
 	initializeListeners()
 	

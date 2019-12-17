@@ -16,9 +16,9 @@ import utopia.reflection.component.Alignable
 import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.{Border, Insets, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, Border, Insets, StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt, Regex}
-import utopia.reflection.util.{Alignment, ComponentContext}
+import utopia.reflection.util.ComponentContext
 
 object TextField
 {

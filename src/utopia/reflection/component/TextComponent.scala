@@ -3,9 +3,8 @@ package utopia.reflection.component
 import utopia.genesis.color.Color
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.StackSize
+import utopia.reflection.shape.{Alignment, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.Alignment
 
 /**
   * Common trait for components that present text

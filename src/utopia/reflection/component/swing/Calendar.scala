@@ -13,14 +13,13 @@ import utopia.reflection.component.drawing.{CustomDrawableWrapper, SelectionCirc
 import utopia.reflection.component.input.{InteractionWithPointer, SelectionGroup}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.button.{ButtonImageSet, CustomDrawableButtonLike, ImageButton}
-import utopia.reflection.component.swing.label.{EmptyLabel, ItemLabel, TextLabel}
+import utopia.reflection.component.swing.label.{EmptyLabel, ItemLabel}
 import utopia.reflection.container.stack.StackLayout.Center
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.swing.{SegmentedRow, Stack, SwitchPanel}
-import utopia.reflection.localization.{DisplayFunction, LocalizedString}
-import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.localization.DisplayFunction
+import utopia.reflection.shape.{Alignment, StackLength, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.Alignment
 
 import scala.collection.immutable.HashMap
 

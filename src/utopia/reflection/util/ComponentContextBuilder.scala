@@ -5,7 +5,7 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.{Axis2D, LinearAcceleration}
 import utopia.genesis.util.Drawer
 import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer}
-import utopia.reflection.shape.{Border, ScrollBarBounds, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, Border, ScrollBarBounds, StackLength, StackSize}
 import utopia.reflection.text.Font
 
 /**

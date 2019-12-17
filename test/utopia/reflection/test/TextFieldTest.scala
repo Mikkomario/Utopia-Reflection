@@ -15,11 +15,12 @@ import utopia.reflection.container.swing.window.{Frame, Popup}
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.localization.{Localizer, NoLocalization}
+import utopia.reflection.shape.Alignment
 import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
-import utopia.reflection.util.Alignment.BottomLeft
-import utopia.reflection.util.{Alignment, ComponentContextBuilder}
+import utopia.reflection.shape.Alignment.BottomLeft
+import utopia.reflection.util.ComponentContextBuilder
 
 import scala.concurrent.ExecutionContext
 

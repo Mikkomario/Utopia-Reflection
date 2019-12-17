@@ -11,6 +11,7 @@ import utopia.reflection.container.stack.SideFrameLike
  * @author Mikko Hilpinen
  * @since 3.11.2019, v1+
  */
+@deprecated("Replaced with AlignFrame", "v1")
 class SideFrame[C <: Stackable with AwtComponentRelated](initialComponent: C, override val contentSide: Direction2D)
 	extends SideFrameLike[C] with SwingComponentRelated with AwtContainerRelated with CustomDrawableWrapper
 {

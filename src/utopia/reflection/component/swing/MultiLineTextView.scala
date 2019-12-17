@@ -11,9 +11,8 @@ import utopia.reflection.container.stack.StackLayout.{Center, Leading, Trailing}
 import utopia.reflection.container.stack.StackLike
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.localization.{LocalString, LocalizedString}
-import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, StackLength, StackSize}
 import utopia.reflection.text.Font
-import utopia.reflection.util.Alignment
 
 /**
   * Presents text using multiple lines

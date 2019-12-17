@@ -6,10 +6,11 @@ import utopia.reflection.component.ComponentLike
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.{StackHierarchyManager, StackLayout}
-import utopia.reflection.container.swing.{CenterFrame, Framing, SideFrame, Stack}
-import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.container.swing.{AlignFrame, Framing, Stack}
+import utopia.reflection.shape.{Alignment, StackLength, StackSize}
 import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Direction2D
+import utopia.reflection.shape.Alignment.Center
 
 object Stackable
 {
@@ -83,15 +84,24 @@ object Stackable
 		}
 		
 		/**
+		  * @param alignment Target alignment
+		  * @param useLowPriorityLength Whether to use low priority for affected direction's length
+		  * @return A frame whether this component is aligned according to specified alignment
+		  */
+		def aligned(alignment: Alignment, useLowPriorityLength: Boolean = false) = AlignFrame(s, alignment, useLowPriorityLength)
+		
+		/**
 		 * @param side Target side
+		  * @param useLowPriorityLength Whether to use low priority for affected direction's length
 		 * @return This item framed so that it will be placed to specified side of container
 		 */
-		def alignedToSide(side: Direction2D) = new SideFrame(s, side)
+		def alignedToSide(side: Direction2D, useLowPriorityLength: Boolean = false) = aligned(
+			Alignment forDirection side, useLowPriorityLength)
 		
 		/**
 		 * @return This item wrapped in a frame that places it at the center
 		 */
-		def alignedToCenter = new CenterFrame(s)
+		def alignedToCenter = aligned(Center)
 	}
 }
 
