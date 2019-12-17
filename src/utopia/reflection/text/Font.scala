@@ -1,6 +1,16 @@
 package utopia.reflection.text
 
+import scala.language.implicitConversions
 import java.awt
+
+import utopia.reflection.text.FontStyle.Plain
+
+object Font
+{
+	// Implicitly converts an awt font to Reflection font
+	implicit def awtFontToFont(awtFont: java.awt.Font): Font = Font(awtFont.getName, awtFont.getSize,
+		FontStyle.fromAwt(awtFont.getStyle).getOrElse(Plain))
+}
 
 /**
   * This is a wrapper for awt font, but also supports scaling

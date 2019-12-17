@@ -16,6 +16,21 @@ object FontStyle
 	  * The italic font style
 	  */
 	case object Italic extends FontStyle { def toAwt = java.awt.Font.ITALIC }
+	
+	
+	// ATTRIBUTES	---------------------
+	
+	/**
+	  * All basic font styles
+	  */
+	val values = Vector[FontStyle](Plain, Bold, Italic)
+	
+	/**
+	  * Converts an awt font style to Reflection Font Style
+	  * @param awtFontStyle Integer representing an awt font style
+	  * @return A Font Style matching specified awt font style
+	  */
+	def fromAwt(awtFontStyle: Int) = values.find { _.toAwt == awtFontStyle }
 }
 
 /**
