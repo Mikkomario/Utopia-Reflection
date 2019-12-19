@@ -27,6 +27,34 @@ object LocalString
 	// OPERATORS	-----------------------------
 	
 	def apply(string: String, languageCode: String) = new LocalString(string, Some(languageCode))
+	
+	
+	// EXTENSIONS	-----------------------------
+	
+	implicit class StringLocal(val s: String) extends AnyVal
+	{
+		/**
+		  * @param languageCode ISO code of the string's language (implicit)
+		  * @return A local version of string
+		  */
+		def local(implicit languageCode: String) = LocalString(s, languageCode)
+		
+		/**
+		  * @return A local version of string with no language information
+		  */
+		def noLanguage = LocalString(s)
+		
+		/**
+		  * @param languageCode ISO code of the string's language (implicit)
+		  * @return A local version of string with localization skipped
+		  */
+		def localizationSkipped(implicit languageCode: String) = local.localizationSkipped
+		
+		/**
+		  * @return A local version of string with no language information and localization skipped
+		  */
+		def noLanguageLocalized = noLanguage.localizationSkipped
+	}
 }
 
 /**

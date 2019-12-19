@@ -60,6 +60,9 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	textColor = Color.textBlack
 	align(initialAlignment)
 	
+	// Reacts to changes in text
+	addContentListener(new ContentUpdateListener)
+	
 	
 	// IMPLEMENTED	--------------------
 	
