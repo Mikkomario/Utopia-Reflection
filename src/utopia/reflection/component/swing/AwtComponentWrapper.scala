@@ -1,6 +1,6 @@
 package utopia.reflection.component.swing
 
-import java.awt.{Component, Cursor}
+import java.awt.Component
 
 import javax.swing.SwingUtilities
 import utopia.flow.async.VolatileFlag
