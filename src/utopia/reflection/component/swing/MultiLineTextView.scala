@@ -23,8 +23,8 @@ object MultiLineTextView
 	  * @param context Component creation context
 	  * @return A new multi line text view
 	  */
-	def contextual(text: LocalizedString, useLowPriorityForScalingSides: Boolean = false)
-				  (implicit context: ComponentContext) = new MultiLineTextView(text, context.font, context.normalWidth,
+	def contextual(text: LocalizedString, lineSplitThreshold: Double, useLowPriorityForScalingSides: Boolean = false)
+				  (implicit context: ComponentContext) = new MultiLineTextView(text, context.font, lineSplitThreshold,
 		context.insideMargins, context.relatedItemsStackMargin, useLowPriorityForScalingSides, context.textAlignment,
 		context.textColor)
 }
@@ -63,6 +63,8 @@ class MultiLineTextView(initialText: LocalizedString, initialFont: Font, initial
 	
 	
 	// INITIAL CODE	------------------------
+	
+	component.setFont(initialFont.toAwt)
 	
 	// Sets initial content
 	panel.set(makeNewContent())
@@ -118,6 +120,7 @@ class MultiLineTextView(initialText: LocalizedString, initialFont: Font, initial
 		if (_font != newFont)
 		{
 			_font = newFont
+			component.setFont(newFont.toAwt)
 			resetContent()
 		}
 	}

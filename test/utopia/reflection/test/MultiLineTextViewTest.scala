@@ -13,7 +13,7 @@ import utopia.reflection.localization.{LocalString, Localizer, NoLocalization}
 import utopia.reflection.shape.{Alignment, StackSize}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
-import utopia.reflection.util.{ComponentContextBuilder, SingleFrameSetup}
+import utopia.reflection.util.{ComponentContext, ComponentContextBuilder, SingleFrameSetup}
 
 import scala.concurrent.ExecutionContext
 
@@ -35,27 +35,31 @@ object MultiLineTextViewTest extends App
 	val baseCB = ComponentContextBuilder(actorHandler, Font("Arial", 12, Plain, 2), Color.green, Color.yellow, 320,
 		insideMargins = 8.any x 8.any, stackMargin = 8.downscaling, relatedItemsStackMargin = Some(4.downscaling))
 	
-	val content = baseCB.use { implicit base =>
-		Stack.buildColumnWithContext() { mainStack =>
-			val textView = MultiLineTextView.contextual("Please type in some text and then press enter",
-				useLowPriorityForScalingSides = true)(baseCB.withInnerMargins(StackSize.fixed(Size.zero)).result)
-			mainStack += textView
+	implicit val baseContext: ComponentContext = baseCB.result
+	
+	val textView = MultiLineTextView.contextual("Please type in some text and then press enter",
+		baseContext.normalWidth, useLowPriorityForScalingSides = true)(
+		baseCB.withInnerMargins(StackSize.fixed(Size.zero)).result)
+	
+	val textInput = TextField.contextual(prompt = Some("Type your own text and press enter"))
+	textInput.addEnterListener { _.foreach { s => textView.text = (s: LocalString).localizationSkipped } }
+	
+	val content = Stack.buildColumnWithContext() { mainStack =>
+		mainStack += textView
+		
+		mainStack += Stack.buildRowWithContext(isRelated = true) { bottomRow =>
+			bottomRow += textInput
 			
-			mainStack += Stack.buildRowWithContext(isRelated = true) { bottomRow =>
-				val textInput = TextField.contextual(prompt = Some("Type your own text and press enter"))
-				textInput.addEnterListener { _.foreach { s => textView.text = (s: LocalString).localizationSkipped } }
-				
-				bottomRow += textInput
-				
-				val alignSelect = DropDown.contextual("Select Alignment", initialChoices = Alignment.values)
-				alignSelect.selectOne(Alignment.Left)
-				alignSelect.addValueListener { _.newValue.foreach { a => textView.alignment = a } }
-				
-				bottomRow += alignSelect
-			}
-		}.framed(base.insideMargins, Color.white)
-	}
+			val alignSelect = DropDown.contextual("Select Alignment", initialChoices = Alignment.values)
+			alignSelect.selectOne(Alignment.Left)
+			alignSelect.addValueListener { _.newValue.foreach { a => textView.alignment = a } }
+			
+			bottomRow += alignSelect
+		}
+	}.framed(baseContext.insideMargins, Color.white)
 	
 	implicit val exc: ExecutionContext = new ThreadPool("Reflection").executionContext
 	new SingleFrameSetup(actorHandler, Frame.windowed(content, "Multi Line Text View Test")).start()
+	
+	println(s"Line splits at ${textView.lineSplitThreshold}. Input width = ${textInput.width}")
 }
