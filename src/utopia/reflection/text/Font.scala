@@ -1,15 +1,44 @@
 package utopia.reflection.text
 
+import utopia.flow.util.FileExtensions._
+
 import scala.language.implicitConversions
 import java.awt
+import java.awt.GraphicsEnvironment
+import java.io.FileNotFoundException
+import java.nio.file.Path
 
 import utopia.reflection.text.FontStyle.Plain
+
+import scala.util.{Failure, Try}
 
 object Font
 {
 	// Implicitly converts an awt font to Reflection font
 	implicit def awtFontToFont(awtFont: java.awt.Font): Font = Font(awtFont.getName, awtFont.getSize,
 		FontStyle.fromAwt(awtFont.getStyle).getOrElse(Plain))
+	
+	/**
+	  * Loads and registers specified font from the file system. After loading the font, it may be constructed
+	  * normally as well
+	  * @param fontFilePath A path from which the font will be loaded
+	  * @param newFontSize The size to use for the newly created font
+	  * @return The newly loaded font
+	  */
+	def load(fontFilePath: Path, newFontSize: Int) =
+	{
+		if (fontFilePath.notExists)
+			Failure(new FileNotFoundException(s"No font file exists at $fontFilePath"))
+		else
+		{
+			Try
+			{
+				val font = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, fontFilePath.toFile)
+				GraphicsEnvironment.getLocalGraphicsEnvironment.registerFont(font)
+				awtFontToFont(font).copy(baseSize = newFontSize)
+			}
+		}
+	}
 }
 
 /**
