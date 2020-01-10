@@ -232,7 +232,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		}
 	}
 	
-	private class CellRenrerer(hmargin: Int, val defaultBackground: Color, val selectedBackground: Color,
+	private class CellRenrerer(hmargin: Double, val defaultBackground: Color, val selectedBackground: Color,
 								  val textColor: Color) extends Label with ListCellRenderer[String]
 	{
 		// INITIAL CODE	---------------------

@@ -23,9 +23,9 @@ object StackSize
       * @param maxHeight Maximum height (None if not limited)
       * @return A new stack size
       */
-    def apply(min: Size, optimal: Size, maxWidth: Option[Int], maxHeight: Option[Int]) = 
-            new StackSize(StackLength(min.width.toInt, optimal.width.toInt, maxWidth), 
-            StackLength(min.height.toInt, optimal.height.toInt, maxHeight))
+    def apply(min: Size, optimal: Size, maxWidth: Option[Double], maxHeight: Option[Double]) =
+            new StackSize(StackLength(min.width, optimal.width, maxWidth),
+            StackLength(min.height, optimal.height, maxHeight))
     
     /**
       * @param min Minimum size
@@ -34,7 +34,7 @@ object StackSize
       * @return A new stack size
       */
     def apply(min: Size, optimal: Size, max: Option[Size]): StackSize = apply(min, optimal, 
-            max.map(_.width.toInt), max.map(_.height.toInt))
+            max.map{ _.width }, max.map{ _.height })
     
     /**
       * @param min Minimum size
@@ -87,7 +87,7 @@ object StackSize
       * @param maxHeight Maximum height
       * @return A stack size with no mimimum
       */
-    def downscaling(optimal: Size, maxWidth: Int, maxHeight: Int) = StackSize(Size.zero, optimal, 
+    def downscaling(optimal: Size, maxWidth: Double, maxHeight: Double) = StackSize(Size.zero, optimal,
             Some(maxWidth), Some(maxHeight))
     
     /**
@@ -206,7 +206,7 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param size An increase in size
       * @return An increased version of this size
       */
-    def +(size: Size) = StackSize(width + size.width.toInt, height + size.height.toInt)
+    def +(size: Size) = StackSize(width + size.width, height + size.height)
     
     /**
       * @param other Another stack size
@@ -328,38 +328,38 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param axis Target axis
       * @return A copy of this size with fixed length for specified side
       */
-    def withFixedSide(length: Int, axis: Axis2D) = withSide(StackLength.fixed(length), axis)
+    def withFixedSide(length: Double, axis: Axis2D) = withSide(StackLength.fixed(length), axis)
     
     /**
       * @param w New fixed width
       * @return A copy of this size with fixed width
       */
-    def withFixedWidth(w: Int) = withFixedSide(w, X)
+    def withFixedWidth(w: Double) = withFixedSide(w, X)
     
     /**
       * @param h new fixed height
       * @return A copy of this size with fixed height
       */
-    def withFixedHeight(h: Int) = withFixedSide(h, Y)
+    def withFixedHeight(h: Double) = withFixedSide(h, Y)
     
     /**
       * @param maxLength New maximum length
       * @param axis target axis
       * @return A copy of this size with new maximum length for specified side
       */
-    def withMaxSide(maxLength: Int, axis: Axis2D) = mapSide(axis, _.withMax(maxLength))
+    def withMaxSide(maxLength: Double, axis: Axis2D) = mapSide(axis, _.withMax(maxLength))
     
     /**
       * @param maxW New maximum width
       * @return A copy of this size with specified maximum width
       */
-    def withMaxWidth(maxW: Int) = withMaxSide(maxW, X)
+    def withMaxWidth(maxW: Double) = withMaxSide(maxW, X)
     
     /**
       * @param maxH New maximum height
       * @return A copy of this size with specified maximum height
       */
-    def withMaxHeight(maxH: Int) = withMaxSide(maxH, Y)
+    def withMaxHeight(maxH: Double) = withMaxSide(maxH, Y)
     
     /**
       * @param max New max size
@@ -372,19 +372,19 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param axis Target axis
       * @return A copy of this size with specified optimal length for the specified axis
       */
-    def withOptimalSide(optimalLength: Int, axis: Axis2D) = mapSide(axis, _.withOptimal(optimalLength))
+    def withOptimalSide(optimalLength: Double, axis: Axis2D) = mapSide(axis, _.withOptimal(optimalLength))
     
     /**
       * @param optimalW New optimal width
       * @return A copy of this size with specified optimal width
       */
-    def withOptimalWidth(optimalW: Int) = withOptimalSide(optimalW, X)
+    def withOptimalWidth(optimalW: Double) = withOptimalSide(optimalW, X)
     
     /**
       * @param optimalH New optimal height
       * @return A copy of this size with specified optimal height
       */
-    def withOptimalHeight(optimalH: Int) = withOptimalSide(optimalH, Y)
+    def withOptimalHeight(optimalH: Double) = withOptimalSide(optimalH, Y)
     
     /**
       * @param optimal New optimal size
@@ -397,19 +397,19 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param axis Target axis
       * @return A copy of this size with specified minimum length for the specified axis
       */
-    def withMinSide(minLength: Int, axis: Axis2D) = mapSide(axis, _.withMin(minLength))
+    def withMinSide(minLength: Double, axis: Axis2D) = mapSide(axis, _.withMin(minLength))
     
     /**
       * @param minW A new minimum width
       * @return A copy of this size with specified minimum width
       */
-    def withMinWidth(minW: Int) = withMinSide(minW, X)
+    def withMinWidth(minW: Double) = withMinSide(minW, X)
     
     /**
       * @param minH A new minimum height
       * @return A copy of this size with specified minimum height
       */
-    def withMinHeight(minH: Int) = withMinSide(minH, Y)
+    def withMinHeight(minH: Double) = withMinSide(minH, Y)
     
     /**
       * @param min A new minimum size

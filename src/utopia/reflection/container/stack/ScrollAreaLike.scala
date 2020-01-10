@@ -443,7 +443,7 @@ trait ScrollAreaLike extends CachingStackable
 					val barAreaPosition = Point(myBreadth - scrollBarWidth, 0, axis.perpendicular)
 					
 					axis -> ScrollBarBounds(Bounds(barAreaPosition + (barAreaSize.along(axis) * scrollPercents.along(axis),
-						axis), barSize), Bounds(barAreaPosition, barAreaSize))
+						axis), barSize), Bounds(barAreaPosition, barAreaSize), axis)
 			}.toMap
 			
 			val repaintBounds = Bounds.around(barBounds.values.map { _.area })

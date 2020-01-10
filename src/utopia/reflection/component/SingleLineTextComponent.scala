@@ -32,7 +32,8 @@ trait SingleLineTextComponent extends TextComponent with StackSizeCalculating
 		val totalVMargin = if (alignment.vertical == Center) vMargin * 2 else vMargin
 		
 		val w = (if (hasMinWidth) StackLength.fixed(textW) else StackLength.downscaling(textW)) + totalHMargin
-		val h = StackLength.fixed(textHeight.getOrElse(32)) + totalVMargin
+		val textH = textHeight.getOrElse(32)
+		val h = StackLength.fixed(textH) + totalVMargin
 		
 		StackSize(w, h)
 	}

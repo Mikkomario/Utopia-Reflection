@@ -21,7 +21,7 @@ object StackLength
 	  * @param lowPriority Whether this length should be treated as a low priority constraint. Default = false.
 	  * @return A new stack length
 	  */
-    def apply(min: Int, optimal: Int, max: Option[Int] = None, 
+    def apply(min: Double, optimal: Double, max: Option[Double] = None,
             lowPriority: Boolean = false) = new StackLength(min, optimal, max, lowPriority)
 	
 	/**
@@ -30,45 +30,45 @@ object StackLength
 	  * @param max Maximum length
 	  * @return A new stack length
 	  */
-    def apply(min: Int, optimal: Int, max: Int) = new StackLength(min, optimal, Some(max))
+    def apply(min: Double, optimal: Double, max: Double) = new StackLength(min, optimal, Some(max))
 	
 	/**
 	  * @param l Fixed length
 	  * @return A new stack length with min, optimal and max set to specified single value (no variance)
 	  */
-    def fixed(l: Int) = apply(l, l, l)
+    def fixed(l: Double) = apply(l, l, l)
 	
 	/**
 	  * @param optimal Optimal length
 	  * @return A stack length with no minimum or maximum, preferring specified value
 	  */
-    def any(optimal: Int) = apply(0, optimal)
+    def any(optimal: Double) = apply(0, optimal)
 	
 	/**
 	  * @param min Minimum length
 	  * @param optimal Optimal length
 	  * @return A stack length with no maximum
 	  */
-    def upscaling(min: Int, optimal: Int) = apply(min, optimal)
+    def upscaling(min: Double, optimal: Double) = apply(min, optimal)
 	
 	/**
 	  * @param optimal Minimum & Optimal length
 	  * @return A stack length with no maximum, preferring the minimum value
 	  */
-    def upscaling(optimal: Int): StackLength = upscaling(optimal, optimal)
+    def upscaling(optimal: Double): StackLength = upscaling(optimal, optimal)
 	
 	/**
 	  * @param optimal Optimal length
 	  * @param max Maximum length
 	  * @return A stack length with no minimum
 	  */
-    def downscaling(optimal: Int, max: Int) = apply(0, optimal, max)
+    def downscaling(optimal: Double, max: Double) = apply(0, optimal, max)
 	
 	/**
 	  * @param max Maximum length
 	  * @return A stack length with no miminum, preferring the maximum length
 	  */
-    def downscaling(max: Int): StackLength = downscaling(max, max)
+    def downscaling(max: Double): StackLength = downscaling(max, max)
 }
 
 /**
@@ -80,26 +80,26 @@ object StackLength
   * @param rawMax Maximum length. None if not limited. Defaults to None.
   * @param isLowPriority Whether this length should be treated as a low priority constraint. Default = false.
 **/
-class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val isLowPriority: Boolean = false) extends Equatable
+class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = None, val isLowPriority: Boolean = false) extends Equatable
 {
     // ATTRIBUTES    ------------------------
 	
 	/**
 	  * Minimum length
 	  */
-	val min: Int = rawMin max 0
+	val min: Double = rawMin max 0
 	
 	/**
 	  * Optimal / preferred length
 	  */
 	// Optimal must be >= min
-	val optimal: Int = rawOptimal max min
+	val optimal: Double = rawOptimal max min
 	
 	/**
 	  * Maximum length. None if not limited.
 	  */
 	// Max must be >= optimal
-	val max: Option[Int] = rawMax.map(_ max optimal)
+	val max: Option[Double] = rawMax.map(_ max optimal)
 	
 	
 	// COMPUTED	-----------------------------
@@ -152,12 +152,12 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	override def toString =
 	{
 	    val s = new StringBuilder()
-	    s append min
+	    s append min.toInt
 	    s append "-"
-	    s append optimal
+	    s append optimal.toInt
 		s append "-"
 	    
-	    max foreach { s.append }
+	    max foreach { m => s.append(m.toInt) }
 	    
 	    if (isLowPriority)
 	        s append " (low prio)"
@@ -172,7 +172,7 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  * @param length Increase in length
 	  * @return An increased version of this stack length (min, optimal and max adjusted, if present)
 	  */
-	def +(length: Int) = StackLength(min + length, optimal + length, max.map(_ + length), isLowPriority)
+	def +(length: Double) = StackLength(min + length, optimal + length, max.map(_ + length), isLowPriority)
 	
 	/**
 	  * @param other Another stack length
@@ -188,13 +188,13 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  * @param length A decrease in length
 	  * @return A decreased version of this stack length (min, optimal and max adjusted, if present). Minimum won't go below 0
 	  */
-	def -(length: Int) = +(-length)
+	def -(length: Double) = +(-length)
 	
 	/**
 	  * @param multi A multiplier
 	  * @return A multiplied version of this length where min, optimal and max lengths are all affected, if present
 	  */
-	def *(multi: Double) = StackLength((min * multi).toInt, (optimal * multi).toInt, max.map { m => (m * multi).toInt }, isLowPriority)
+	def *(multi: Double) = StackLength(min * multi, optimal * multi, max.map { _ * multi }, isLowPriority)
 	
 	/**
 	  * @param div A divider
@@ -216,25 +216,25 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  * @param newMin A new minimum value
 	  * @return An updated version of this length with specified minimum value (optimal and max may also be adjusted if necessary)
 	  */
-	def withMin(newMin: Int) = StackLength(newMin, optimal, max, isLowPriority)
+	def withMin(newMin: Double) = StackLength(newMin, optimal, max, isLowPriority)
 	
 	/**
 	  * @param newOptimal A new optimal value
 	  * @return An updated version of this length with specified optimum value (maximum may also be adjusted if necessary)
 	  */
-	def withOptimal(newOptimal: Int) = StackLength(min, newOptimal, max, isLowPriority)
+	def withOptimal(newOptimal: Double) = StackLength(min, newOptimal, max, isLowPriority)
 	
 	/**
 	  * @param newMax A new maximum value (None if no maximum)
 	  * @return An updated version of this length with specified maximum length
 	  */
-	def withMax(newMax: Option[Int]) = StackLength(min, optimal, newMax, isLowPriority)
+	def withMax(newMax: Option[Double]) = StackLength(min, optimal, newMax, isLowPriority)
 	
 	/**
 	  * @param newMax A new maximum value
 	  * @return An updated version of this length with specified maximum length
 	  */
-	def withMax(newMax: Int): StackLength = withMax(Some(newMax))
+	def withMax(newMax: Double): StackLength = withMax(Some(newMax))
 	
 	/**
 	  * @param isLowPriority Whether the new length should be considered a low priority constraint
@@ -283,7 +283,7 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  * @param maximum Maximum limit. None if not limited.
 	  * @return A stack length that has at least 'minimum' minimum width and at most 'maximum' maximum width
 	  */
-	def within(minimum: Int, maximum: Option[Int]) =
+	def within(minimum: Double, maximum: Option[Double]) =
 	{
 		if (maximum.isDefined)
 		{
@@ -336,17 +336,17 @@ class StackLength(rawMin: Int, rawOptimal: Int, rawMax: Option[Int] = None, val 
 	  * @param map A mapping function
 	  * @return A new length with mapped min
 	  */
-	def mapMin(map: Int => Int) = withMin(map(min))
+	def mapMin(map: Double => Double) = withMin(map(min))
 	
 	/**
 	  * @param map A mapping function
 	  * @return A new length with mapped optimal
 	  */
-	def mapOptimal(map: Int => Int) = withOptimal(map(optimal))
+	def mapOptimal(map: Double => Double) = withOptimal(map(optimal))
 	
 	/**
 	  * @param map A mapping function
 	  * @return A new length with mapped maximum value
 	  */
-	def mapMax(map: Option[Int] => Option[Int]) = withMax(map(max))
+	def mapMax(map: Option[Double] => Option[Double]) = withMax(map(max))
 }

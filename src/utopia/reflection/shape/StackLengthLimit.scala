@@ -27,8 +27,8 @@ object StackLengthLimit
 		Y -> limitsFromSizes(Y, min, minOptimal, maxOptimal, max))
 	
 	private def limitsFromSizes(axis: Axis2D, min: Size, minOptimal: Option[Size], maxOptimal: Option[Size], max: Option[Size]) =
-		StackLengthLimit(min.along(axis).toInt, minOptimal.map { _.along(axis).toInt },
-			maxOptimal.map { _.along(axis).toInt }, max.map { _.along(axis).toInt })
+		StackLengthLimit(min.along(axis), minOptimal.map { _.along(axis) },
+			maxOptimal.map { _.along(axis) }, max.map { _.along(axis) })
 }
 
 /**
@@ -40,5 +40,5 @@ object StackLengthLimit
   * @param maxOptimal The maximum value allowed for optimal length. None if not limited. (default = None)
   * @param max The absolute maximum length. None if not limited. (default = None)
   */
-case class StackLengthLimit(min: Int = 0, minOptimal: Option[Int] = None, maxOptimal: Option[Int] = None,
-							max: Option[Int] = None)
+case class StackLengthLimit(min: Double = 0, minOptimal: Option[Double] = None, maxOptimal: Option[Double] = None,
+							max: Option[Double] = None)

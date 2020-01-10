@@ -53,9 +53,9 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 					val (contentLength, marginLength) = lengthsFor(c.get, axis)
 					// Margin cannot go below 0
 					if (marginLength < 0)
-						axis -> (0, lengthAlong(axis).toInt)
+						axis -> (0.0, lengthAlong(axis))
 					else
-						axis -> (marginLength / 2, contentLength)
+						axis -> (marginLength / 2.0, contentLength)
 			}.toMap
 			
 			val position = Point(layout(X)._1, layout(Y)._1)
@@ -106,7 +106,7 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 	
 	// Returns content adjustment -> margin adjustment (with correct multiplier)
 	private def adjustmentsFor(contentLength: StackLength, margin: StackLength, totalAdjustment: Double,
-					   getMaxAdjust: StackLength => Option[Int]): (Int, Int) =
+					   getMaxAdjust: StackLength => Option[Double]): (Double, Double) =
 	{
 		// Determines the default split based on length priorities
 		val (defaultContentAdjust, defaultMarginAdjust) =
@@ -125,7 +125,7 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 		if (contentMaxAdjust.exists { defaultContentAdjust >= _ })
 		{
 			val remainsAfterMaxed = defaultContentAdjust - contentMaxAdjust.get
-			contentMaxAdjust.get -> (defaultMarginAdjust + remainsAfterMaxed).toInt
+			contentMaxAdjust.get -> (defaultMarginAdjust + remainsAfterMaxed)
 		}
 		else
 		{
@@ -141,17 +141,17 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 				if (contentMaxAdjust.exists { proposedContentAdjust > _ })
 				{
 					val remainsAfterComponentMaxed = proposedContentAdjust - contentMaxAdjust.get
-					contentMaxAdjust.get -> (marginMaxAdjust.get + remainsAfterComponentMaxed).toInt
+					contentMaxAdjust.get -> (marginMaxAdjust.get + remainsAfterComponentMaxed)
 				}
 				else
 				{
-					proposedContentAdjust.toInt -> marginMaxAdjust.get
+					proposedContentAdjust -> marginMaxAdjust.get
 				}
 			}
 			// If neither is reached, adjusts both equally
 			else
 			{
-				defaultContentAdjust.toInt -> defaultMarginAdjust.toInt
+				defaultContentAdjust -> defaultMarginAdjust
 			}
 		}
 	}

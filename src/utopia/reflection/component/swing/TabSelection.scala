@@ -40,7 +40,7 @@ object TabSelection
   * @author Mikko Hilpinen
   * @since 4.5.2019, v1+
   */
-class TabSelection[A](val font: Font, val color: Color, val optimalHMargin: Int, val vMargin: StackLength,
+class TabSelection[A](val font: Font, val color: Color, val optimalHMargin: Double, val vMargin: StackLength,
 					  val borderWidth: Double = 2.0, val displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 					  initialChoices: Seq[A] = Vector())
 	extends StackableAwtComponentWrapperWrapper with SwingComponentRelated
