@@ -24,7 +24,7 @@ object ItemLabel
 	def contextual[A](content: A, displayFunction: DisplayFunction[A])(implicit context: ComponentContext) =
 	{
 		val label = new ItemLabel[A](content, displayFunction, context.font, context.insideMargins,
-			context.textHasMinWidth, context.textAlignment)
+			context.textHasMinWidth, context.textAlignment, context.textColor)
 		context.setBorderAndBackground(label)
 		label
 	}
@@ -40,10 +40,12 @@ object ItemLabel
   * @param font The font used in this label
   * @param margins The margins (horizontal and vertical) around the text in this label
   * @param hasMinWidth Whether this label should have minimum width (always show all content text) (default = true)
+ *  @param initialAlignment The alignment used for this component initially
+ *  @param initialTextColor The color used for displaying text
   */
 class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], override val font: Font,
 				   override val margins: StackSize = StackSize.any, override val hasMinWidth: Boolean = true,
-				   initialAlignment: Alignment = Alignment.Left)
+				   initialAlignment: Alignment = Alignment.Left, initialTextColor: Color = Color.textBlack)
 	extends Label with AwtTextComponentWrapper with SingleLineTextComponent with Alignable with RefreshableWithPointer[A]
 {
 	// ATTRIBUTES	--------------------
@@ -57,7 +59,7 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], o
 	
 	label.setFont(font.toAwt)
 	label.setText(_text.string)
-	textColor = Color.textBlack
+	textColor = initialTextColor
 	align(initialAlignment)
 	
 	// Reacts to changes in text

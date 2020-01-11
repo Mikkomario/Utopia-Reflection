@@ -8,7 +8,7 @@ import java.awt.GraphicsEnvironment
 import java.io.FileNotFoundException
 import java.nio.file.Path
 
-import utopia.reflection.text.FontStyle.Plain
+import utopia.reflection.text.FontStyle.{Bold, Italic, Plain}
 
 import scala.util.{Failure, Try}
 
@@ -60,6 +60,24 @@ case class Font(name: String, baseSize: Int, style: FontStyle = FontStyle.Plain,
 	lazy val toAwt = new awt.Font(name, style.toAwt, (baseSize * scaling).toInt)
 	
 	
+	// COMPUTED	-----------------------
+	
+	/**
+	 * @return A copy of this font with plain style
+	 */
+	def plain = withFontStyle(Plain)
+	
+	/**
+	 * @return A bold copy of this font
+	 */
+	def bold = withFontStyle(Bold)
+	
+	/**
+	 * @return An italic copy of this font
+	 */
+	def italic = withFontStyle(Italic)
+	
+	
 	// OPERATORS	-------------------
 	
 	/**
@@ -73,4 +91,19 @@ case class Font(name: String, baseSize: Int, style: FontStyle = FontStyle.Plain,
 	  * @return A divided (downscaled) version of this font
 	  */
 	def /(div: Double) = copy(scaling = scaling / div)
+	
+	
+	// OTHER	-----------------------
+	
+	/**
+	 * @param newStyle New font style
+	 * @return A copy of this font with specified style
+	 */
+	def withFontStyle(newStyle: FontStyle) = if (style == newStyle) this else copy(style = newStyle)
+	
+	/**
+	 * @param fontSize New font size
+	 * @return A copy of this font with specified size
+	 */
+	def withSize(fontSize: Int) = copy(baseSize = fontSize, scaling = 1.0)
 }
