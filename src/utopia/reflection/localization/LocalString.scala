@@ -53,7 +53,7 @@ object LocalString
 		/**
 		  * @return A local version of string with no language information and localization skipped
 		  */
-		def noLanguageLocalized = noLanguage.localizationSkipped
+		def noLanguageLocalizationSkipped = noLanguage.localizationSkipped
 	}
 }
 

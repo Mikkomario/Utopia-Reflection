@@ -44,12 +44,12 @@ object TextLabel
   * @author Mikko Hilpinen
   * @since 23.4.2019, v1+
   * @param initialText The text initially displayed in this label
-  * @param font The font used in this label
+  * @param initialFont The font used in this label
   * @param margins The margins placed around the text
   * @param hasMinWidth Whether this text label always presents the whole text (default = true)
  *  @param initialTextColor Color used in this label's text
   */
-class TextLabel(initialText: LocalizedString, override val font: Font, override val margins: StackSize = StackSize.any,
+class TextLabel(initialText: LocalizedString, initialFont: Font, override val margins: StackSize = StackSize.any,
 				override val hasMinWidth: Boolean = true, initialAlignment: Alignment = Alignment.Left,
 				initialTextColor: Color = Color.textBlack)
 	extends Label with AwtTextComponentWrapper with SingleLineTextComponent with Alignable
@@ -57,6 +57,7 @@ class TextLabel(initialText: LocalizedString, override val font: Font, override 
 	// ATTRIBUTES	------------------
 	
 	private var _text = initialText
+	private var _font = initialFont
 	
 	
 	// INITIAL CODE	------------------
@@ -68,6 +69,17 @@ class TextLabel(initialText: LocalizedString, override val font: Font, override 
 	
 	
 	// IMPLEMENTED	------------------
+	
+	override def font = _font
+	def font_=(newFont: Font) =
+	{
+		if (_font != newFont)
+		{
+			_font = newFont
+			label.setFont(newFont.toAwt)
+			revalidate()
+		}
+	}
 	
 	/**
 	  * @return The text currently displayed in this label

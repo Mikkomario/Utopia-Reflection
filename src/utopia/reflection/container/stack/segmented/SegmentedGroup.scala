@@ -8,6 +8,7 @@ import utopia.reflection.shape.StackLength
   * These groups keep track of multiple segmented items in order to match their segment lengths
   * @author Mikko Hilpinen
   * @since 28.4.2019, v1+
+ *  @param direction The direction of the segmented rows in this group
   */
 class SegmentedGroup(override val direction: Axis2D) extends Segmented
 {
