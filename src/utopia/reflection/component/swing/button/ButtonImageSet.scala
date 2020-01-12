@@ -42,6 +42,15 @@ object ButtonImageSet
 		
 		ButtonImageSet(default, focus, pressed, disabled)
 	}
+	
+	/**
+	 * Creates a new button image set that displays a fixed image normally, but lowers alpha when disabled
+	 * @param image The default image
+	 * @param alphaOnDisabled Alpha modifier on disabled image (default = 55% = 0.55)
+	 * @return A button image set
+	 */
+	def lowAlphaOnDisabled(image: Image, alphaOnDisabled: Double = 0.55) =
+		ButtonImageSet(image, image, image, image.timesAlpha(alphaOnDisabled))
 }
 
 /**

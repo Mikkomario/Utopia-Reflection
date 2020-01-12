@@ -12,7 +12,7 @@ import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis
 import utopia.genesis.shape.Axis.X
-import utopia.reflection.component.Alignable
+import utopia.reflection.component.{Alignable, Focusable}
 import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.localization.LocalizedString
@@ -179,7 +179,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 				val document: Document = new PlainDocument(), initialText: String = "",
 				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,
 				resultFilter: Option[Regex] = None)
-	extends JWrapper with CachingStackable with InteractionWithPointer[Option[String]] with Alignable
+	extends JWrapper with CachingStackable with InteractionWithPointer[Option[String]] with Alignable with Focusable
 {
 	// ATTRIBUTES	----------------------
 	
@@ -285,6 +285,10 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	
 	override def align(alignment: Alignment) = alignment.horizontal.swingComponents.get(X).foreach(field.setHorizontalAlignment)
 	
+	override def isInFocus = field.hasFocus
+	
+	override def requestFocus() = field.requestFocusInWindow()
+	
 	
 	// OTHER	------------------------------
 	
@@ -303,12 +307,6 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 		if (margin > 0)
 			setBorder(defaultBorder + Border(Insets.left(margin), None))
 	}
-	
-	/**
-	  * Requests focus within this window
-	  * @return Whether this field is likely to gain focus
-	  */
-	def requestFocus() = field.requestFocusInWindow()
 	
 	/**
 	  * Adds a listener that will be informed when user presses enter inside this text field. Informs listener

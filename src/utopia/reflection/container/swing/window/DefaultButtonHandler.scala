@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent
 import utopia.genesis.event.KeyStateEvent
 import utopia.genesis.handling.KeyStateListener
 import utopia.inception.handling.immutable.Handleable
-import utopia.reflection.component.swing.button.TextButton
+import utopia.reflection.component.swing.button.ButtonLike
 
 object DefaultButtonHandler
 {
@@ -15,7 +15,7 @@ object DefaultButtonHandler
 	  * @param moreButtons Other buttons in the window
 	  * @return A new button handler
 	  */
-	def apply(defaultButton: TextButton, moreButtons: TextButton*) = new DefaultButtonHandler(defaultButton, defaultButton +: moreButtons)
+	def apply(defaultButton: ButtonLike, moreButtons: ButtonLike*) = new DefaultButtonHandler(defaultButton, defaultButton +: moreButtons)
 }
 
 /**
@@ -25,7 +25,7 @@ object DefaultButtonHandler
   * @param defaultButton The button that will be triggered on enter
   * @param allButtons All buttons in a window
   */
-class DefaultButtonHandler(val defaultButton: TextButton, val allButtons: Traversable[TextButton]) extends KeyStateListener
+class DefaultButtonHandler(val defaultButton: ButtonLike, val allButtons: Traversable[ButtonLike]) extends KeyStateListener
 	with Handleable
 {
 	// Only triggers on enter

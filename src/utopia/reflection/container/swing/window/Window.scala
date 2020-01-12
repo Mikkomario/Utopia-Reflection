@@ -1,8 +1,8 @@
 package utopia.reflection.container.swing.window
 
-import java.awt.event.{ComponentAdapter, ComponentEvent, WindowAdapter, WindowEvent}
+import java.awt.event.{ComponentAdapter, ComponentEvent, KeyEvent, WindowAdapter, WindowEvent}
 
-import utopia.flow.async.VolatileFlag
+import utopia.flow.async.{VolatileFlag, VolatileOption}
 import utopia.flow.datastructure.mutable.Lazy
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
@@ -11,7 +11,7 @@ import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.AwtComponentRelated
-import utopia.reflection.component.swing.button.TextButton
+import utopia.reflection.component.swing.button.ButtonLike
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
@@ -32,6 +32,8 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     private val cachedStackSize = new Lazy(() => calculatedStackSize)
     private val generatorActivated = new VolatileFlag()
     private val closePromise = Promise[Unit]()
+    
+    private val uponCloseAction = VolatileOption[() => Unit]()
     
     
 	// ABSTRACT    -----------------
@@ -140,6 +142,11 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     // OTHER    --------------------
     
     /**
+     * Displays this window, making it visible
+     */
+    def display() = isVisible = true
+    
+    /**
       * Setups up basic functionality in window. Should be called after this window has been filled with content and packed.
       */
     protected def setup() =
@@ -156,6 +163,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
         activateResizeHandling()
     
         // Registers self (and content) into stack hierarchy management
+        // TODO: Remove this window from stack hierarchy upon closing
         StackHierarchyManager.registerConnection(this, content)
         
         component.addWindowListener(new CloseListener)
@@ -169,19 +177,30 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     {
         generatorActivated.runAndSet
         {
+            // TODO: These should be removed once window closes
+            
 			// Starts mouse listening
             val mouseButtonListener = MouseButtonStateListener { e => content.distributeMouseButtonEvent(e); None }
             val mouseMovelistener = MouseMoveListener { content.distributeMouseMoveEvent(_) }
             val mouseWheelListener = MouseWheelListener { content.distributeMouseWheelEvent(_) }
             
-            actorHandler += new MouseEventGenerator(content.component, mouseMovelistener, mouseButtonListener,
+            val mouseEventGenerator = new MouseEventGenerator(content.component, mouseMovelistener, mouseButtonListener,
                 mouseWheelListener, () => 1.0)
+            actorHandler += mouseEventGenerator
 			
 			// Starts key listening
 			val keyStateListener = KeyStateListener { content.distributeKeyStateEvent(_) }
 			val keyTypedListener = KeyTypedListener { content.distributeKeyTypedEvent(_) }
     
-            new ConvertingKeyListener(keyStateListener, keyTypedListener).register()
+            val keyEventGenerator = new ConvertingKeyListener(keyStateListener, keyTypedListener)
+            keyEventGenerator.register()
+            
+            // Quits event listening once this window finally closes
+            uponCloseAction.setOne(() =>
+            {
+                actorHandler -= mouseEventGenerator
+                keyEventGenerator.unregister()
+            })
         }
     }
     
@@ -190,8 +209,13 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
       * @param defaultButton The default button for this window
       * @param moreButtons More buttons for this window
       */
-    def registerButtons(defaultButton: TextButton, moreButtons: TextButton*) =
+    def registerButtons(defaultButton: ButtonLike, moreButtons: ButtonLike*) =
         addKeyStateListener(DefaultButtonHandler(defaultButton, moreButtons: _*))
+    
+    /**
+     * Makes it so that this window will close one escape is pressed
+     */
+    def setToCloseOnEsc() = addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_ESCAPE, _ => close()))
     
     /**
       * Updates the bounds of this window's contents to match those of this window
@@ -296,8 +320,9 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     
         private def handleClosing() =
         {
-            if (!closePromise.isCompleted)
-                closePromise.success(Unit)
+            // Performs a closing action, if one is queued
+            uponCloseAction.pop().foreach { _() }
+            closePromise.trySuccess(Unit)
         }
     }
 }

@@ -5,7 +5,7 @@ import java.awt.event.{FocusEvent, FocusListener, KeyEvent}
 import utopia.genesis.event.{ConsumeEvent, KeyStateEvent, MouseButton, MouseButtonStateEvent, MouseMoveEvent}
 import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener, MouseMoveListener}
 import utopia.inception.handling.HandlerType
-import utopia.reflection.component.ComponentLike
+import utopia.reflection.component.{ComponentLike, Focusable}
 import utopia.reflection.component.swing.AwtComponentRelated
 
 /**
@@ -13,7 +13,7 @@ import utopia.reflection.component.swing.AwtComponentRelated
   * @author Mikko Hilpinen
   * @since 25.4.2019, v1+
   */
-trait ButtonLike extends ComponentLike with AwtComponentRelated
+trait ButtonLike extends ComponentLike with AwtComponentRelated with Focusable
 {
 	// ABSTRACT	----------------------
 	
@@ -55,10 +55,12 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 		updateStyleForState(newState)
 	}
 	
-	/**
-	  * @return Whether this button is currently in focus
-	  */
-	def isInFocus = state.isInFocus
+	
+	// IMPLEMENTED	------------------
+	
+	override def requestFocus() = component.requestFocusInWindow()
+	
+	override def isInFocus = state.isInFocus
 	private def isInFocus_=(newFocusState: Boolean) = state = state.copy(isInFocus = newFocusState)
 	
 	
@@ -74,12 +76,6 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated
 	  * Triggers this button's action. Same as if the user clicked this button (only works for enabled buttons)
 	  */
 	def trigger() = if (isEnabled) actions.foreach { _() }
-	
-	/**
-	  * Makes this button request focus within the current window
-	  * @return Whether this button is likely to gain focus
-	  */
-	def requestFocus() = component.requestFocusInWindow()
 	
 	/**
 	  * Initializes this button's listeners. Shuold be called when constructing this button.

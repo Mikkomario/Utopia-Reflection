@@ -45,6 +45,17 @@ object ImageAndTextButton
 	def contextual(images: ButtonImageSet, text: LocalizedString)(action: () => Unit)(implicit context: ComponentContext) =
 		apply(images, text, context.font, context.buttonBackground, context.insideMargins, context.borderWidth,
 			context.relatedItemsStackMargin, context.textAlignment, context.textColor)(action)
+	
+	/**
+	 * Creates a new button using contextual information. An action for the button needs to be registered separately.
+	 * @param images Images used in this button
+	 * @param text Text displayed in this button
+	 * @param context Component creation context
+	 * @return A new button
+	 */
+	def contextualWithoutAction(images: ButtonImageSet, text: LocalizedString)(implicit context: ComponentContext) =
+		new ImageAndTextButton(images, text, context.font, context.buttonBackground, context.insideMargins,
+			context.borderWidth, context.relatedItemsStackMargin, context.textAlignment, context.textColor)
 }
 
 /**

@@ -9,6 +9,7 @@ import javax.swing.{JComboBox, JList, ListCellRenderer}
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
+import utopia.reflection.component.Focusable
 import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.component.swing.label.Label
@@ -59,7 +60,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 				  selectedBackground: Color, textColor: Color = Color.textBlack,
 				  val displayFunction: DisplayFunction[A] = DisplayFunction.raw, initialContent: Vector[A] = Vector(),
 				  val maximumOptimalWidth: Option[Int] = None)
-	extends SelectableWithPointers[Option[A], Vector[A]] with JWrapper with CachingStackable
+	extends SelectableWithPointers[Option[A], Vector[A]] with JWrapper with CachingStackable with Focusable
 {
 	// ATTRIBUTES	-------------------
 	
@@ -156,6 +157,10 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	}
 	
 	override def updateLayout() = component.revalidate()
+	
+	override def isInFocus = field.hasFocus
+	
+	override def requestFocus() = field.requestFocusInWindow()
 	
 	
 	// OTHER	----------------------
