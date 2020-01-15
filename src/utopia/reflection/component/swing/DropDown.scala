@@ -160,7 +160,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	
 	override def isInFocus = field.hasFocus
 	
-	override def requestFocus() = field.requestFocusInWindow()
+	override def requestFocusInWindow() = field.requestFocusInWindow()
 	
 	
 	// OTHER	----------------------

@@ -16,6 +16,7 @@ import utopia.reflection.component.swing.ScrollCanvas
 import utopia.reflection.container.stack.{BoxScrollBarDrawer, ScrollAreaLike, StackHierarchyManager}
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
+import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
 
 import scala.concurrent.ExecutionContext
@@ -28,6 +29,9 @@ import scala.concurrent.ExecutionContext
 object ScrollCanvasTest extends App
 {
 	GenesisDataType.setup()
+	
+	implicit val language: String = "en"
+	implicit val localizer: Localizer = NoLocalization
 	
 	// Creates the handlers
 	val actorHandler = ActorHandler()

@@ -58,7 +58,7 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated with Focusable
 	
 	// IMPLEMENTED	------------------
 	
-	override def requestFocus() = component.requestFocusInWindow()
+	override def requestFocusInWindow() = component.requestFocusInWindow()
 	
 	override def isInFocus = state.isInFocus
 	private def isInFocus_=(newFocusState: Boolean) = state = state.copy(isInFocus = newFocusState)

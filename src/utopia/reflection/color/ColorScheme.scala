@@ -1,4 +1,4 @@
-package utopia.reflection.util
+package utopia.reflection.color
 
 import utopia.genesis.color.{Color, RGB}
 
@@ -12,4 +12,4 @@ import utopia.genesis.color.{Color, RGB}
  *  @param error Color used in error situations
   */
 case class ColorScheme(primary: ColorSet, secondary: ColorSet, gray: ColorSet = ColorSet(RGB.grayWithValue(225),
-	RGB.grayWithValue(245), RGB.grayWithValue(225)), error: Color = RGB.withValues(176, 0, 32))
+	RGB.grayWithValue(245), RGB.grayWithValue(225)), error: ComponentColor = RGB.withValues(176, 0, 32))

@@ -21,6 +21,19 @@ object ImageButton
 	}
 	
 	/**
+	 * Creates a new button using contextual information
+	 * @param images Images used in this button
+	 * @param context Component creation context
+	 * @return A new button
+	 */
+	def contextualWithoutAction(images: ButtonImageSet)(implicit context: ComponentContext) =
+	{
+		val button = new ImageButton(images, context.allowImageUpscaling)
+		context.setBorderAndBackground(button)
+		button
+	}
+	
+	/**
 	  * Creates a new button using contextual information
 	  * @param images Images used in this button
 	  * @param action Action performed when this button is pressed
@@ -29,8 +42,8 @@ object ImageButton
 	  */
 	def contextual(images: ButtonImageSet)(action: () => Unit)(implicit context: ComponentContext) =
 	{
-		val button = apply(images, context.allowImageUpscaling)(action)
-		context.setBorderAndBackground(button)
+		val button = contextualWithoutAction(images)
+		button.registerAction(action)
 		button
 	}
 }

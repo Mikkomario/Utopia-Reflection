@@ -58,6 +58,11 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
     def resizeListeners_-=(listener: Any) = resizeListeners = resizeListeners.filterNot { _ == listener }
     
     
+    // COMPUTED ---------------------------
+    
+    private def parentsInWindow = new ParentsIterator
+    
+    
     // IMPLEMENTED    ---------------------
     
     /**
@@ -97,7 +102,8 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
     /**
       * @return The parent component of this component (wrapped)
       */
-    override def parent: Option[AwtComponentWrapper] =  component.getParent.toOption.map { new SimpleAwtComponentWrapper(_, Vector(this)) }
+    override def parent: Option[AwtComponentWrapper] =  component.getParent.toOption.map {
+        new SimpleAwtComponentWrapper(_, Vector(this)) }
     
     /**
       * @return Whether this component is currently visible
@@ -140,6 +146,9 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
       */
     override def fontMetrics = component.getFont.toOption.map { component.getFontMetrics(_) } orElse
         component.getGraphics.toOption.map { _.getFontMetrics }
+    
+    // Absolute position needs to be calculated separately since parent might wrap multiple windows
+    override def absolutePosition = parentsInWindow.foldLeft(position) { _ + _.position }
     
     
     // OTHER    -------------------------
@@ -184,6 +193,28 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
             { p => component.setLocation(p.toAwtPoint) }
             cachedSize.current.foreach
             { s => component.setSize(s.toDimension) }
+        }
+    }
+    
+    
+    // NESTED   -------------------------
+    
+    // This iterator is used for iterating through parent components (bottom to top)
+    private class ParentsIterator extends Iterator[AwtComponentWrapper]
+    {
+        var nextParent = parent
+        
+        def hasNext = nextParent.isDefined
+        
+        def next() =
+        {
+            val result = nextParent.get
+            // Will stop iteration after reaching a window component
+            if (!result.component.isInstanceOf[java.awt.Window])
+                nextParent = result.parent
+            else
+                nextParent = None
+            result
         }
     }
 }

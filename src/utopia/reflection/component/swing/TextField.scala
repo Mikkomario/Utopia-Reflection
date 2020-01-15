@@ -287,7 +287,7 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	
 	override def isInFocus = field.hasFocus
 	
-	override def requestFocus() = field.requestFocusInWindow()
+	override def requestFocusInWindow() = field.requestFocusInWindow()
 	
 	
 	// OTHER	------------------------------

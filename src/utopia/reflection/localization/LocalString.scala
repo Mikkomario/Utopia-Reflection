@@ -45,6 +45,13 @@ object LocalString
 		def noLanguage = LocalString(s)
 		
 		/**
+		 * @param languageCode Language code for this string (implicit)
+		 * @param localizer A localizer (implicit)
+		 * @return A localized version of this string
+		 */
+		def localized(implicit languageCode: String, localizer: Localizer): LocalizedString = s
+		
+		/**
 		  * @param languageCode ISO code of the string's language (implicit)
 		  * @return A local version of string with localization skipped
 		  */

@@ -13,9 +13,9 @@ trait Focusable
 	def isInFocus: Boolean
 	
 	/**
-	 * Requests focus for this component
+	 * Requests focus for this component, but only if the component's window has focus
 	 * @return Whether this component is able to gain focus (false means that this component will not receive focus
 	 *         while true means that it may receive focus)
 	 */
-	def requestFocus(): Boolean
+	def requestFocusInWindow(): Boolean
 }

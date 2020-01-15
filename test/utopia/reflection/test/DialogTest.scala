@@ -1,5 +1,6 @@
 package utopia.reflection.test
 
+import utopia.reflection.localization.LocalString._
 import utopia.flow.async.ThreadPool
 import utopia.reflection.shape.LengthExtensions._
 import utopia.genesis.color.Color
@@ -29,10 +30,11 @@ object DialogTest extends App
 		override def resetCachedSize() = Unit
 	}
 	
-	private val frame = Frame.windowed(new ContentPanel(640.any x 480.any), "Frame")
+	private implicit val language: String = "en"
+	private val frame = Frame.windowed(new ContentPanel(640.any x 480.any), "Frame".local.localizationSkipped)
 	frame.setToExitOnClose()
 	
-	private val dialog = new Dialog(frame.component, new ContentPanel(320.any x 240.any), "Dialog")
+	private val dialog = new Dialog(frame.component, new ContentPanel(320.any x 240.any), "Dialog".local.localizationSkipped)
 	implicit val exc: ExecutionContext = new ThreadPool("Reflection").executionContext
 	dialog.closeFuture.foreach { u => frame.background = Color.yellow }
 	

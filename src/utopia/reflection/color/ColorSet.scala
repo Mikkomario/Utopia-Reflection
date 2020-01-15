@@ -1,8 +1,8 @@
-package utopia.reflection.util
-
-import scala.language.implicitConversions
+package utopia.reflection.color
 
 import utopia.genesis.color.Color
+
+import scala.language.implicitConversions
 
 object ColorSet
 {
@@ -32,4 +32,4 @@ object ColorSet
   * @param light A lighter version of color
   * @param dark a darker version of color
   */
-case class ColorSet(default: Color, light: Color, dark: Color)
+case class ColorSet(default: ComponentColor, light: ComponentColor, dark: ComponentColor)

@@ -106,7 +106,7 @@ object TextFieldTest extends App
 								productField.clear()
 								amountField.clear()
 								field.clear()
-								productField.requestFocus()
+								productField.requestFocusInWindow()
 								
 								showPopup(s"${amount.get} x ${product.get} = ${amount.get * price.get} €")
 							}

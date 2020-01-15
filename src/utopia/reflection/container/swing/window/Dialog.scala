@@ -2,10 +2,9 @@ package utopia.reflection.container.swing.window
 
 import javax.swing.JDialog
 import utopia.reflection.component.stack.Stackable
-import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
-import utopia.reflection.util.Screen
+import utopia.reflection.localization.LocalizedString
 
 /**
 * A frame operates as the / a main window in an app
@@ -13,13 +12,13 @@ import utopia.reflection.util.Screen
 * @since 26.3.2019
 **/
 class Dialog[C <: Stackable with AwtContainerRelated](owner: java.awt.Window, override val content: C,
-                                                      override val title: String,
+                                                      override val title: LocalizedString,
                                                       startResizePolicy: WindowResizePolicy = User,
                                                       borderless: Boolean = false) extends Window[C]
 {
     // ATTRIBUTES    -------------------
     
-    private val _component = new JDialog(owner, title)
+    private val _component = new JDialog(owner, title.string)
     private var _resizePolicy = startResizePolicy
     
     

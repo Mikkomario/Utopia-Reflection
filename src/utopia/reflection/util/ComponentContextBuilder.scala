@@ -4,6 +4,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.{Axis2D, LinearAcceleration}
 import utopia.genesis.util.Drawer
+import utopia.reflection.color.ComponentColor
 import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer}
 import utopia.reflection.shape.{Alignment, Border, ScrollBarBounds, StackLength, StackSize}
 import utopia.reflection.text.Font
@@ -111,6 +112,9 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	def withAlignment(alignment: Alignment) = copy(textAlignment = alignment)
 	
 	def withBackground(background: Color) = copy(background = Some(background))
+	
+	def withColors(colors: ComponentColor) = copy(
+		background = Some(colors.background), textColor = colors.defaultTextColor)
 	
 	def withInnerMargins(margins: StackSize) = copy(insideMargins = margins)
 	

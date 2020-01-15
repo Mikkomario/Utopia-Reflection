@@ -10,6 +10,7 @@ import utopia.reflection.component.swing.label.ImageLabel
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
+import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.StackLength
 
 import scala.concurrent.ExecutionContext
@@ -37,6 +38,8 @@ object ImageLabelTest extends App
 		val smallStack = small1.rowWith(Vector(small2, small3))
 		val mainStack = big.columnWith(Vector(smallStack), StackLength.fixed(0))
 		
+		implicit val language: String = "en"
+		implicit val localizer: Localizer = NoLocalization
 		val frame = Frame.windowed(mainStack, "Switch Test", User)
 		frame.setToExitOnClose()
 		

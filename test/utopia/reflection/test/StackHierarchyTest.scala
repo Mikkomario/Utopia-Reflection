@@ -1,8 +1,8 @@
 package utopia.reflection.test
 
 import java.awt.Color
-import javax.swing.JLabel
 
+import javax.swing.JLabel
 import utopia.flow.util.TimeExtensions._
 import utopia.flow.async.{Loop, ThreadPool}
 import utopia.flow.generic.DataType
@@ -12,6 +12,7 @@ import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.Program
+import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.{StackLength, StackSize}
 
 import scala.concurrent.ExecutionContext
@@ -24,6 +25,9 @@ import scala.concurrent.ExecutionContext
 object StackHierarchyTest extends App
 {
     DataType.setup()
+    
+    implicit val language: String = "en"
+    implicit val localizer: Localizer = NoLocalization
     
     private class ChangingWrapper extends JStackableWrapper
     {

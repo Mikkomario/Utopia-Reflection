@@ -15,6 +15,7 @@ import utopia.reflection.component.swing.button.ButtonLike
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
+import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.Insets
 import utopia.reflection.util.Screen
 
@@ -41,9 +42,9 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     override def component: java.awt.Window
     
     /**
-      * @return The title of this window
+      * @return The localized title of this window
       */
-    def title: String
+    def title: LocalizedString
     
     /**
      * The content displayed in this window
@@ -144,7 +145,17 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     /**
      * Displays this window, making it visible
      */
-    def display() = isVisible = true
+    def display(gainFocus: Boolean = true) =
+    {
+        if (gainFocus)
+            isVisible = true
+        else
+        {
+            component.setFocusableWindowState(false)
+            isVisible = true
+            component.setFocusableWindowState(true)
+        }
+    }
     
     /**
       * Setups up basic functionality in window. Should be called after this window has been filled with content and packed.
@@ -215,7 +226,8 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     /**
      * Makes it so that this window will close one escape is pressed
      */
-    def setToCloseOnEsc() = addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_ESCAPE, _ => close()))
+    def setToCloseOnEsc() = addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_ESCAPE, _ =>
+        if (component.isFocused) close()))
     
     /**
       * Updates the bounds of this window's contents to match those of this window

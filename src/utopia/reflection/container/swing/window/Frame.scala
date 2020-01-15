@@ -3,6 +3,7 @@ package utopia.reflection.container.swing.window
 import javax.swing.{JFrame, WindowConstants}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.swing.AwtContainerRelated
+import utopia.reflection.localization.LocalizedString
 
 object Frame
 {
@@ -13,7 +14,7 @@ object Frame
       * @param resizePolicy The policy used about Frame resizing. By default, only the user may resize the Frame
       * @return A new windowed frame
       */
-    def windowed[C <: Stackable with AwtContainerRelated](content: C, title: String,
+    def windowed[C <: Stackable with AwtContainerRelated](content: C, title: LocalizedString,
                                                           resizePolicy: WindowResizePolicy = WindowResizePolicy.User,
                                                           borderless: Boolean = false) =
         new Frame(content, title, resizePolicy, borderless, false, false)
@@ -25,7 +26,7 @@ object Frame
       * @param showToolBar Whether tool bar (bottom) should be displayed
       * @return A new full screen frame
       */
-    def fullScreen[C <: Stackable with AwtContainerRelated](content: C, title: String, showToolBar: Boolean) =
+    def fullScreen[C <: Stackable with AwtContainerRelated](content: C, title: LocalizedString, showToolBar: Boolean) =
         new Frame(content, title, WindowResizePolicy.Program, true, true, showToolBar)
 }
 
@@ -34,13 +35,13 @@ object Frame
 * @author Mikko Hilpinen
 * @since 26.3.2019
 **/
-class Frame[C <: Stackable with AwtContainerRelated](override val content: C, override val title: String,
+class Frame[C <: Stackable with AwtContainerRelated](override val content: C, override val title: LocalizedString,
                                                      startResizePolicy: WindowResizePolicy, val borderless: Boolean,
                                                      startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[C]
 {
     // ATTRIBUTES    -------------------
     
-    private val _component = new JFrame(title)
+    private val _component = new JFrame(title.string)
     
     private var _fullScreen = startFullScreen
     private var _showsToolBar = startWithToolBar

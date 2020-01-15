@@ -13,6 +13,7 @@ import utopia.reflection.component.Area
 import utopia.reflection.component.swing.label.Label
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.container.swing.window.Frame
+import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.{StackLength, StackSize}
 
 import scala.concurrent.ExecutionContext
@@ -25,7 +26,10 @@ import scala.concurrent.ExecutionContext
 object MouseTest extends App
 {
 	DataType.setup()
-
+	
+	implicit val language: String = "en"
+	implicit val localizer: Localizer = NoLocalization
+	
 	private class MouseEnterExitListener(val area: Area) extends MouseMoveListener with Handleable
 	{
 		override val mouseMoveEventFilter = e =>

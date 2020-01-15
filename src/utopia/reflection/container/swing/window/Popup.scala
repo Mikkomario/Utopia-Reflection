@@ -2,6 +2,7 @@ package utopia.reflection.container.swing.window
 
 import java.awt.event.{WindowEvent, WindowFocusListener}
 
+import utopia.reflection.localization.LocalString._
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.reflection.component.ComponentLike
@@ -36,8 +37,9 @@ object Popup
 	{
 		// If context isn't in a window (which it should), has to use a Frame instead of a dialog
 		val owner = context.parentWindow
-		val newWindow = owner.map { o => new Dialog(o, content, "Popup", Program, borderless = true) }.getOrElse(
-			Frame.windowed(content, "Popup", Program, borderless = true))
+		val windowTitle = "Popup".local("en").localizationSkipped
+		val newWindow = owner.map { o => new Dialog(o, content, windowTitle, Program, borderless = true) }.getOrElse(
+			Frame.windowed(content, windowTitle, Program, borderless = true))
 		
 		// Calculates the absolute target position
 		val newPosition = context.absolutePosition + getTopLeft(context.size, newWindow.size)
@@ -51,6 +53,7 @@ object Popup
 			newWindow.component.addWindowFocusListener(new HideOnFocusLostListener(newWindow))
 		
 		newWindow.startEventGenerators(actorHandler)
+		newWindow.setToCloseOnEsc()
 		newWindow
 	}
 	
