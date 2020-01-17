@@ -20,6 +20,16 @@ object Screen
 	def size = Size of Toolkit.getDefaultToolkit.getScreenSize
 	
 	/**
+	 * @return Current width of the screen
+	 */
+	def width = size.width
+	
+	/**
+	 * @return Current height of the screen
+	 */
+	def height = size.height
+	
+	/**
 	 * The insets of this screen in the specified graphics configuration
 	 * @param configuration the graphics configuration where the insets are read
 	 */

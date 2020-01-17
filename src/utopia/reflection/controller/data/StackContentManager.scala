@@ -14,6 +14,7 @@ import utopia.reflection.container.stack.StackLike
   * @param makeItem A function for producing new displays
   * @param equalsCheck A function for checking whether two items should be considered equal (default = standard equals)
   */
+@deprecated("Replaced with more generic ContainerContentManager", "17.1.2020, v1")
 class StackContentManager[A, C <: Stackable with Refreshable[A]](protected val stack: StackLike[C],
 																 protected val equalsCheck: (A, A) => Boolean = { (a: A, b: A) =>  a == b })
 																(private val makeItem: A => C)

@@ -21,11 +21,10 @@ import scala.concurrent.duration.Duration
   * @author Mikko Hilpinen
   * @since 5.6.2019, v1+
   */
-class StackSelectionManager[A, C <: Stackable with Refreshable[A]](stack: StackLike[C] with CustomDrawable,
-																   private val selectionAreaDrawer: CustomDrawer,
-																   equalsCheck: (A, A) => Boolean = { (a: A, b: A) => a == b })
-																  (makeItem: A => C)
-	extends StackContentManager[A, C](stack, equalsCheck)(makeItem) with SelectionManager[A, C]
+class StackSelectionManager[A, C <: Stackable with Refreshable[A]]
+(stack: StackLike[C] with CustomDrawable, private val selectionAreaDrawer: CustomDrawer,
+ equalsCheck: (A, A) => Boolean = { (a: A, b: A) => a == b })(makeItem: A => C)
+	extends ContainerContentManager[A, StackLike[C], C](stack, equalsCheck)(makeItem) with SelectionManager[A, C]
 {
 	// INITIAL CODE	--------------------
 	
