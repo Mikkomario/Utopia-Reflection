@@ -1,7 +1,7 @@
 package utopia.reflection.container.swing
 
 import utopia.reflection.component.Alignable
-import utopia.reflection.component.drawing.CustomDrawableWrapper
+import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawableWrapper, DrawLevel}
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.component.swing.{AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.StackHierarchyManager
@@ -13,7 +13,7 @@ import utopia.reflection.shape.Alignment
  * @author Mikko Hilpinen
  * @since 18.1.2020, v1
  */
-class LayeredView[Background <: AwtStackable, Foreground <: AwtStackable]
+class LayeredView[Background <: AwtStackable with CustomDrawable, Foreground <: AwtStackable with CustomDrawable]
 (background: Background, foreground: Foreground, initialAlignment: Alignment)
 	extends AwtComponentWrapperWrapper with CachingStackable with SwingComponentRelated with AwtContainerRelated
 		with CustomDrawableWrapper with Alignable
@@ -35,6 +35,9 @@ class LayeredView[Background <: AwtStackable, Foreground <: AwtStackable]
 	// Registers connection to stack hierarchy manager as well
 	StackHierarchyManager.registerConnection(this, background)
 	StackHierarchyManager.registerConnection(this, foregroundContainer)
+	
+	// Foreground needs to be redrawn whenever the background is redrawn
+	background.addCustomDrawer(DrawLevel.Foreground, (_, _) => foreground.repaint())
 	
 	
 	// IMPLEMENTED	---------------------
