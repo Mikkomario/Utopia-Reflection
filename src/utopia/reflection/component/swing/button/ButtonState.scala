@@ -45,11 +45,11 @@ case class ButtonState(isEnabled: Boolean, isInFocus: Boolean, isMouseOver: Bool
 		if (!isEnabled)
 			c = c.timesAlpha(0.55)
 		if (isMouseOver)
-			c = c.lightened(1 + (0.5 * intensity))
+			c = c.lightened(1 + (0.6 * intensity))
 		if (isInFocus)
-			c = c.lightened(1 + (0.5 * intensity))
+			c = c.lightened(1 + (0.6 * intensity))
 		if (isPressed)
-			c = c.lightened(1 + (0.5 * intensity))
+			c = c.lightened(1 + (0.6 * intensity))
 		
 		c
 	}

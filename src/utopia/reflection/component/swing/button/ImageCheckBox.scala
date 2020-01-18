@@ -26,6 +26,8 @@ class ImageCheckBox(offImages: ButtonImageSet, onImages: ButtonImageSet, initial
 	initializeListeners()
 	valuePointer.addListener { _ => updateStyleForState(state) }
 	registerAction { () => value = !value }
+	setHandCursor()
+	component.setFocusable(true)
 	
 	
 	// COMPUTED	-------------------------

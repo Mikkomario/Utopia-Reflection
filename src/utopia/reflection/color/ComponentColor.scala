@@ -33,7 +33,7 @@ object ComponentColor
 	 * @return A component color that should be legible
 	 */
 	implicit def autoGenerate(color: Color): ComponentColor = ComponentColor(color,
-		if (color.luminosity < 0.5) TextColorStandard.Light else TextColorStandard.Dark)
+		if (color.luminosity < 0.35) TextColorStandard.Light else TextColorStandard.Dark)
 	
 	/**
 	 * Automatically generates a legible component color based on a provided color-like object
