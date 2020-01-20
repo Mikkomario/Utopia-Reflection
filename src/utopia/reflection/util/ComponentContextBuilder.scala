@@ -118,6 +118,8 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	
 	def withInnerMargins(margins: StackSize) = copy(insideMargins = margins)
 	
+	def mapInnerMargins(f: StackSize => StackSize) = copy(insideMargins = f(insideMargins))
+	
 	def withBorder(border: Border) = copy(border = Some(border))
 	
 	def withBorderWidth(borderWidth: Int) = copy(borderWidth = Some(borderWidth))

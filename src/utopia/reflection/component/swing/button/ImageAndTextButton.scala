@@ -62,8 +62,8 @@ object ImageAndTextButton
   * This button implementation displays both an image and some text
   * @author Mikko Hilpinen
   * @since 1.8.2019, v1+
-  * @param images Images displayed in this button
-  * @param text Text displayed in this button
+  * @param initialImages Images displayed in this button
+  * @param initialText Text displayed in this button
   * @param font Font used in this button's text
   * @param color This button's background color
   * @param margins Margins around this button's contents
@@ -72,16 +72,19 @@ object ImageAndTextButton
   * @param textAlignment Alignment used with this button's text
  *  @param textColor Color for this button's text (default = black)
   */
-class ImageAndTextButton(val images: ButtonImageSet, text: LocalizedString, font: Font, val color: Color,
+class ImageAndTextButton(initialImages: ButtonImageSet, initialText: LocalizedString, font: Font, val color: Color,
 						 margins: StackSize, borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
 						 textAlignment: Alignment = Alignment.Left, textColor: Color = Color.textBlack)
 	extends StackableAwtComponentWrapperWrapper with ButtonLike
 {
 	// ATTRIBUTES	------------------------
 	
-	private val imageLabel = new ImageLabel(images.defaultImage)
-	private val content = imageLabel.rowWith(Vector(new TextLabel(text, font, initialAlignment = textAlignment,
-		initialTextColor = textColor)), margin = beforeTextMargin).framed(margins)
+	private var _images = initialImages
+	
+	private val imageLabel = new ImageLabel(initialImages.defaultImage)
+	private val textLabel = new TextLabel(initialText, font, StackSize.any.withLowPriority,
+		initialAlignment = textAlignment, initialTextColor = textColor)
+	private val content = imageLabel.rowWith(Vector(textLabel), margin = beforeTextMargin).framed(margins)
 	
 	
 	// INITIAL CODE	------------------------
@@ -93,6 +96,25 @@ class ImageAndTextButton(val images: ButtonImageSet, text: LocalizedString, font
 	initializeListeners()
 	
 	
+	// COMPUTED	----------------------------
+	
+	/**
+	 * @return The currently used button image set
+	 */
+	def images = _images
+	def images_=(newImages: ButtonImageSet) =
+	{
+		_images = newImages
+		imageLabel.image = _images(state)
+	}
+	
+	/**
+	 * @return The text currently displayed on this button
+	 */
+	def text = textLabel.text
+	def text_=(newText: LocalizedString) = textLabel.text = newText
+	
+	
 	// IMPLEMENTED	------------------------
 	
 	override protected def wrapped = content
@@ -102,7 +124,7 @@ class ImageAndTextButton(val images: ButtonImageSet, text: LocalizedString, font
 		val newColor = newState.modify(color)
 		background = newColor
 		updateBorder(newColor)
-		imageLabel.image = images(newState)
+		imageLabel.image = _images(newState)
 	}
 	
 	
