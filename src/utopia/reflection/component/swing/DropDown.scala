@@ -165,6 +165,12 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	
 	// OTHER	----------------------
 	
+	/**
+	 * Updates the displayed values on this drop down based on the same items it already had. Only useful when the
+	 * used display function returns different values at different times.
+	 */
+	def updateDisplays() = updateContent(content)
+	
 	private def updateContent(newContent: Vector[A]) =
 	{
 		isUpdatingSelection = true

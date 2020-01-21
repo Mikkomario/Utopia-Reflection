@@ -80,6 +80,12 @@ case class LocalString(override val string: String, override val languageCode: O
 	  */
 	def localizationSkipped = LocalizedString(this, None)
 	
+	/**
+	 * @param localizer An implicit localizer
+	 * @return A localized version of this local string
+	 */
+	def localized(implicit localizer: Localizer) = localizer.localize(this)
+	
 	
 	// IMPLEMENTED	----------------------
 	
