@@ -49,7 +49,7 @@ object LocalString
 		 * @param localizer A localizer (implicit)
 		 * @return A localized version of this string
 		 */
-		def localized(implicit languageCode: String, localizer: Localizer): LocalizedString = s
+		def autoLocalized(implicit languageCode: String, localizer: Localizer): LocalizedString = s
 		
 		/**
 		  * @param languageCode ISO code of the string's language (implicit)
