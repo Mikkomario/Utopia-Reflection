@@ -53,8 +53,13 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 	addCustomDrawer(new ImageDrawer)
 	addResizeListener(updateLayout())
 	
-	// Revalidates this component whenever image changes
-	contentPointer.addListener { _ => revalidate() }
+	// Revalidates this component whenever image changes (although only if image size changes as well)
+	contentPointer.addListener { event =>
+		if (event.newValue.size != event.oldValue.size)
+			revalidate()
+		else
+			updateLayout()
+	}
 	
 	
 	// COMPUTED	---------------------

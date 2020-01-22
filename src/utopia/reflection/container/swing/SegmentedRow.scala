@@ -109,8 +109,6 @@ class SegmentedRow[C <: AwtStackable](val master: Segmented, override val direct
 	override def component = stack.component
 	
 	
-	
-	
 	// NESTED CLASSES	-----------
 	
 	override def background_=(color: Color) = super[SegmentedRowLike].background_=(color)

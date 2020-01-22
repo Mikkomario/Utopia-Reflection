@@ -56,13 +56,6 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 	
 	override protected def wrapped = stack
 	
-	// Informs the listeners too
-	override def resetCachedSize() =
-	{
-		super.resetCachedSize()
-		informSegmentChanged(this)
-	}
-	
 	override def segmentCount = stack.count
 	
 	override def naturalLengthForSegment(index: Int) = segments.getOption(index).map {
@@ -153,7 +146,12 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 			lengthFromMaster map { source.withSide(_, direction) } getOrElse source
 		}
 		
-		override def resetCachedSize() = item.resetCachedSize()
+		override def resetCachedSize() =
+		{
+			// Informs listeners whenever one of rows components gets updated
+			informSegmentChanged(SegmentedRowLike.this)
+			item.resetCachedSize()
+		}
 		
 		
 		// OTHER	----------------
