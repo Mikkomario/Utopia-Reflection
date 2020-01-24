@@ -41,6 +41,12 @@ object Insets
     def symmetric(w: Double, h: Double) = Insets(w, w, h , h)
     
     /**
+     * @param sideWidth The width of each side on these insets
+     * @return Insets with all sides equal
+     */
+    def symmetric(sideWidth: Double) = Insets(sideWidth, sideWidth, sideWidth, sideWidth)
+    
+    /**
       * Creates a horizontal set of insets
       * @param left Left side
       * @param right Right side
@@ -226,4 +232,10 @@ case class Insets(amounts: Map[Direction2D, Double])
      * @return A copy of these insets where values on targeted axis are swapped
      */
     def mirroredAlong(axis: Axis2D) = Insets(amounts.map { case (k, v) => (if (k.axis == axis) k.opposite else k) -> v })
+    
+    /**
+     * @param direction The direction taken away from these insets
+     * @return A copy of these insets without specified direction
+     */
+    def withoutSide(direction: Direction2D) = copy(amounts - direction)
 }
