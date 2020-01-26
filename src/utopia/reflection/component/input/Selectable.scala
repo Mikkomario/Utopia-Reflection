@@ -25,6 +25,12 @@ object Selectable
 		  * Clears any selection
 		  */
 		def selectNone() = s.select(None)
+		
+		/**
+		 * Selects the first item that satisfies specified condition
+		 * @param f A search condition
+		 */
+		def selectFirstWhere(f: A => Boolean) = s.content.find(f).foreach { selectOne }
 	}
 	
 	implicit class MultiSelectable[A, CS <: Traversable[A], CP <: Traversable[A]](val s: Selectable[CS, CP]) extends AnyVal
@@ -59,6 +65,13 @@ object Selectable
 		  * @param cbf Can build from (implicit)
 		  */
 		def selectOne(item: A)(implicit cbf: CanBuildFrom[Vector[A], A, CS]) = selectMany(Vector(item))
+		
+		/**
+		 * Selects the items that satisfy the specified search condition
+		 * @param f A search condition
+		 * @param cbf Can build from (implicit)
+		 */
+		def selectWhere(f: A => Boolean)(implicit cbf: CanBuildFrom[Traversable[A], A, CS]) = selectMany(s.content.filter(f))
 		
 		/**
 		  * Selects multiple items
