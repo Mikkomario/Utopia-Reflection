@@ -222,7 +222,7 @@ object StackHierarchyManager
 					// Disconnects the child from the parent, also updates all id numbers
 					val parentNode = nodeForId(parentId)
 					val childIndex = childId.last
-					val childNode = (parentNode / childIndex).head
+					val childNode = (parentNode/childIndex).head
 					
 					parentNode.disconnectDirect(childNode)
 					childNode.foreach { c => ids(c.content.stackId) = ids(c.content.stackId).dropUntil(childIndex) }
