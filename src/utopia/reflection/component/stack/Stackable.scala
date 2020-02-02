@@ -7,7 +7,7 @@ import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.stack.{StackHierarchyManager, StackLayout}
 import utopia.reflection.container.swing.{AlignFrame, Framing, Stack}
-import utopia.reflection.shape.{Alignment, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, StackInsets, StackLength, StackSize}
 import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.shape2D.Direction2D
 import utopia.reflection.shape.Alignment.Center
@@ -65,20 +65,40 @@ object Stackable
 		
 		/**
 		  * Frames this item
-		  * @param margins The margins placed around this item
+		  * @param margins The symmetric margins placed around this item
 		  * @return A framing with this item inside it
 		  */
-		def framed(margins: StackSize) = new Framing(s, margins)
+		def framed(margins: StackSize) = Framing.symmetric(s, margins)
 		
 		/**
 		  * Frames this item
-		  * @param margins The margins placed around this item
+		  * @param insets The insets/margins placed around this item
+		  * @return A framing with this item inside it
+		  */
+		def framed(insets: StackInsets) = new Framing(s, insets)
+		
+		/**
+		  * Frames this item
+		  * @param margins The symmetric margins placed around this item
 		  * @param color Background color of the framing
 		  * @return A framing with this item inside it
 		  */
 		def framed(margins: StackSize, color: Color) =
 		{
-			val framing = new Framing(s, margins)
+			val framing = Framing.symmetric(s, margins)
+			framing.background = color
+			framing
+		}
+		
+		/**
+		  * Frames this item
+		  * @param insets The insets/margins placed around this item
+		  * @param color Background color of the framing
+		  * @return A framing with this item inside it
+		  */
+		def framed(insets: StackInsets, color: Color) =
+		{
+			val framing = new Framing(s, insets)
 			framing.background = color
 			framing
 		}

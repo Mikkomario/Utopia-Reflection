@@ -144,6 +144,26 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	  */
 	def square = StackSize(this, this)
 	
+	/**
+	  * @return This stack length as an inset placed on the top of the area
+	  */
+	def top = StackInsets.top(this)
+	
+	/**
+	  * @return This stack length as an inset placed at the bottom of the area
+	  */
+	def bottom = StackInsets.bottom(this)
+	
+	/**
+	  * @return This stack length as an inset placed at the left side of the area
+	  */
+	def left = StackInsets.left(this)
+	
+	/**
+	  * @return This stack length as an inset placed at the right side of the area
+	  */
+	def right = StackInsets.right(this)
+	
 	
 	// IMPLEMENTED    -----------------------
 	

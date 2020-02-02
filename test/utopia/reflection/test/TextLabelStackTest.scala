@@ -56,7 +56,7 @@ object TextLabelStackTest extends App
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val framing = new Framing(stack, 24.downscaling.square)
+	val framing = Framing.symmetric(stack, 24.downscaling.square)
 	val frame = Frame.windowed(framing, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	

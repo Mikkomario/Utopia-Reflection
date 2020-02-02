@@ -62,7 +62,7 @@ object CalendarTest extends App
 	val actionLoop = new ActorLoop(actorHandler)
 	implicit val context: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val framing = new Framing(calendar, 24.downscaling.square)
+	val framing = Framing.symmetric(calendar, 24.downscaling.square)
 	framing.background = Color.white
 	val frame = Frame.windowed(framing, "Calendar Test", User)
 	frame.setToExitOnClose()

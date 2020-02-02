@@ -40,11 +40,11 @@ trait StackableAwtComponentWrapper extends AwtComponentWrapper with CachingStack
 	
 	// OTHER	---------------------
 	
-	/**
+	/*
 	  * @param margins The margins placed around this instance
 	  * @return A framing that contains this stackable item
 	  */
-	def framed(margins: StackSize) = new Framing[StackableAwtComponentWrapper](this, margins)
+	// def framed(margins: StackSize) = new Framing[StackableAwtComponentWrapper](this, margins)
 }
 
 private class StackWrapper(val component: Component, val getSize: () => StackSize, val update: () => Unit) extends StackableAwtComponentWrapper
