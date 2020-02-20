@@ -7,19 +7,19 @@ object TextFilter
 	/**
 	  * A filter that makes all text uppercase
 	  */
-	val upperCase = TextFilter(None, true)
+	val upperCase = TextFilter(None, isOnlyUpperCase = true)
 	
 	/**
 	  * @param regex A regex
 	  * @return A filter based on regex
 	  */
-	def apply(regex: Regex): TextFilter = TextFilter(Some(regex), false)
+	def apply(regex: Regex): TextFilter = TextFilter(Some(regex), isOnlyUpperCase = false)
 	
 	/**
 	  * @param regex A regex
 	  * @return A filter based on regex that makes items uppercase
 	  */
-	def upperCase(regex: Regex) = TextFilter(Some(regex), true)
+	def upperCase(regex: Regex) = TextFilter(Some(regex), isOnlyUpperCase = true)
 	
 	implicit def regexToFilter(regex: Regex): TextFilter = apply(regex)
 }
