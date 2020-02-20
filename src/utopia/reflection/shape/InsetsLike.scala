@@ -39,7 +39,7 @@ trait InsetsFactory[L, S, +Repr, +I <: InsetsLike[L, S, Repr]]
       * @param h The top & bottom inset
       * @return A new set of insets
       */
-    def symmetric(w: L, h: L) = apply(w, w, h , h)
+    def symmetric(w: L, h: L) = apply(w, w, h, h)
     
     /**
       * @param sideWidth The width of each side on these insets

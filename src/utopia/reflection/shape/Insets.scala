@@ -1,9 +1,6 @@
 package utopia.reflection.shape
 
 import utopia.genesis.shape.shape2D.{Direction2D, Point, Size}
-import utopia.genesis.shape.shape2D.Direction2D._
-
-import scala.collection.immutable.HashMap
 
 object Insets extends InsetsFactory[Double, Size, Insets, Insets]
 {
@@ -28,7 +25,7 @@ case class Insets(amounts: Map[Direction2D, Double]) extends InsetsLike[Double, 
 {
     // IMPLEMENTED  --------------
     
-    override protected def makeCopy(newAmounts: Map[Direction2D, Double]) = Insets(amounts)
+    override protected def makeCopy(newAmounts: Map[Direction2D, Double]) = Insets(newAmounts)
     
     override protected def makeZero = 0.0
     

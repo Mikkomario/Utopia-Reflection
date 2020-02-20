@@ -1,9 +1,11 @@
 package utopia.reflection.localization
 
+import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 
 import scala.language.implicitConversions
+import utopia.flow.util.TimeExtensions._
 
 object DisplayFunction
 {
@@ -150,8 +152,13 @@ object DisplayFunction
 	  * @param formatter A date time formatter
 	  * @return A display function for time elements
 	  */
-	def forTime(formatter: DateTimeFormatter) = noLocalization[TemporalAccessor] {
-		t => LocalString(formatter.format(t)) }
+	def forTime(formatter: DateTimeFormatter) =
+	{
+		noLocalization[TemporalAccessor] {
+			case instant: Instant => LocalString(instant.toStringWith(formatter))
+			case default => LocalString(formatter.format(default))
+		}
+	}
 }
 
 /**
