@@ -12,15 +12,18 @@ trait SingleStackContainer[C <: Stackable] extends SingleContainer[C] with Stack
 {
 	override def set(content: C) =
 	{
-		// Removes old component from stack hierarchy first
-		components.foreach(StackHierarchyManager.unregister)
-		
-		super.set(content)
-		
-		// Adds new connection to stack hierarchy
-		StackHierarchyManager.registerConnection(this, content)
-		
-		// Revalidates the hierarchy
-		revalidate()
+		if (!this.content.contains(content))
+		{
+			// Removes old component from stack hierarchy first
+			components.foreach(StackHierarchyManager.unregister)
+			
+			super.set(content)
+			
+			// Adds new connection to stack hierarchy
+			StackHierarchyManager.registerConnection(this, content)
+			
+			// Revalidates the hierarchy
+			revalidate()
+		}
 	}
 }

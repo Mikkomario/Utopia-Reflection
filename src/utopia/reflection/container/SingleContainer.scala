@@ -25,9 +25,12 @@ trait SingleContainer[C <: ComponentLike] extends Container[C]
 	  */
 	def set(content: C) =
 	{
-		// Removes any previous content first
-		components.foreach(remove)
-		// Then adds the new content
-		add(content)
+		if (!this.content.contains(content))
+		{
+			// Removes any previous content first
+			components.foreach(remove)
+			// Then adds the new content
+			add(content)
+		}
 	}
 }
