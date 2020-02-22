@@ -15,6 +15,7 @@ import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.swing.{AwtContainerRelated, Framing, Stack}
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
+import utopia.reflection.shape.Alignment.Center
 import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.Font
@@ -38,7 +39,7 @@ object TabSelection
 	{
 		val yMargin = context.insideMargins.along(Y)
 		val component = new TabSelection[A](context.font, context.highlightColor, context.insideMargins.along(X).optimal,
-			yMargin, selectionLineHeight, displayFunction, initialChoices)
+			yMargin, selectionLineHeight, displayFunction, initialChoices, context.textColor)
 		context.setBorderAndBackground(component)
 		component
 	}
@@ -49,14 +50,15 @@ object TabSelection
   * @author Mikko Hilpinen
   * @since 4.5.2019, v1+
   */
-// TODO: Handle text color!
 class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMargin: Double, val vMargin: StackLength,
 					  val selectionLineHeight: Double = 8.0, val displayFunction: DisplayFunction[A] = DisplayFunction.raw,
-					  initialChoices: Seq[A] = Vector())
+					  initialChoices: Seq[A] = Vector(), initialTextColor: Color = Color.textBlack)
 	extends StackableAwtComponentWrapperWrapper with SwingComponentRelated
 	with AwtContainerRelated with SelectableWithPointers[Option[A], Seq[A]] with CustomDrawableWrapper
 {
 	// ATTRIBUTES	-------------------
+	
+	private var _textColor = initialTextColor
 	
 	private val stack = Stack.row[Framing[TextLabel]](0.fixed)
 	private val textMargin = StackSize(StackLength(0, optimalHMargin), vMargin)
@@ -80,6 +82,23 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 	// COMPUTED	-----------------------
 	
 	private def selectedLabel = selected.flatMap(labels.get)
+	
+	/**
+	  * @return The current text color used in this component
+	  */
+	def textColor = _textColor
+	/**
+	  * Changes component text color
+	  * @param newColor New text color to be used in this component
+	  */
+	def textColor_=(newColor: Color) =
+	{
+		if (_textColor != newColor)
+		{
+			_textColor = newColor
+			labels.values.flatMap { _.content }.foreach { _.textColor = newColor }
+		}
+	}
 	
 	
 	// IMPLEMENTED	-------------------
@@ -148,10 +167,10 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 				{
 					val moreLabels = Vector.fill(newContent.size - oldLabels.size)
 					{
-						val label = new TextLabel(LocalizedString.empty, font, textMargin, false)
+						val label = new TextLabel(LocalizedString.empty, font, textMargin, false,
+							initialAlignment = Center, initialTextColor = _textColor)
 						val framedLabel = label.framed(selectionLineHeight.fixed.bottom)
 						styleNotSelected(framedLabel)
-						label.alignCenter()
 						framedLabel.addMouseButtonListener(new LabelMouseListener(framedLabel))
 						framedLabel
 					}
