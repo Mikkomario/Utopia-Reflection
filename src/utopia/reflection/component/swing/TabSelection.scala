@@ -49,6 +49,7 @@ object TabSelection
   * @author Mikko Hilpinen
   * @since 4.5.2019, v1+
   */
+// TODO: Handle text color!
 class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMargin: Double, val vMargin: StackLength,
 					  val selectionLineHeight: Double = 8.0, val displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 					  initialChoices: Seq[A] = Vector())
