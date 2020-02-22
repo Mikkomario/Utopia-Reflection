@@ -33,3 +33,21 @@ object ColorSet
   * @param dark a darker version of color
   */
 case class ColorSet(default: ComponentColor, light: ComponentColor, dark: ComponentColor)
+{
+	/**
+	  * Picks the best color set for the specific background (best being one that has enough contrast difference,
+	  * preferring the default color)
+	  * @param backgroundColor A background / contrasting color
+	  * @return The best color in this color set in a context with specified color
+	  */
+	def forBackground(backgroundColor: Color) =
+	{
+		val contrastLuminosity = backgroundColor.luminosity
+		if ((default.luminosity - contrastLuminosity).abs > 0.25)
+			default
+		else if ((light.luminosity - contrastLuminosity).abs > (dark.luminosity - contrastLuminosity).abs)
+			light
+		else
+			dark
+	}
+}
