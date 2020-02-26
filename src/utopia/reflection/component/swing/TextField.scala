@@ -167,7 +167,7 @@ object TextField
   * Text fields are used for collecting text input from user
   * @author Mikko Hilpinen
   * @since 1.5.2019, v1+
-  * @param targetWidth The target width of this field
+  * @param initialTargetWidth The target width of this field
   * @param vMargin The target vertical margin around text in this field
   * @param font The font used in this field
   * @param document The document used in this field (default = plain document)
@@ -175,7 +175,7 @@ object TextField
   * @param prompt The prompt for this field (default = None)
   * @param textColor The text color in this field (default = 88% opacity black)
   */
-class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Font,
+class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font: Font,
 				val document: Document = new PlainDocument(), initialText: String = "",
 				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,
 				resultFilter: Option[Regex] = None)
@@ -193,6 +193,8 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	private var resultListeners = Vector[Option[String] => Unit]()
 	
 	override val valuePointer = new PointerWithEvents[Option[String]](None)
+	
+	private var _targetWidth = initialTargetWidth
 	
 	
 	// INITIAL CODE	----------------------
@@ -213,6 +215,19 @@ class TextField(val targetWidth: StackLength, val vMargin: StackLength, font: Fo
 	
 	
 	// COMPUTED	--------------------------
+	
+	/**
+	  * @return The width (stack length) of this field
+	  */
+	def targetWidth = _targetWidth
+	def targetWidth_=(newWidth: StackLength) =
+	{
+		if (_targetWidth != newWidth)
+		{
+			_targetWidth = newWidth
+			revalidate()
+		}
+	}
 	
 	/**
 	  * @return Current text in this field

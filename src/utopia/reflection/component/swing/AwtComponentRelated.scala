@@ -1,6 +1,7 @@
 package utopia.reflection.component.swing
 
 import java.awt.Cursor
+import java.awt.event.{FocusEvent, FocusListener}
 
 /**
   * This trait is extended by classes that have a related awt component
@@ -52,4 +53,33 @@ trait AwtComponentRelated
 	  * Specifies that the mouse should have the default cursor when hovering over this component
 	  */
 	def setArrowCursor() = component.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
+	
+	/**
+	  * Adds a new focus listener that is called when this component gains or loses focus
+	  * @param onFocusGained Function called when this component gains focus
+	  * @param onFocusLost Function called when this component loses focus
+	  */
+	def addFocusChangedListener(onFocusGained: => Unit)(onFocusLost: => Unit) = component.addFocusListener(
+		new FunctionalFocusListener(Some(() => onFocusGained), Some(() => onFocusLost)))
+	
+	/**
+	  * Adds a new focus listener that is called when this component gains focus
+	  * @param onFocusGained Function called when this component gains focus
+	  */
+	def addFocusGainedListener(onFocusGained: => Unit) = component.addFocusListener(
+		new FunctionalFocusListener(Some(() => onFocusGained), None))
+	
+	/**
+	  * Adds a new focus listener that is called when this component loses focus
+	  * @param onFocusLost Function called when this component loses focus
+	  */
+	def addFocusLostListener(onFocusLost: => Unit) = component.addFocusListener(
+		new FunctionalFocusListener(None, Some(() => onFocusLost)))
+}
+
+private class FunctionalFocusListener(onFocusGained: Option[() => Unit], onFocusLost: Option[() => Unit]) extends FocusListener
+{
+	override def focusGained(e: FocusEvent) = onFocusGained.foreach { _() }
+	
+	override def focusLost(e: FocusEvent) = onFocusLost.foreach { _() }
 }

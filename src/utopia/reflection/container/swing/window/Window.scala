@@ -174,7 +174,6 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
         activateResizeHandling()
     
         // Registers self (and content) into stack hierarchy management
-        // TODO: Remove this window from stack hierarchy upon closing
         StackHierarchyManager.registerConnection(this, content)
         
         component.addWindowListener(new CloseListener)
@@ -188,8 +187,6 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     {
         generatorActivated.runAndSet
         {
-            // TODO: These should be removed once window closes
-            
 			// Starts mouse listening
             val mouseButtonListener = MouseButtonStateListener { e => content.distributeMouseButtonEvent(e); None }
             val mouseMovelistener = MouseMoveListener { content.distributeMouseMoveEvent(_) }
@@ -335,6 +332,9 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
             // Performs a closing action, if one is queued
             uponCloseAction.pop().foreach { _() }
             closePromise.trySuccess(Unit)
+            
+            // Removes this window from the stack hierarchy
+            StackHierarchyManager.unregister(Window.this)
         }
     }
 }
