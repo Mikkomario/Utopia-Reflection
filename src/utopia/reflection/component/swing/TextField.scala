@@ -1,5 +1,6 @@
 package utopia.reflection.component.swing
 
+import java.awt.Graphics
 import java.awt.event.{ActionEvent, ActionListener, FocusEvent, FocusListener}
 
 import utopia.reflection.shape.LengthExtensions._
@@ -11,6 +12,10 @@ import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.X
+import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
+import utopia.genesis.util.Drawer
+import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
+import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.{Alignable, Focusable}
 import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.CachingStackable
@@ -173,14 +178,14 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,
 				resultFilter: Option[Regex] = None, initialAlignment: Alignment = Alignment.Left)
 	extends JWrapper with CachingStackable with InteractionWithPointer[Option[String]] with Alignable with Focusable
+		with CustomDrawableWrapper
 {
 	// ATTRIBUTES	----------------------
 	
-	private val field = new JTextField()
+	private val field = new CustomTextField()
 	private val defaultBorder = Border.square(1, textColor.timesAlpha(0.625))
 	
-	private lazy val promptDocument = new PlainDocument()
-	private var isDisplayingPrompt = false
+	private var isDisplayingPrompt = initialText.isEmpty && prompt.isDefined
 	private var isUpdatingText = false
 	private var enterListeners = Vector[Option[String] => Unit]()
 	private var resultListeners = Vector[Option[String] => Unit]()
@@ -201,8 +206,6 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 	
 	document.addDocumentListener(new InputListener)
 	field.addActionListener(new EnterListener())
-	if (prompt.isDefined)
-		field.addFocusListener(new PromptFocusListener())
 	valuePointer.addListener(new ValueChangeListener)
 	
 	{
@@ -213,6 +216,9 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 		else
 			align(alignment)
 	}
+	
+	if (prompt.isDefined)
+		addCustomDrawer(new PromptDrawer)
 	
 	
 	// COMPUTED	--------------------------
@@ -235,13 +241,8 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 	  */
 	def text =
 	{
-		if (isDisplayingPrompt)
-			""
-		else
-		{
-			val t = field.getText
-			if (t == null) "" else t
-		}
+		val t = field.getText
+		if (t == null) "" else t
 	}
 	def text_=(newText: String): Unit =
 	{
@@ -252,24 +253,7 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 			value = resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
 			
 			isUpdatingText = true
-			if (prompt.isEmpty)
-				field.setText(newText)
-			else
-			{
-				// On empty text, may display prompt instead
-				if (newText.isEmpty)
-				{
-					field.setText(newText)
-					showPrompt()
-				}
-				else
-				{
-					// May disable a prompt if one is shown
-					hidePrompt()
-					field.setText(newText)
-				}
-			}
-			// TODO: Trigger value update event
+			field.setText(newText)
 			isUpdatingText = false
 		}
 	}
@@ -288,6 +272,8 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 	
 	// IMPLEMENTED	--------------------
 	
+	override def drawable: CustomDrawComponent = field
+	
 	override protected def updateVisibility(visible: Boolean) = super[JWrapper].isVisible_=(visible)
 	
 	override def updateLayout() = Unit
@@ -299,7 +285,7 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 		resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
 	}
 	
-	override def component = field
+	override def component: JTextField = field
 	
 	override protected def calculatedStackSize =
 	{
@@ -361,33 +347,6 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 		changed.foreach(text_=)
 	}
 	
-	/**
-	  * Hides the prompt if one is currently being displayed
-	  */
-		// TODO: Create a new prompt system that uses custom drawing instead of field text
-	def hidePrompt() =
-	{
-		if (isDisplayingPrompt)
-		{
-			isDisplayingPrompt = false
-			field.setDocument(document)
-			field.setForeground(textColor.toAwt)
-			field.setFont(font.toAwt)
-		}
-	}
-	
-	private def showPrompt() =
-	{
-		if (!isDisplayingPrompt && prompt.isDefined)
-		{
-			isDisplayingPrompt = true
-			field.setDocument(promptDocument)
-			field.setText(prompt.get.text.string)
-			field.setForeground(prompt.get.color.toAwt)
-			field.setFont(prompt.get.font.toAwt)
-		}
-	}
-	
 	
 	// NESTED CLASSES	----------------------
 	
@@ -432,23 +391,29 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 				value = resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
 				isUpdatingText = false
 			}
+			
+			// Updates prompt display status
+			val newPromptStatus = text.isEmpty && prompt.isDefined
+			if (isDisplayingPrompt != newPromptStatus)
+			{
+				isDisplayingPrompt = newPromptStatus
+				repaint()
+			}
 		}
 	}
 	
-	private class PromptFocusListener extends FocusListener
+	private class PromptDrawer extends CustomDrawer
 	{
-		override def focusGained(e: FocusEvent) = hidePrompt()
+		override val drawLevel = Normal
 		
-		override def focusLost(e: FocusEvent) =
+		override def draw(drawer: Drawer, bounds: Bounds) =
 		{
-			filter()
-			// May show prompt when focus is lost
-			if (text.isEmpty) showPrompt()
-			// Informs results listeners
-			if (resultListeners.nonEmpty)
+			if (isDisplayingPrompt)
 			{
-				val result = value
-				resultListeners.foreach { _(result) }
+				prompt.foreach { p =>
+					drawer.clippedTo(bounds).withEdgeColor(textColor.timesAlpha(0.66)).drawText(p.text.string,
+						p.font.toAwt, bounds.topLeft + insideMargins.optimal)
+				}
 			}
 		}
 	}
@@ -459,4 +424,17 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 		
 		override def focusLost(e: FocusEvent) = background = defaultBackground
 	}
+}
+
+private class CustomTextField extends JTextField with CustomDrawComponent
+{
+	// IMPLEMENTED	-----------------
+	
+	override def drawBounds = Bounds(Point.origin, Size.of(getSize()) - (1, 1))
+	
+	override def paintComponent(g: Graphics) = customPaintComponent(g, super.paintComponent)
+	
+	override def paintChildren(g: Graphics) = customPaintChildren(g, super.paintChildren)
+	
+	override def isPaintingOrigin = shouldPaintOrigin()
 }
