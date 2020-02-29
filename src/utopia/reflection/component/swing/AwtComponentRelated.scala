@@ -1,7 +1,7 @@
 package utopia.reflection.component.swing
 
 import java.awt.Cursor
-import java.awt.event.{FocusEvent, FocusListener}
+import java.awt.event.{FocusEvent, FocusListener, KeyEvent}
 
 /**
   * This trait is extended by classes that have a related awt component
@@ -75,6 +75,19 @@ trait AwtComponentRelated
 	  */
 	def addFocusLostListener(onFocusLost: => Unit) = component.addFocusListener(
 		new FunctionalFocusListener(None, Some(() => onFocusLost)))
+	
+	/**
+	  * Relays awt-originated key-events to another awt component
+	  * @param anotherComponent Targeted awt component
+	  */
+	def relayAwtKeyEventsTo(anotherComponent: java.awt.Component) =
+		component.addKeyListener(new KeyEventRelayer(anotherComponent))
+	
+	/**
+	  * Relays awt-originated key-events to another awt component
+	  * @param anotherComponent Targeted awt component wrapper
+	  */
+	def relayAwtKeyEventsTo(anotherComponent: AwtComponentRelated): Unit = relayAwtKeyEventsTo(anotherComponent.component)
 }
 
 private class FunctionalFocusListener(onFocusGained: Option[() => Unit], onFocusLost: Option[() => Unit]) extends FocusListener
@@ -82,4 +95,15 @@ private class FunctionalFocusListener(onFocusGained: Option[() => Unit], onFocus
 	override def focusGained(e: FocusEvent) = onFocusGained.foreach { _() }
 	
 	override def focusLost(e: FocusEvent) = onFocusLost.foreach { _() }
+}
+
+private class KeyEventRelayer(targetComponent: java.awt.Component) extends java.awt.event.KeyListener
+{
+	override def keyTyped(e: KeyEvent) = relayEvent(e)
+	
+	override def keyPressed(e: KeyEvent) = relayEvent(e)
+	
+	override def keyReleased(e: KeyEvent) = relayEvent(e)
+	
+	private def relayEvent(e: KeyEvent) = targetComponent.dispatchEvent(e)
 }

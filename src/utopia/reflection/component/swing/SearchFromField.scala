@@ -16,12 +16,13 @@ import utopia.reflection.container.swing.Stack.AwtStackable
 import utopia.reflection.container.swing.window.{Popup, Window}
 import utopia.reflection.controller.data.StackSelectionManager
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
-import utopia.reflection.shape.StackLength
+import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt}
 import utopia.flow.util.StringExtensions._
 import utopia.genesis.event.KeyStateEvent
-import utopia.genesis.handling.KeyStateListener
+import utopia.genesis.handling.{KeyStateListener, MouseMoveListener}
 import utopia.inception.handling.immutable.Handleable
+import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.swing.label.ItemLabel
 import utopia.reflection.util.ComponentContext
 
@@ -51,7 +52,7 @@ object SearchFromField
 	(implicit context: ComponentContext, exc: ExecutionContext) =
 	{
 		val field = new SearchFromField[A, C](context.actorHandler, selectionPrompt, context.textFieldWidth,
-			context.insideMargins.height, new BackgroundDrawer(context.highlightColor), context.font, context.textColor,
+			context.insideMargins, new BackgroundDrawer(context.highlightColor, Normal), context.font, context.textColor,
 			context.promptTextColor, context.stackMargin, displayStackLayout, maxNumberOfDisplaysShown, contentPointer,
 			checkEquals)(makeDisplay)(itemToSearchString)
 		context.setBorderAndBackground(field)
@@ -71,7 +72,7 @@ object SearchFromField
 	  * @tparam A Type of selected item
 	  * @return A new search from field
 	  */
-	def contextualWithTextOnly[A](displayFunction: DisplayFunction[A], selectionPrompt: LocalizedString,
+	def contextualWithTextOnly[A](selectionPrompt: LocalizedString, displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 								  maxNumberOfDisplaysShown: Option[Int] = None, displayStackLayout: StackLayout = Fit,
 								  contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 								  checkEquals: (A, A) => Boolean = (a: A, b: A) => a == b)
@@ -93,9 +94,10 @@ object SearchFromField
   * @since 26.2.2020, v1
   */
 class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
-(actorHandler: ActorHandler, selectionPrompt: LocalizedString, defaultWidth: StackLength, vMargin: StackLength,
+(actorHandler: ActorHandler, selectionPrompt: LocalizedString, defaultWidth: StackLength, insideFieldMargins: StackSize,
  selectionDrawer: CustomDrawer, font: Font, textColor: Color = Color.textBlack,
- promptTextColor: Color = Color.textBlackDisabled, betweenDisplaysMargin: StackLength = StackLength.fixed(0),
+ promptTextColor: Color = Color.textBlackDisabled,
+ betweenDisplaysMargin: StackLength = StackLength.fixed(0),
  displayStackLayout: StackLayout = Fit, maxNumberOfDisplaysShown: Option[Int] = None,
  val contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents(Vector()),
  checkEquals: (A, A) => Boolean = (a: A, b: A) => a == b)(makeDisplay: A => C)(itemToSearchString: A => String)
@@ -104,12 +106,13 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 {
 	// ATTRIBUTES	----------------------------
 	
-	private val searchField = new TextField(defaultWidth, vMargin, font,
+	private val searchField = new TextField(defaultWidth, insideFieldMargins, font,
 		prompt = Some(Prompt(selectionPrompt, font, promptTextColor)), textColor = textColor)
 	private val searchStack = Stack.column[C](margin = betweenDisplaysMargin, layout = displayStackLayout)
 	private val displaysManager = new StackSelectionManager[A, C](searchStack, selectionDrawer, checkEquals)(makeDisplay)
 	
 	// TODO: Consider making this a volatile option
+	private var focusGainSkips = 0
 	private var visiblePopup: Option[Window[_]] = None
 	private var isSelected = false
 	private var currentSearchString = ""
@@ -119,13 +122,27 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 	
 	// INITIAL CODE	-----------------------------
 	
+	searchStack.background = background
+	
 	// When the field gains focus, displays the pop-up window (if not yet displayed)
-	searchField.addFocusChangedListener
-	{displayPopup()}
-	{
-		visiblePopup.foreach
-		{_.close()}
-		visiblePopup = None
+	searchField.addFocusChangedListener {
+		if (focusGainSkips > 0)
+			focusGainSkips -= 1
+		else
+			displayPopup()
+	} {
+		// visiblePopup.foreach { _.close() }
+		// visiblePopup = None
+		// Also, when focus is lost and an item is selected, updates the text as well (unless field is empty,
+		// in which case selection is removed)
+		if (searchField.text.nonEmpty)
+			value match
+			{
+				case Some(selected) => searchField.text = itemToSearchString(selected)
+				case None => searchField.clear()
+			}
+		else
+			value = None
 	}
 	
 	// When content updates, changes selection options and updates field size
@@ -163,15 +180,19 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 				if (currentSearchString != newFilter)
 				{
 					currentSearchString = newFilter
+					updateDisplayedOptions()
 				}
 			case None =>
 				currentSearchString = ""
+				updateDisplayedOptions()
 		}
 	}
 	
 	displaysManager.enableMouseHandling()
+	displaysManager.enableKeyHandling(actorHandler, listenEnabledCondition = Some(() => searchField.isInFocus ||
+		visiblePopup.exists { _.isVisible }))
 	
-	addKeyStateListener(SelectionKeyListener)
+	// addKeyStateListener(SelectionKeyListener)
 	
 	
 	// IMPLEMENTED	----------------------------
@@ -181,6 +202,8 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 	override def valuePointer = displaysManager.valuePointer
 	
 	override protected def wrapped = searchField
+	
+	override def background_=(color: Color) = searchField.background = color
 	
 	
 	// OTHER	--------------------------------
@@ -214,15 +237,22 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 			// Creates and displays the popup
 			val popup = Popup(searchField, searchStack, actorHandler, (fieldSize, _) => Point(0, fieldSize.height))
 			visiblePopup = Some(popup)
-			popup.display(gainFocus = false)
-			popup.closeFuture.foreach
-			{ _ => visiblePopup = None }
+			// TODO: Instead of window not gaining focus, deliver key events to search field from the pop-up (also handle focus lost differently)
+			popup.relayAwtKeyEventsTo(searchField)
+			// TODO: Also set to close on enter and tab
+			popup.setToCloseOnEsc()
+			popup.display()
+			popup.closeFuture.foreach { _ =>
+				focusGainSkips += 1
+				visiblePopup = None
+			}
 		}
 	}
 	
 	
 	// NESTED	-------------------------------
 	
+	/*
 	private object SelectionKeyListener extends KeyStateListener with Handleable
 	{
 		override def isReceivingKeyStateEvents = visiblePopup.forall { _.isVisible }
@@ -233,5 +263,5 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 		
 		override def onKeyState(event: KeyStateEvent) = if (event.index == KeyEvent.VK_UP)
 			displaysManager.selectPrevious() else displaysManager.selectNext()
-	}
+	}*/
 }

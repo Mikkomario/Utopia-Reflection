@@ -10,7 +10,6 @@ import javax.swing.text.{Document, PlainDocument}
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
-import utopia.genesis.shape.Axis
 import utopia.genesis.shape.Axis.X
 import utopia.reflection.component.{Alignable, Focusable}
 import utopia.reflection.component.input.InteractionWithPointer
@@ -25,69 +24,69 @@ object TextField
 	/**
 	  * Creates a new text field that is used for writing positive integers
 	  * @param targetWidth Target width of the field
-	  * @param vMargin Vertical margin placed on each side of text
+	  * @param insideMargins Margins placed on each side of text
 	  * @param font Font used within this field
 	  * @param initialValue The initial value displayed (default = None)
 	  * @param prompt A prompt displayed when this field is empty (default = None)
 	  * @param textColor The text color used (default = 88% opacity black)
 	  * @return A new text field that formats values to positive integers
 	  */
-	def forPositiveInts(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Int] = None,
-						prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	def forPositiveInts(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Int] = None,
+						prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
 	{
-		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.digit, 10),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numericPositive))
+		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.digit, 10),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numericPositive), alignment)
 	}
 	
 	/**
 	  * Creates a new text field that is used for writing integers
 	  * @param targetWidth Target width of the field
-	  * @param vMargin Vertical margin placed on each side of text
+	  * @param insideMargins Margins placed on each side of text
 	  * @param font Font used within this field
 	  * @param initialValue The initial value displayed (default = None)
 	  * @param prompt A prompt displayed when this field is empty (default = None)
 	  * @param textColor The text color used (default = 88% opacity black)
 	  * @return A new text field that formats values to integers
 	  */
-	def forInts(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Int] = None,
-				prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	def forInts(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Int] = None,
+				prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
 	{
-		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.numericParts, 11),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numeric))
+		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.numericParts, 11),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numeric), alignment)
 	}
 	
 	/**
 	  * Creates a new text field that is used for writing positive doubles
 	  * @param targetWidth Target width of the field
-	  * @param vMargin Vertical margin placed on each side of text
+	  * @param insideMargins Margins placed on each side of text
 	  * @param font Font used within this field
 	  * @param initialValue The initial value displayed (default = None)
 	  * @param prompt A prompt displayed when this field is empty (default = None)
 	  * @param textColor The text color used (default = 88% opacity black)
 	  * @return A new text field that formats values to positive doubles
 	  */
-	def forPositiveDoubles(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Double] = None,
-						   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	def forPositiveDoubles(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Double] = None,
+						   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
 	{
-		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.decimalPositiveParts, 24),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimalPositive))
+		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.decimalPositiveParts, 24),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimalPositive), alignment)
 	}
 	
 	/**
 	  * Creates a new text field that is used for writing doubles
 	  * @param targetWidth Target width of the field
-	  * @param vMargin Vertical margin placed on each side of text
+	  * @param insideMargins Margins placed on each side of text
 	  * @param font Font used within this field
 	  * @param initialValue The initial value displayed (default = None)
 	  * @param prompt A prompt displayed when this field is empty (default = None)
 	  * @param textColor The text color used (default = 88% opacity black)
 	  * @return A new text field that formats values to doubles
 	  */
-	def forDoubles(targetWidth: StackLength, vMargin: StackLength, font: Font, initialValue: Option[Double] = None,
-				   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack) =
+	def forDoubles(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Double] = None,
+				   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
 	{
-		new TextField(targetWidth, vMargin, font, FilterDocument(Regex.decimalParts, 24),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimal))
+		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.decimalParts, 24),
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimal), alignment)
 	}
 	
 	/**
@@ -103,17 +102,11 @@ object TextField
 				   prompt: Option[LocalizedString] = None, resultFilter: Option[Regex] = None)
 				  (implicit context: ComponentContext) =
 	{
-		val field = new TextField(context.textFieldWidth, context.insideMargins.along(Axis.Y), context.font, document,
+		val field = new TextField(context.textFieldWidth, context.insideMargins, context.font, document,
 			initialText, prompt.map { Prompt(_, context.promptFont, context.promptTextColor) }, context.textColor,
 			resultFilter)
 		context.setBorderAndBackground(field)
 		field.addFocusHighlight(context.focusColor)
-		
-		val alignment = context.textAlignment.horizontal
-		if (alignment == Alignment.Left)
-			field.alignLeft(context.insideMargins.width.optimal)
-		else
-			field.align(alignment)
 		
 		field
 	}
@@ -168,17 +161,17 @@ object TextField
   * @author Mikko Hilpinen
   * @since 1.5.2019, v1+
   * @param initialTargetWidth The target width of this field
-  * @param vMargin The target vertical margin around text in this field
+  * @param insideMargins The target margins around text in this field
   * @param font The font used in this field
   * @param document The document used in this field (default = plain document)
   * @param initialText The initially displayed text (default = "")
   * @param prompt The prompt for this field (default = None)
   * @param textColor The text color in this field (default = 88% opacity black)
   */
-class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font: Font,
+class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, font: Font,
 				val document: Document = new PlainDocument(), initialText: String = "",
 				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,
-				resultFilter: Option[Regex] = None)
+				resultFilter: Option[Regex] = None, initialAlignment: Alignment = Alignment.Left)
 	extends JWrapper with CachingStackable with InteractionWithPointer[Option[String]] with Alignable with Focusable
 {
 	// ATTRIBUTES	----------------------
@@ -202,7 +195,6 @@ class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font:
 	field.setFont(font.toAwt)
 	field.setForeground(textColor.toAwt)
 	field.setDocument(document)
-	alignCenter()
 	
 	setBorder(defaultBorder)
 	text = initialText
@@ -212,6 +204,15 @@ class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font:
 	if (prompt.isDefined)
 		field.addFocusListener(new PromptFocusListener())
 	valuePointer.addListener(new ValueChangeListener)
+	
+	{
+		// TODO: Handle alignment better (take into account bottom & top alignments)
+		val alignment = initialAlignment.horizontal
+		if (alignment == Alignment.Left)
+			alignLeft(insideMargins.width.optimal)
+		else
+			align(alignment)
+	}
 	
 	
 	// COMPUTED	--------------------------
@@ -244,25 +245,33 @@ class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font:
 	}
 	def text_=(newText: String): Unit =
 	{
-		isUpdatingText = true
-		if (prompt.isEmpty)
-			field.setText(newText)
-		else
+		if (!isUpdatingText)
 		{
-			// On empty text, may display prompt instead
-			if (newText.isEmpty)
-			{
+			// Updates text field value
+			val raw = newText.trim
+			value = resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
+			
+			isUpdatingText = true
+			if (prompt.isEmpty)
 				field.setText(newText)
-				showPrompt()
-			}
 			else
 			{
-				// May disable a prompt if one is shown
-				hidePrompt()
-				field.setText(newText)
+				// On empty text, may display prompt instead
+				if (newText.isEmpty)
+				{
+					field.setText(newText)
+					showPrompt()
+				}
+				else
+				{
+					// May disable a prompt if one is shown
+					hidePrompt()
+					field.setText(newText)
+				}
 			}
+			// TODO: Trigger value update event
+			isUpdatingText = false
 		}
-		isUpdatingText = false
 	}
 	def text_=(newText: Option[String]): Unit = text_=(newText getOrElse "")
 	
@@ -294,7 +303,7 @@ class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font:
 	
 	override protected def calculatedStackSize =
 	{
-		val h = textHeight.map { vMargin * 2 + _ } getOrElse 32.any
+		val h = textHeight.map { insideMargins.height * 2 + _ } getOrElse 32.any
 		StackSize(targetWidth, h)
 	}
 	
@@ -352,7 +361,11 @@ class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font:
 		changed.foreach(text_=)
 	}
 	
-	private def hidePrompt() =
+	/**
+	  * Hides the prompt if one is currently being displayed
+	  */
+		// TODO: Create a new prompt system that uses custom drawing instead of field text
+	def hidePrompt() =
 	{
 		if (isDisplayingPrompt)
 		{
@@ -412,10 +425,13 @@ class TextField(initialTargetWidth: StackLength, val vMargin: StackLength, font:
 		
 		private def handleInputChange() =
 		{
-			isUpdatingText = true
-			val raw = text.trim
-			value = resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
-			isUpdatingText = false
+			if (!isUpdatingText)
+			{
+				isUpdatingText = true
+				val raw = text.trim
+				value = resultFilter.map { _.findFirstFrom(raw) }.getOrElse { if (raw.isEmpty) None else Some(raw) }
+				isUpdatingText = false
+			}
 		}
 	}
 	

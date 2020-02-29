@@ -3,7 +3,10 @@ package utopia.reflection.container.swing.window
 import javax.swing.{JFrame, WindowConstants}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.swing.AwtContainerRelated
+import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.LocalizedString
+import utopia.reflection.shape.Alignment
+import utopia.reflection.shape.Alignment.Center
 
 object Frame
 {
@@ -12,22 +15,30 @@ object Frame
       * @param content The frame contents
       * @param title The frame title
       * @param resizePolicy The policy used about Frame resizing. By default, only the user may resize the Frame
+      * @param resizeAlignment Alignment used when repositioning this window when its size changes
+      *                        (used when program dictates window size). Default = Center = window's center point will
+      *                        remain the same.
+      * @param borderless Whether borderless windowed mode should be used (default = false)
       * @return A new windowed frame
       */
     def windowed[C <: Stackable with AwtContainerRelated](content: C, title: LocalizedString,
                                                           resizePolicy: WindowResizePolicy = WindowResizePolicy.User,
+                                                          resizeAlignment: Alignment = Center,
                                                           borderless: Boolean = false) =
-        new Frame(content, title, resizePolicy, borderless, false, false)
+        new Frame(content, title, resizePolicy, resizeAlignment, borderless, false, false)
     
     /**
       * Creates a new full screen frame
       * @param content The frame contents
       * @param title The frame title
-      * @param showToolBar Whether tool bar (bottom) should be displayed
+      * @param showToolBar Whether tool bar (bottom) should be displayed (default = true)
+      * @param resizeAlignment Alignment that determines window position when its size changes
+      *                        (used if this window becomes non-fullscreen). Default = Center.
       * @return A new full screen frame
       */
-    def fullScreen[C <: Stackable with AwtContainerRelated](content: C, title: LocalizedString, showToolBar: Boolean) =
-        new Frame(content, title, WindowResizePolicy.Program, true, true, showToolBar)
+    def fullScreen[C <: Stackable with AwtContainerRelated](content: C, title: LocalizedString, showToolBar: Boolean = true,
+                                                            resizeAlignment: Alignment = Center) =
+        new Frame(content, title, WindowResizePolicy.Program, resizeAlignment, true, true, showToolBar)
 }
 
 /**
@@ -36,8 +47,11 @@ object Frame
 * @since 26.3.2019
 **/
 class Frame[C <: Stackable with AwtContainerRelated](override val content: C, override val title: LocalizedString,
-                                                     startResizePolicy: WindowResizePolicy, val borderless: Boolean,
-                                                     startFullScreen: Boolean, startWithToolBar: Boolean) extends Window[C]
+                                                     startResizePolicy: WindowResizePolicy = User,
+                                                     override val resizeAlignment: Alignment = Center,
+                                                     val borderless: Boolean = false,
+                                                     startFullScreen: Boolean = false,
+                                                     startWithToolBar: Boolean = true) extends Window[C]
 {
     // ATTRIBUTES    -------------------
     

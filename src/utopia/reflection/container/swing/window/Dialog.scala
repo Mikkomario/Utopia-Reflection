@@ -5,6 +5,8 @@ import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.LocalizedString
+import utopia.reflection.shape.Alignment
+import utopia.reflection.shape.Alignment.Center
 
 /**
 * A frame operates as the / a main window in an app
@@ -14,6 +16,7 @@ import utopia.reflection.localization.LocalizedString
 class Dialog[C <: Stackable with AwtContainerRelated](owner: java.awt.Window, override val content: C,
                                                       override val title: LocalizedString,
                                                       startResizePolicy: WindowResizePolicy = User,
+                                                      override val resizeAlignment: Alignment = Center,
                                                       borderless: Boolean = false) extends Window[C]
 {
     // ATTRIBUTES    -------------------

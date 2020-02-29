@@ -10,6 +10,8 @@ import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.container.swing.window.WindowResizePolicy.Program
+import utopia.reflection.shape.Alignment
+import utopia.reflection.shape.Alignment.TopLeft
 import utopia.reflection.util.Screen
 
 /**
@@ -28,17 +30,20 @@ object Popup
 	  * @param getTopLeft A function for calculating the new top left corner of the pop-up within context component.
 	  *                   Provided parameters are: a) Context size and b) pop-up window size
 	  * @param hideWhenFocusLost Whether the pop-up should be hidden when it loses focus (default = true)
+	  * @param resizeAlignment Alignment used for handling pop-up position when its size changes.
+	  *                        Default = Top Left = Pop up's position wil remain the same
 	  * @tparam C Type of displayed item
 	  * @return Newly created and pop-up window
 	  */
 	def apply[C <: AwtContainerRelated with Stackable](context: ComponentLike with AwtComponentRelated, content: C,
 													   actorHandler: ActorHandler, getTopLeft: (Size, Size) => Point,
-													   hideWhenFocusLost: Boolean = true) =
+													   hideWhenFocusLost: Boolean = true,
+													   resizeAlignment: Alignment = TopLeft) =
 	{
 		// If context isn't in a window (which it should), has to use a Frame instead of a dialog
 		val owner = context.parentWindow
 		val windowTitle = "Popup".local("en").localizationSkipped
-		val newWindow = owner.map { o => new Dialog(o, content, windowTitle, Program, borderless = true) }.getOrElse(
+		val newWindow = owner.map { o => new Dialog(o, content, windowTitle, Program, resizeAlignment, borderless = true) }.getOrElse(
 			Frame.windowed(content, windowTitle, Program, borderless = true))
 		
 		// Calculates the absolute target position

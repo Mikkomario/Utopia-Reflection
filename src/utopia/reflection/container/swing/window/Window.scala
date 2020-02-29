@@ -7,6 +7,7 @@ import utopia.flow.datastructure.mutable.Lazy
 import utopia.genesis.color.Color
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.handling._
+import utopia.genesis.shape.{Axis, Axis2D, Vector3D}
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
 import utopia.reflection.component.stack.Stackable
@@ -16,7 +17,7 @@ import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.Insets
+import utopia.reflection.shape.{Alignment, Insets}
 import utopia.reflection.util.Screen
 
 import scala.concurrent.Promise
@@ -65,6 +66,11 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
       * @return The current resize policy for this window
       */
     def resizePolicy: WindowResizePolicy
+    
+    /**
+      * @return Alignment used for positioning this window when its size changes
+      */
+    def resizeAlignment: Alignment
     
     
     // COMPUTED    ----------------
@@ -269,7 +275,17 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
                 size = stackSize.optimal
                 
                 val increase = size - oldSize
-                position = (position - (increase / 2).toVector).positive
+                // FIXME You don't always want the window to remain centered
+                // Window movement is determined by resize alignment
+                val movement = Axis2D.values.map { axis =>
+                    val move = resizeAlignment.directionAlong(axis) match
+                    {
+                        case Some(moveDirection) => if (moveDirection.isPositiveDirection) increase.along(axis) else 0.0
+                        case None => increase.along(axis) / 2.0
+                    }
+                    (axis: Axis) -> move
+                }.toMap
+                position = (position - Vector3D.of(movement)).positive
             }
             else
                 checkWindowBounds()
