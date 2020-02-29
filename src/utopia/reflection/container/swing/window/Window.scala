@@ -85,6 +85,11 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
       */
     def closeFuture = closePromise.future
     
+    /**
+      * @return Whether this is the currently focused window
+      */
+    def isFocusedWindow = component.isFocused
+    
     
     // IMPLEMENTED    --------------
     
@@ -230,7 +235,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
      * Makes it so that this window will close one escape is pressed
      */
     def setToCloseOnEsc() = addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_ESCAPE, _ =>
-        if (component.isFocused) close()))
+        if (isFocusedWindow) close()))
     
     /**
       * Updates the bounds of this window's contents to match those of this window

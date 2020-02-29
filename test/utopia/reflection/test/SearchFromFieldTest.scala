@@ -51,5 +51,7 @@ object SearchFromFieldTest extends App
 	field.content = Vector("The first string", "Another piece of text", "More text", "Lorem ipsum", "Tramboliini",
 		"Keijupuisto", "Ääkkösiä", "Pulppura", "Potentiaalinen koneisto")
 	
-	new SingleFrameSetup(actorHandler, Frame.windowed(content, "Search Field Test", Program)).start()
+	val frame = Frame.windowed(content, "Search Field Test", Program)
+	frame.setToCloseOnEsc()
+	new SingleFrameSetup(actorHandler, frame).start()
 }

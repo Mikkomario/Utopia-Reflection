@@ -19,8 +19,8 @@ import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt}
 import utopia.flow.util.StringExtensions._
-import utopia.genesis.event.KeyStateEvent
-import utopia.genesis.handling.{KeyStateListener, MouseMoveListener}
+import utopia.genesis.event.{ConsumeEvent, KeyStateEvent, MouseButtonStateEvent}
+import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener}
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.swing.label.ItemLabel
@@ -114,7 +114,6 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 	// TODO: Consider making this a volatile option
 	private var focusGainSkips = 0
 	private var visiblePopup: Option[Window[_]] = None
-	private var isSelected = false
 	private var currentSearchString = ""
 	private var currentOptions = content.map
 	{ a => itemToSearchString(a) -> a }.toMap
@@ -131,18 +130,19 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 		else
 			displayPopup()
 	} {
-		// visiblePopup.foreach { _.close() }
-		// visiblePopup = None
 		// Also, when focus is lost and an item is selected, updates the text as well (unless field is empty,
 		// in which case selection is removed)
-		if (searchField.text.nonEmpty)
-			value match
-			{
-				case Some(selected) => searchField.text = itemToSearchString(selected)
-				case None => searchField.clear()
-			}
-		else
-			value = None
+		if (visiblePopup.isEmpty)
+		{
+			if (searchField.text.nonEmpty)
+				value match
+				{
+					case Some(selected) => searchField.text = itemToSearchString(selected)
+					case None => searchField.clear()
+				}
+			else
+				value = None
+		}
 	}
 	
 	// When content updates, changes selection options and updates field size
@@ -158,16 +158,10 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 	// When selection changes in pop-up, updates text field contents
 	addValueListener
 	{ e =>
-		e.newValue match
-		{
-			case Some(newSelected) =>
-				if (!isSelected)
-					isSelected = true
-				val newItemAsString = itemToSearchString(newSelected)
-				currentSearchString = newItemAsString
-				searchField.text = newItemAsString
-			case None =>
-				isSelected = false
+		e.newValue.foreach { newSelected =>
+			val newItemAsString = itemToSearchString(newSelected)
+			currentSearchString = newItemAsString
+			searchField.text = newItemAsString
 		}
 	}
 	
@@ -192,7 +186,11 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 	displaysManager.enableKeyHandling(actorHandler, listenEnabledCondition = Some(() => searchField.isInFocus ||
 		visiblePopup.exists { _.isVisible }))
 	
-	// addKeyStateListener(SelectionKeyListener)
+	addKeyStateListener(ShowPopupKeyListener)
+	// FIXME: Mouse button events are not being received correctly (problem in TextField)
+	// addMouseButtonListener(ShowPopupKeyListener)
+	
+	//addMouseMoveListener(MouseMoveListener.onEnter(bounds, _ => println("Entered area")))
 	
 	
 	// IMPLEMENTED	----------------------------
@@ -226,8 +224,23 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 				}.values.toVector
 			}
 		}
-		// Applies maximum limit, if specified
-		displaysManager.content = maxNumberOfDisplaysShown.map(availableItems.take).getOrElse(availableItems)
+		// If only a single item is available, auto-selects that one
+		if (availableItems.size == 1)
+		{
+			displaysManager.content = availableItems
+			// Selection is delayed because text field doesn't allow change from within event listener
+			value = Some(availableItems.head)
+			/*
+			WaitUtils.delayed(0.1.seconds) {
+				value = Some(availableItems.head)
+				visiblePopup.foreach { _.close() }
+			}*/
+		}
+		else
+		{
+			// Applies maximum limit, if specified
+			displaysManager.content = maxNumberOfDisplaysShown.map(availableItems.take).getOrElse(availableItems)
+		}
 	}
 	
 	private def displayPopup() =
@@ -235,16 +248,31 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 		if (visiblePopup.isEmpty && content.nonEmpty)
 		{
 			// Creates and displays the popup
+			searchStack.revalidate()
 			val popup = Popup(searchField, searchStack, actorHandler, (fieldSize, _) => Point(0, fieldSize.height))
 			visiblePopup = Some(popup)
-			// TODO: Instead of window not gaining focus, deliver key events to search field from the pop-up (also handle focus lost differently)
+			// Relays key events to the search field
 			popup.relayAwtKeyEventsTo(searchField)
-			// TODO: Also set to close on enter and tab
-			popup.setToCloseOnEsc()
+			popup.addKeyStateListener(KeyStateListener(_ => if (popup.isFocusedWindow) popup.close(),
+				KeyStateEvent.keysFilter(KeyEvent.VK_TAB, KeyEvent.VK_ENTER, KeyEvent.VK_ESCAPE) && KeyStateEvent.wasPressedFilter))
+			popup.addMouseButtonListener(MouseButtonStateListener(_ =>
+			{
+				if (popup.isFocusedWindow)
+					popup.close()
+				None
+			}, MouseButtonStateEvent.wasReleasedFilter))
 			popup.display()
 			popup.closeFuture.foreach { _ =>
 				focusGainSkips += 1
 				visiblePopup = None
+				value match
+				{
+					case Some(selected) =>
+						val selectedAsString = itemToSearchString(selected)
+						currentSearchString = selectedAsString
+						searchField.text = selectedAsString
+					case None => searchField.clear()
+				}
 			}
 		}
 	}
@@ -252,16 +280,26 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 	
 	// NESTED	-------------------------------
 	
-	/*
-	private object SelectionKeyListener extends KeyStateListener with Handleable
+	private object ShowPopupKeyListener extends KeyStateListener with Handleable with MouseButtonStateListener
 	{
-		override def isReceivingKeyStateEvents = visiblePopup.forall { _.isVisible }
+		private def isReceivingEvents = visiblePopup.isEmpty
 		
-		// Listens for up and down presses
-		override val keyStateEventFilter = KeyStateEvent.keysFilter(Vector(KeyEvent.VK_UP, KeyEvent.VK_DOWN)) &&
-			KeyStateEvent.wasPressedFilter
+		override def isReceivingKeyStateEvents = isReceivingEvents && searchField.isInFocus
 		
-		override def onKeyState(event: KeyStateEvent) = if (event.index == KeyEvent.VK_UP)
-			displaysManager.selectPrevious() else displaysManager.selectNext()
-	}*/
+		override val keyStateEventFilter = KeyStateEvent.wasPressedFilter &&
+			KeyStateEvent.notKeysFilter(Vector(KeyEvent.VK_ESCAPE, KeyEvent.VK_TAB))
+		
+		override def onKeyState(event: KeyStateEvent) = displayPopup()
+		
+		override def isReceivingMouseButtonStateEvents = isReceivingEvents
+		
+		override val mouseButtonStateEventFilter = MouseButtonStateEvent.leftPressedFilter // && (e => e.isOverArea(searchField.bounds))
+		
+		override def onMouseButtonState(event: MouseButtonStateEvent) =
+		{
+			println(s"Mouse pressed inside")
+			displayPopup()
+			Some(ConsumeEvent("Search From Field Clicked"))
+		}
+	}
 }

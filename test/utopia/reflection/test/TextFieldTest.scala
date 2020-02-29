@@ -4,7 +4,7 @@ import utopia.flow.generic.ValueConversions._
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
-import utopia.genesis.handling.ActorLoop
+import utopia.genesis.handling.{ActorLoop, MouseButtonStateListener}
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.Point
 import utopia.reflection.component.swing.button.TextButton
@@ -60,6 +60,7 @@ object TextFieldTest extends App
 				
 				val productField = TextField.contextual(prompt = Some("Describe product"))(textFieldContext)
 				productField.valuePointer.addListener { e => println(s"Product: ${e.newValue}") }
+				// productField.addMouseButtonListener(MouseButtonStateListener.onLeftPressedInside(productField.bounds, e => { println(e); None }))
 				
 				textRow += Stack.buildColumnWithContext(isRelated = true) { productColumn =>
 					
