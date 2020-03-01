@@ -220,6 +220,9 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 	if (prompt.isDefined)
 		addCustomDrawer(new PromptDrawer)
 	
+	// Needs to convert mouse button events to their Reflection counterparts
+	enableAwtMouseButtonEventConversion()
+	
 	
 	// COMPUTED	--------------------------
 	

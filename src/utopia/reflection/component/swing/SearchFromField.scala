@@ -155,16 +155,6 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 		else searchStack.stackSize.width
 	}
 	
-	// When selection changes in pop-up, updates text field contents
-	addValueListener
-	{ e =>
-		e.newValue.foreach { newSelected =>
-			val newItemAsString = itemToSearchString(newSelected)
-			currentSearchString = newItemAsString
-			searchField.text = newItemAsString
-		}
-	}
-	
 	// When text field updates (while no value is selected)
 	searchField.addValueListener
 	{
@@ -187,8 +177,7 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 		visiblePopup.exists { _.isVisible }))
 	
 	addKeyStateListener(ShowPopupKeyListener)
-	// FIXME: Mouse button events are not being received correctly (problem in TextField)
-	// addMouseButtonListener(ShowPopupKeyListener)
+	addMouseButtonListener(ShowPopupKeyListener)
 	
 	//addMouseMoveListener(MouseMoveListener.onEnter(bounds, _ => println("Entered area")))
 	
@@ -230,11 +219,6 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 			displaysManager.content = availableItems
 			// Selection is delayed because text field doesn't allow change from within event listener
 			value = Some(availableItems.head)
-			/*
-			WaitUtils.delayed(0.1.seconds) {
-				value = Some(availableItems.head)
-				visiblePopup.foreach { _.close() }
-			}*/
 		}
 		else
 		{
@@ -293,11 +277,10 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 		
 		override def isReceivingMouseButtonStateEvents = isReceivingEvents
 		
-		override val mouseButtonStateEventFilter = MouseButtonStateEvent.leftPressedFilter // && (e => e.isOverArea(searchField.bounds))
+		override val mouseButtonStateEventFilter = MouseButtonStateEvent.leftPressedFilter && (e => e.isOverArea(searchField.bounds))
 		
 		override def onMouseButtonState(event: MouseButtonStateEvent) =
 		{
-			println(s"Mouse pressed inside")
 			displayPopup()
 			Some(ConsumeEvent("Search From Field Clicked"))
 		}

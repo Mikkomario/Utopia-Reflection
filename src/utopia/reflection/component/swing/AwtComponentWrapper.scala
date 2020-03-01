@@ -1,12 +1,14 @@
 package utopia.reflection.component.swing
 
 import java.awt.Component
+import java.awt.event.MouseEvent
 
 import javax.swing.SwingUtilities
 import utopia.flow.async.VolatileFlag
 import utopia.flow.datastructure.mutable.Lazy
 import utopia.flow.util.NullSafe._
 import utopia.genesis.color.Color
+import utopia.genesis.event.{MouseButtonStateEvent, MouseButtonStatus}
 import utopia.genesis.handling.mutable._
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
@@ -154,6 +156,13 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
     // OTHER    -------------------------
     
     /**
+      * Enables awt event-conversion for received mouse button events in this component. Use this when the component
+      * naturally consumes awt mouse button events and when you wish to share those events with the mouse event
+      * handling system in Reflection.
+      */
+    def enableAwtMouseButtonEventConversion() = component.addMouseListener(new AwtMouseEventImporter)
+    
+    /**
       * Performs a (longer) operation on the GUI thread and updates the component size & position only after the update
       * has been done
       * @param operation The operation that will be run
@@ -216,6 +225,31 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
                 nextParent = None
             result
         }
+    }
+    
+    private class AwtMouseEventImporter extends java.awt.event.MouseListener
+    {
+        private var currentButtonStatus = MouseButtonStatus.empty
+        
+        override def mouseClicked(e: MouseEvent) = Unit
+        
+        override def mousePressed(e: MouseEvent) = updateMouseButtonStatus(e, newStatus = true)
+        
+        override def mouseReleased(e: MouseEvent) = updateMouseButtonStatus(e, newStatus = false)
+        
+        override def mouseEntered(e: MouseEvent) = Unit
+        
+        override def mouseExited(e: MouseEvent) = Unit
+        
+        private def updateMouseButtonStatus(e: MouseEvent, newStatus: Boolean) =
+        {
+            currentButtonStatus += (e.getButton, newStatus)
+            val eventPosition = positionOfEvent(e)
+            val event = MouseButtonStateEvent(e.getButton, isDown = newStatus, eventPosition, currentButtonStatus)
+            distributeMouseButtonEvent(event)
+        }
+        
+        private def positionOfEvent(e: MouseEvent) = Point.of(e.getPoint) + position
     }
 }
 
