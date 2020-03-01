@@ -20,7 +20,8 @@ import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt}
 import utopia.flow.util.StringExtensions._
 import utopia.genesis.event.{ConsumeEvent, KeyStateEvent, MouseButtonStateEvent}
-import utopia.genesis.handling.{KeyStateListener, MouseButtonStateListener}
+import utopia.genesis.handling.{KeyStateHandlerType, KeyStateListener, MouseButtonStateHandlerType, MouseButtonStateListener}
+import utopia.inception.handling.HandlerType
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.swing.label.ItemLabel
@@ -268,14 +269,17 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 	{
 		private def isReceivingEvents = visiblePopup.isEmpty
 		
-		override def isReceivingKeyStateEvents = isReceivingEvents && searchField.isInFocus
+		override def allowsHandlingFrom(handlerType: HandlerType) = handlerType match
+		{
+			case KeyStateHandlerType => isReceivingEvents && searchField.isInFocus
+			case MouseButtonStateHandlerType => isReceivingEvents
+			case _ => super.allowsHandlingFrom(handlerType)
+		}
 		
 		override val keyStateEventFilter = KeyStateEvent.wasPressedFilter &&
 			KeyStateEvent.notKeysFilter(Vector(KeyEvent.VK_ESCAPE, KeyEvent.VK_TAB))
 		
 		override def onKeyState(event: KeyStateEvent) = displayPopup()
-		
-		override def isReceivingMouseButtonStateEvents = isReceivingEvents
 		
 		override val mouseButtonStateEventFilter = MouseButtonStateEvent.leftPressedFilter && (e => e.isOverArea(searchField.bounds))
 		
