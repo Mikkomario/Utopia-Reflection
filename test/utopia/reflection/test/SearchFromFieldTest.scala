@@ -1,18 +1,16 @@
 package utopia.reflection.test
 
-import utopia.flow.async.{Loop, ThreadPool}
-import utopia.genesis.color.{Color, RGB}
+import utopia.flow.async.ThreadPool
+import utopia.flow.datastructure.mutable.PointerWithEvents
+import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.genesis.shape.shape2D.{Direction2D, Size}
 import utopia.reflection.component.swing.SearchFromField
 import utopia.reflection.component.swing.button.TextButton
 import utopia.reflection.container.swing.Stack
-import utopia.reflection.container.swing.Stack.AwtStackable
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.Program
 import utopia.reflection.localization.{Localizer, NoLocalization}
-import utopia.reflection.shape.StackSize
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 import utopia.reflection.util.{ComponentContext, ComponentContextBuilder, SingleFrameSetup}
@@ -41,7 +39,9 @@ object SearchFromFieldTest extends App
 	implicit val baseContext: ComponentContext = baseCB.result
 	implicit val exc: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
-	val field = SearchFromField.contextualWithTextOnly[String]("Search for string")
+	val searchPointer = new PointerWithEvents[Option[String]](None)
+	val field = SearchFromField.contextualWithTextOnly[String]("Search for string",
+		SearchFromField.noResultsLabel("No results for '%s'", searchPointer), searchFieldPointer = searchPointer)
 	val button = TextButton.contextual("OK", () => println(field.value))
 	val content = Stack.buildColumnWithContext() { s =>
 		s += field

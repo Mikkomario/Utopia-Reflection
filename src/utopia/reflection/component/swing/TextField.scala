@@ -37,10 +37,13 @@ object TextField
 	  * @return A new text field that formats values to positive integers
 	  */
 	def forPositiveInts(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Int] = None,
-						prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
+						prompt: Option[Prompt] = None, textColor: Color = Color.textBlack,
+						alignment: Alignment = Alignment.Left,
+						valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None)) =
 	{
 		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.digit, 10),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numericPositive), alignment)
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numericPositive), alignment,
+			valuePointer)
 	}
 	
 	/**
@@ -54,10 +57,11 @@ object TextField
 	  * @return A new text field that formats values to integers
 	  */
 	def forInts(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Int] = None,
-				prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
+				prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left,
+				valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None)) =
 	{
 		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.numericParts, 11),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numeric), alignment)
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.numeric), alignment, valuePointer)
 	}
 	
 	/**
@@ -71,11 +75,15 @@ object TextField
 	  * @return A new text field that formats values to positive doubles
 	  */
 	def forPositiveDoubles(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Double] = None,
-						   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
+						   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack,
+						   alignment: Alignment = Alignment.Left,
+						   valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None)) =
 	{
 		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.decimalPositiveParts, 24),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimalPositive), alignment)
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimalPositive), alignment, valuePointer)
 	}
+	
+	// TODO: A lot of WET WET here
 	
 	/**
 	  * Creates a new text field that is used for writing doubles
@@ -88,10 +96,12 @@ object TextField
 	  * @return A new text field that formats values to doubles
 	  */
 	def forDoubles(targetWidth: StackLength, insideMargins: StackSize, font: Font, initialValue: Option[Double] = None,
-				   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack, alignment: Alignment = Alignment.Left) =
+				   prompt: Option[Prompt] = None, textColor: Color = Color.textBlack,
+				   alignment: Alignment = Alignment.Left,
+				   valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None)) =
 	{
 		new TextField(targetWidth, insideMargins, font, FilterDocument(Regex.decimalParts, 24),
-			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimal), alignment)
+			initialValue.map { _.toString } getOrElse "", prompt, textColor, Some(Regex.decimal), alignment, valuePointer)
 	}
 	
 	/**
@@ -104,12 +114,13 @@ object TextField
 	  * @return A new text field
 	  */
 	def contextual(document: Document = new PlainDocument(), initialText: String = "",
-				   prompt: Option[LocalizedString] = None, resultFilter: Option[Regex] = None)
+				   prompt: Option[LocalizedString] = None, resultFilter: Option[Regex] = None,
+				   valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
 				  (implicit context: ComponentContext) =
 	{
 		val field = new TextField(context.textFieldWidth, context.insideMargins, context.font, document,
 			initialText, prompt.map { Prompt(_, context.promptFont, context.promptTextColor) }, context.textColor,
-			resultFilter)
+			resultFilter, context.textAlignment, valuePointer)
 		context.setBorderAndBackground(field)
 		field.addFocusHighlight(context.focusColor)
 		
@@ -123,9 +134,11 @@ object TextField
 	  * @param context Component creation context (implicit)
 	  * @return A new text field
 	  */
-	def contextualForPositiveInts(initialValue: Option[Int] = None, prompt: Option[LocalizedString] = None)
+	def contextualForPositiveInts(initialValue: Option[Int] = None, prompt: Option[LocalizedString] = None,
+								  valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
 								 (implicit context: ComponentContext) = contextual(
-		FilterDocument(Regex.digit, 10), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.numericPositive))
+		FilterDocument(Regex.digit, 10), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.numericPositive),
+		valuePointer)
 	
 	/**
 	  * Creates a field that is used for writing positive or negative integers. Uses component creation context.
@@ -134,9 +147,11 @@ object TextField
 	  * @param context Component creation context (implicit)
 	  * @return A new text field
 	  */
-	def contextualForInts(initialValue: Option[Int] = None, prompt: Option[LocalizedString] = None)
-								 (implicit context: ComponentContext) = contextual(
-		FilterDocument(Regex.numericParts, 11), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.numeric))
+	def contextualForInts(initialValue: Option[Int] = None, prompt: Option[LocalizedString] = None,
+						  valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
+						 (implicit context: ComponentContext) = contextual(
+		FilterDocument(Regex.numericParts, 11), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.numeric),
+		valuePointer)
 	
 	/**
 	  * Creates a field that is used for writing positive doubles. Uses component creation context.
@@ -145,9 +160,11 @@ object TextField
 	  * @param context Component creation context (implicit)
 	  * @return A new text field
 	  */
-	def contextualForPositiveDoubles(initialValue: Option[Double] = None, prompt: Option[LocalizedString] = None)
-								 (implicit context: ComponentContext) = contextual(
-		FilterDocument(Regex.decimalPositiveParts, 24), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.decimalPositive))
+	def contextualForPositiveDoubles(initialValue: Option[Double] = None, prompt: Option[LocalizedString] = None,
+									 valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
+									(implicit context: ComponentContext) = contextual(
+		FilterDocument(Regex.decimalPositiveParts, 24), initialValue.map { _.toString } getOrElse "", prompt,
+		Some(Regex.decimalPositive), valuePointer)
 	
 	/**
 	  * Creates a field that is used for writing positive or negative doubles. Uses component creation context.
@@ -156,9 +173,11 @@ object TextField
 	  * @param context Component creation context (implicit)
 	  * @return A new text field
 	  */
-	def contextualForDoubles(initialValue: Option[Double] = None, prompt: Option[LocalizedString] = None)
-						 (implicit context: ComponentContext) = contextual(
-		FilterDocument(Regex.decimalParts, 24), initialValue.map { _.toString } getOrElse "", prompt, Some(Regex.decimal))
+	def contextualForDoubles(initialValue: Option[Double] = None, prompt: Option[LocalizedString] = None,
+							 valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
+							(implicit context: ComponentContext) = contextual(
+		FilterDocument(Regex.decimalParts, 24), initialValue.map { _.toString } getOrElse "", prompt,
+		Some(Regex.decimal), valuePointer)
 }
 
 /**
@@ -172,11 +191,16 @@ object TextField
   * @param initialText The initially displayed text (default = "")
   * @param prompt The prompt for this field (default = None)
   * @param textColor The text color in this field (default = 88% opacity black)
+  * @param resultFilter Filter applied when querying results from this field (determines formatting on final text
+  *                     result). Default = None
+  * @param initialAlignment Alignment used for the text. Default = Left.
+  * @param valuePointer Pointer for holding the current value in this field (default = new pointer)
   */
 class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, font: Font,
 				val document: Document = new PlainDocument(), initialText: String = "",
 				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,
-				resultFilter: Option[Regex] = None, initialAlignment: Alignment = Alignment.Left)
+				resultFilter: Option[Regex] = None, initialAlignment: Alignment = Alignment.Left,
+				override val valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
 	extends JWrapper with CachingStackable with InteractionWithPointer[Option[String]] with Alignable with Focusable
 		with CustomDrawableWrapper
 {
@@ -189,8 +213,6 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 	private var isUpdatingText = false
 	private var enterListeners = Vector[Option[String] => Unit]()
 	private var resultListeners = Vector[Option[String] => Unit]()
-	
-	override val valuePointer = new PointerWithEvents[Option[String]](None)
 	
 	private var _targetWidth = initialTargetWidth
 	
