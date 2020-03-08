@@ -1,5 +1,6 @@
 package utopia.reflection.controller.data
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.reflection.component.Refreshable
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.stack.MultiStackContainer
@@ -16,9 +17,15 @@ import utopia.reflection.container.stack.MultiStackContainer
   * @param equalsCheck A function for checking whether two items should be considered equal (default = standard equals)
   */
 class ContainerContentManager[A, Container <: MultiStackContainer[Display], Display <: Stackable with Refreshable[A]]
-(protected val container: Container, protected val equalsCheck: (A, A) => Boolean = { (a: A, b: A) =>  a == b })
-(private val makeItem: A => Display) extends ContentManager[A, Display]
+(protected val container: Container, equalsCheck: (A, A) => Boolean = { (a: A, b: A) =>  a == b },
+ override val contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()))
+(makeItem: A => Display) extends ContentManager[A, Display]
 {
+	// INITIAL CODE	-----------------------
+	
+	setup()
+	
+	
 	// IMPLEMENTED	-----------------------
 	
 	override protected def itemsAreEqual(a: A, b: A) = equalsCheck(a, b)

@@ -10,6 +10,11 @@ object StackLength
 	  * A stack length that allows any value (from 0 and up, preferring 0)
 	  */
 	val any = new StackLength(0, 0, None)
+	
+	/**
+	  * A stack length that allows only 0
+	  */
+	val fixedZero = fixed(0)
     
     
     // CONSTRUCTORS    -------------

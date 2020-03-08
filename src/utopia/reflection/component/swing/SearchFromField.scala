@@ -263,7 +263,7 @@ class SearchFromField[A, C <: AwtStackable with Refreshable[A]]
 		{
 			// Creates and displays the popup
 			searchStack.revalidate()
-			val popup = Popup(searchField, popupContentView, actorHandler, (fieldSize, _) => Point(0, fieldSize.height))
+			val popup = Popup(searchField, popupContentView, actorHandler) { (fieldSize, _) => Point(0, fieldSize.height) }
 			visiblePopup = Some(popup)
 			// Relays key events to the search field
 			popup.relayAwtKeyEventsTo(searchField)

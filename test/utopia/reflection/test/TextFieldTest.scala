@@ -4,7 +4,7 @@ import utopia.flow.generic.ValueConversions._
 import utopia.flow.async.ThreadPool
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
-import utopia.genesis.handling.{ActorLoop, MouseButtonStateListener}
+import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.Point
 import utopia.reflection.component.swing.button.TextButton
@@ -89,7 +89,7 @@ object TextFieldTest extends App
 							row += okButton
 						}.framed(8.any x 8.any, Color.white)
 						
-						val popup = Popup(field, popupContent, actorHandler, (c, _) => Point(c.width + 16, 0) )
+						val popup = Popup(field, popupContent, actorHandler) { (c, _) => Point(c.width + 16, 0) }
 						okButton.registerAction(() => popup.close())
 						popup.isVisible = true
 					}

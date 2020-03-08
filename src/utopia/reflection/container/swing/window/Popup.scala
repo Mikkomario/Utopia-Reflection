@@ -27,18 +27,18 @@ object Popup
 	  * @param content Popup contents (stackabe container)
 	  * @param actorHandler An actorhandler that will supply the pop-up with action events. These are required in
 	  *                     mouse- and keyboard event generating.
-	  * @param getTopLeft A function for calculating the new top left corner of the pop-up within context component.
-	  *                   Provided parameters are: a) Context size and b) pop-up window size
 	  * @param hideWhenFocusLost Whether the pop-up should be hidden when it loses focus (default = true)
 	  * @param resizeAlignment Alignment used for handling pop-up position when its size changes.
 	  *                        Default = Top Left = Pop up's position wil remain the same
+	  * @param getTopLeft A function for calculating the new top left corner of the pop-up within context component.
+	  *                   Provided parameters are: a) Context size and b) pop-up window size
 	  * @tparam C Type of displayed item
 	  * @return Newly created and pop-up window
 	  */
 	def apply[C <: AwtContainerRelated with Stackable](context: ComponentLike with AwtComponentRelated, content: C,
-													   actorHandler: ActorHandler, getTopLeft: (Size, Size) => Point,
+													   actorHandler: ActorHandler,
 													   hideWhenFocusLost: Boolean = true,
-													   resizeAlignment: Alignment = TopLeft) =
+													   resizeAlignment: Alignment = TopLeft)(getTopLeft: (Size, Size) => Point) =
 	{
 		// If context isn't in a window (which it should), has to use a Frame instead of a dialog
 		val owner = context.parentWindow

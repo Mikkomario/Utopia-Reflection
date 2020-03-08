@@ -2,6 +2,7 @@ package utopia.reflection.controller.data
 
 import java.awt.event.KeyEvent
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.util.TimeExtensions._
 import utopia.genesis.event.{ConsumeEvent, MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.MouseButtonStateListener
@@ -22,9 +23,10 @@ import scala.concurrent.duration.Duration
   * @since 5.6.2019, v1+
   */
 class StackSelectionManager[A, C <: Stackable with Refreshable[A]]
-(stack: StackLike[C] with CustomDrawable, private val selectionAreaDrawer: CustomDrawer,
- equalsCheck: (A, A) => Boolean = { (a: A, b: A) => a == b })(makeItem: A => C)
-	extends ContainerContentManager[A, StackLike[C], C](stack, equalsCheck)(makeItem) with SelectionManager[A, C]
+(stack: StackLike[C] with CustomDrawable, selectionAreaDrawer: CustomDrawer,
+ equalsCheck: (A, A) => Boolean = { (a: A, b: A) => a == b },
+ contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()))(makeItem: A => C)
+	extends ContainerContentManager[A, StackLike[C], C](stack, equalsCheck, contentPointer)(makeItem) with SelectionManager[A, C]
 {
 	// INITIAL CODE	--------------------
 	

@@ -1,13 +1,12 @@
 package utopia.reflection.controller.data
 
-import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.flow.util.CollectionExtensions._
 import utopia.reflection.component.{Refreshable, RefreshableWithPointer}
 
 /**
   * ContentManagers update content on a component. Please note that when using ContentManagers, you shouldn't modify
-  * the underlying displays through other means
+  * the underlying displays through other means. Implementing classes should call <i>setup()</i> on initialization
   * @author Mikko Hilpinen
   * @since 22.5.2019, v1+
   */
@@ -15,13 +14,7 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 {
 	// ATTRIBUTES	------------------
 	
-	override val contentPointer = new PointerWithEvents[Vector[A]](Vector())
 	private var updatingOnly: Option[A] = None
-	
-	
-	// INITIAL CODE	------------------
-	
-	contentPointer.addListener(ContentUpdateListener)
 	
 	
 	// ABSTRACT	----------------------
@@ -58,6 +51,11 @@ trait ContentManager[A, C <: Refreshable[A]] extends RefreshableWithPointer[Vect
 	
 	
 	// OTHER	--------------------
+	
+	/**
+	  * Sets up this manager once other attributes have been initialized. Enables content change listening.
+	  */
+	protected def setup() = contentPointer.addListener(ContentUpdateListener, Some(Vector()))
 	
 	/**
 	  * Finds a display currently showing provided element

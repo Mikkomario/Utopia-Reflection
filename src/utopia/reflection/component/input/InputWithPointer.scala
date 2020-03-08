@@ -26,9 +26,13 @@ trait InputWithPointer[A, +P <: Changing[A]] extends Input[A]
 	
 	/**
 	  * Registers a new listener to be informed each time this input's value changes
-	  * @param listener The new listener
+	  * @param listener                        The new listener
+	  * @param generateChangeEventFromOldValue None if no change event should be generated for the new listener.
+	  *                                        Some with "old" value if a change event should be triggered
+	  *                                        <b>for this new listener</b>. Default = None
 	  */
-	def addValueListener(listener: ChangeListener[A]) = valuePointer.addListener(listener)
+	def addValueListener(listener: ChangeListener[A], generateChangeEventFromOldValue: Option[A] = None) =
+		valuePointer.addListener(listener, generateChangeEventFromOldValue)
 	
 	/**
 	  * Removes a listener from the informed listeners for value
