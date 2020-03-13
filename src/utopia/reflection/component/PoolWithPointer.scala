@@ -26,9 +26,13 @@ trait PoolWithPointer[A, +P <: Changing[A]] extends Pool[A]
 	
 	/**
 	  * Adds a new listener to be informed about content changes
-	  * @param listener The new listener to be added
+	  * @param listener                        The new listener to be added
+	  * @param generateChangeEventFromOldValue None if no change event should be generated for the new listener.
+	  *                                        Some with "old" value if a change event should be triggered
+	  *                                        <b>for this new listener</b>. Default = None
 	  */
-	def addContentListener(listener: ChangeListener[A]) = contentPointer.addListener(listener)
+	def addContentListener(listener: ChangeListener[A], generateChangeEventFromOldValue: Option[A] = None) =
+		contentPointer.addListener(listener, generateChangeEventFromOldValue)
 	
 	/**
 	  * Removes a listener from informed listeners

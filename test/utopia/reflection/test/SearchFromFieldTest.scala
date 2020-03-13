@@ -1,12 +1,16 @@
 package utopia.reflection.test
 
+import java.awt.event.KeyEvent
+
 import utopia.flow.async.ThreadPool
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
+import utopia.genesis.handling.KeyStateListener
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.reflection.component.swing.SearchFromField
+import utopia.reflection.component.swing.SearchFrom
 import utopia.reflection.component.swing.button.TextButton
+import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.Program
@@ -40,8 +44,9 @@ object SearchFromFieldTest extends App
 	implicit val exc: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
 	val searchPointer = new PointerWithEvents[Option[String]](None)
-	val field = SearchFromField.contextualWithTextOnly[String]("Search for string",
-		SearchFromField.noResultsLabel("No results for '%s'", searchPointer), searchFieldPointer = searchPointer)
+	val field = SearchFrom.contextualWithTextOnly[String](
+		SearchFrom.noResultsLabel("No results for '%s'", searchPointer), "Search for string",
+		searchFieldPointer = searchPointer)
 	val button = TextButton.contextual("OK", () => println(field.value))
 	val content = Stack.buildColumnWithContext() { s =>
 		s += field
@@ -53,5 +58,8 @@ object SearchFromFieldTest extends App
 	
 	val frame = Frame.windowed(content, "Search Field Test", Program)
 	frame.setToCloseOnEsc()
+	
+	frame.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_P, _ => println(StackHierarchyManager.description)))
+	
 	new SingleFrameSetup(actorHandler, frame).start()
 }

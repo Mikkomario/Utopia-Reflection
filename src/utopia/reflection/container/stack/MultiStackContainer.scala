@@ -11,7 +11,7 @@ import scala.collection.immutable.VectorBuilder
   * @author Mikko Hilpinen
   * @since 15.4.2019, v0.1+
   */
-trait MultiStackContainer[C <: Stackable] extends MultiContainer[C] with StackContainer[C]
+trait MultiStackContainer[C <: Stackable] extends MultiContainer[C] with StackContainerLike[C]
 {
 	// IMPLEMENTED	---------------------
 	
@@ -44,7 +44,7 @@ trait MultiStackContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 	def addWithoutRevalidating(component: C) =
 	{
 		super.+=(component)
-		StackHierarchyManager.registerConnection(this, component)
+		component.attachToStackHierarchyUnder(this)
 	}
 	
 	/**
@@ -55,7 +55,7 @@ trait MultiStackContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 	def removeWithoutRevalidating(component: C) =
 	{
 		super.-=(component)
-		StackHierarchyManager.unregister(component)
+		component.detachFromMainStackHierarchy()
 	}
 	
 	/**
@@ -84,14 +84,14 @@ trait MultiStackContainer[C <: Stackable] extends MultiContainer[C] with StackCo
 			if (newComponents.exists { _ == c })
 				remainingComponentsBuilder += c
 			else
-				StackHierarchyManager.unregister(c)
+				c.detachFromMainStackHierarchy()
 		}
 		val remainingComponents = remainingComponentsBuilder.result()
 		
 		// Adds the new components and registers missing links
 		newComponents.foreach { c =>
 			if (!remainingComponents.contains(c))
-				StackHierarchyManager.registerConnection(this, c)
+				c.attachToStackHierarchyUnder(this)
 			super.+=(c)
 		}
 	}

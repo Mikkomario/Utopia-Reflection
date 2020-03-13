@@ -7,7 +7,7 @@ import utopia.genesis.util.Drawer
 import utopia.reflection.component.RefreshableWithPointer
 import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Normal
-import utopia.reflection.component.stack.CachingStackable
+import utopia.reflection.component.stack.{CachingStackable, StackLeaf}
 import utopia.reflection.shape.StackSize
 import utopia.reflection.util.ComponentContext
 
@@ -38,7 +38,7 @@ object ImageLabel
   * @constructor Creates a new image label with specified settings (always fill area and upscaling allowing)
   */
 class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val allowUpscaling: Boolean = false)
-	extends Label with CachingStackable with RefreshableWithPointer[Image]
+	extends Label with CachingStackable with RefreshableWithPointer[Image] with StackLeaf
 {
 	// ATTRIBUTES	-----------------
 	

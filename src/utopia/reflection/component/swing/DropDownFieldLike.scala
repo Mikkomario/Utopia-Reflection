@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext
   */
 abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 (selectionDrawer: CustomDrawer, betweenDisplaysMargin: StackLength = StackLength.any, displayStackLayout: StackLayout = Fit,
- currentSelectionOptionsPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents(Vector()),
+ protected val currentSelectionOptionsPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
  override val valuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None))
 (implicit exc: ExecutionContext)
 	extends StackableAwtComponentWrapperWrapper with SelectableWithPointers[Option[A], Vector[A]]
@@ -83,6 +83,19 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 	
 	private var focusGainSkips = 0
 	private var visiblePopup: Option[Window[_]] = None
+	
+	
+	// COMPUTED	-------------------------------
+	
+	/**
+	  * @return Whether this field is currently displaying a pop-up view
+	  */
+	def isDisplayingPopUp = visiblePopup.exists { _.isVisible }
+	
+	/**
+	  * @return Current stack size of the search options -view
+	  */
+	def currentSearchStackSize = searchStack.stackSize
 	
 	
 	// IMPLEMENTED	----------------------------
@@ -143,7 +156,8 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 		if (visiblePopup.isEmpty && content.nonEmpty)
 		{
 			// Creates and displays the popup
-			val popup = Popup(mainDisplay, popupContentView, actorHandler) { (fieldSize, _) => Point(0, fieldSize.height) }
+			val popup = Popup(mainDisplay, popupContentView, actorHandler) {
+				(fieldSize, _) => Point(0, fieldSize.height) }
 			visiblePopup = Some(popup)
 			// Relays key events to the search field
 			popup.relayAwtKeyEventsTo(mainDisplay)

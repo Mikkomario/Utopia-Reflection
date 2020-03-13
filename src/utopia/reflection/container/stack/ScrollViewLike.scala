@@ -1,6 +1,7 @@
 package utopia.reflection.container.stack
 
 import utopia.genesis.shape.Axis2D
+import utopia.reflection.component.stack.Stackable
 import utopia.reflection.shape.StackLengthLimit
 
 import scala.collection.immutable.HashMap
@@ -10,7 +11,7 @@ import scala.collection.immutable.HashMap
   * @author Mikko Hilpinen
   * @since 30.4.2019, v1+
   */
-trait ScrollViewLike extends ScrollAreaLike
+trait ScrollViewLike[C <: Stackable] extends ScrollAreaLike[C]
 {
 	// ABSTRACT	--------------------
 	
@@ -92,7 +93,7 @@ trait ScrollViewLike extends ScrollAreaLike
 	  * Scrolls to a certain percentage
 	  * @param abovePercent The percentage of content that should be above (outside) this view
 	  */
-	def scrollTo(abovePercent: Double): Unit = scrollTo(abovePercent, true)
+	def scrollTo(abovePercent: Double): Unit = scrollTo(abovePercent, animated = true)
 	/**
 	  * Scrolls this view a certain amount
 	  * @param amount The amount of pixels scrolled

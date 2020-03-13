@@ -4,7 +4,7 @@ import utopia.reflection.component.Alignable
 import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawableWrapper, DrawLevel}
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.component.swing.{AwtComponentWrapperWrapper, SwingComponentRelated}
-import utopia.reflection.container.stack.StackHierarchyManager
+import utopia.reflection.container.stack.StackContainerLike
 import utopia.reflection.container.swing.Stack.AwtStackable
 import utopia.reflection.shape.Alignment
 
@@ -16,7 +16,7 @@ import utopia.reflection.shape.Alignment
 class LayeredView[Background <: AwtStackable with CustomDrawable, Foreground <: AwtStackable with CustomDrawable]
 (background: Background, foreground: Foreground, initialAlignment: Alignment)
 	extends AwtComponentWrapperWrapper with CachingStackable with SwingComponentRelated with AwtContainerRelated
-		with CustomDrawableWrapper with Alignable
+		with CustomDrawableWrapper with Alignable with StackContainerLike[AwtStackable]
 {
 	// ATTRIBUTES	---------------------
 	
@@ -32,15 +32,13 @@ class LayeredView[Background <: AwtStackable with CustomDrawable, Foreground <: 
 	// Updates content layout each time this component is resized
 	addResizeListener(updateLayout())
 	
-	// Registers connection to stack hierarchy manager as well
-	StackHierarchyManager.registerConnection(this, background)
-	StackHierarchyManager.registerConnection(this, foregroundContainer)
-	
 	// Foreground needs to be redrawn whenever the background is redrawn
 	background.addCustomDrawer(DrawLevel.Foreground, (_, _) => foreground.repaint())
 	
 	
 	// IMPLEMENTED	---------------------
+	
+	override def components = panel.components
 	
 	override def component = panel.component
 	

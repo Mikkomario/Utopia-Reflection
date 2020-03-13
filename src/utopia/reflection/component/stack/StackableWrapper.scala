@@ -23,4 +23,8 @@ trait StackableWrapper extends ComponentWrapper with Stackable
 	override def resetCachedSize() = wrapped.resetCachedSize()
 	
 	override def stackId = wrapped.stackId
+	
+	override def isAttachedToMainHierarchy = wrapped.isAttachedToMainHierarchy
+	
+	override def isAttachedToMainHierarchy_=(newAttachmentStatus: Boolean) = wrapped.isAttachedToMainHierarchy_=(newAttachmentStatus)
 }

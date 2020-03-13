@@ -38,7 +38,8 @@ object Popup
 	def apply[C <: AwtContainerRelated with Stackable](context: ComponentLike with AwtComponentRelated, content: C,
 													   actorHandler: ActorHandler,
 													   hideWhenFocusLost: Boolean = true,
-													   resizeAlignment: Alignment = TopLeft)(getTopLeft: (Size, Size) => Point) =
+													   resizeAlignment: Alignment = TopLeft)
+													  (getTopLeft: (Size, Size) => Point) =
 	{
 		// If context isn't in a window (which it should), has to use a Frame instead of a dialog
 		val owner = context.parentWindow

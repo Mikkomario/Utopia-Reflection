@@ -7,6 +7,7 @@ import utopia.flow.util.TimeExtensions._
 import utopia.flow.async.{Loop, ThreadPool}
 import utopia.flow.generic.DataType
 import utopia.genesis.shape.shape2D.Size
+import utopia.reflection.component.stack.StackLeaf
 import utopia.reflection.component.swing.{JStackableWrapper, JWrapper}
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.Stack
@@ -29,7 +30,7 @@ object StackHierarchyTest extends App
     implicit val language: String = "en"
     implicit val localizer: Localizer = NoLocalization
     
-    private class ChangingWrapper extends JStackableWrapper
+    private class ChangingWrapper extends JStackableWrapper with StackLeaf
     {
         // ATTRIBUTES   -----------------
         

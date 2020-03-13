@@ -2,6 +2,7 @@ package utopia.reflection.component.swing.label
 
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.{X, Y}
+import utopia.reflection.component.stack.StackLeaf
 import utopia.reflection.component.swing.AwtTextComponentWrapper
 import utopia.reflection.component.{Alignable, SingleLineTextComponent}
 import utopia.reflection.localization.LocalizedString
@@ -52,7 +53,7 @@ object TextLabel
 class TextLabel(initialText: LocalizedString, initialFont: Font, override val margins: StackSize = StackSize.any,
 				override val hasMinWidth: Boolean = true, initialAlignment: Alignment = Alignment.Left,
 				initialTextColor: Color = Color.textBlack)
-	extends Label with AwtTextComponentWrapper with SingleLineTextComponent with Alignable
+	extends Label with AwtTextComponentWrapper with SingleLineTextComponent with Alignable with StackLeaf
 {
 	// ATTRIBUTES	------------------
 	

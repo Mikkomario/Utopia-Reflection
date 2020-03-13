@@ -11,7 +11,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.event.{MouseButtonStateEvent, MouseButtonStatus}
 import utopia.genesis.handling.mutable._
 import utopia.genesis.shape.shape2D.{Point, Size}
-import utopia.reflection.component.stack.{CachingStackable, Stackable}
+import utopia.reflection.component.stack.{CachingStackable, StackLeaf, Stackable}
 import utopia.reflection.component.ComponentLike
 import utopia.reflection.event.{ResizeEvent, ResizeListener}
 import utopia.reflection.shape.StackSize
@@ -256,7 +256,7 @@ trait AwtComponentWrapper extends ComponentLike with AwtComponentRelated
 private class SimpleAwtComponentWrapper(val component: Component, override val children: Seq[ComponentLike]) extends AwtComponentWrapper
 
 private class AwtComponentWrapperWrapperWithStackable(override val wrapped: AwtComponentWrapper, getSize: () => StackSize, update: () => Unit)
-    extends AwtComponentWrapperWrapper with CachingStackable
+    extends AwtComponentWrapperWrapper with CachingStackable with StackLeaf
 {
     // IMPLEMENTED  ---------------------
     

@@ -3,7 +3,6 @@ package utopia.reflection.container.stack.segmented
 import utopia.flow.async.VolatileFlag
 import utopia.flow.util.CollectionExtensions._
 import utopia.genesis.shape.Axis2D
-import utopia.genesis.shape.shape2D.Size
 import utopia.reflection.component.stack.{Stackable, StackableWrapper}
 import utopia.reflection.component.ComponentWrapper
 import utopia.reflection.container.stack.{MultiStackContainer, StackLike}
@@ -53,6 +52,8 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 	
 	
 	// IMPLEMENTED	-----------------
+	
+	override def children = super[MultiStackContainer].children
 	
 	override protected def wrapped = stack
 	
@@ -123,11 +124,6 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 		
 		// IMPLEMENTED	-------------
 		
-		override def size_=(s: Size) =
-		{
-			super.size_=(s)
-		}
-		
 		override def stackId = item.stackId
 		
 		override def updateLayout() = item.updateLayout()
@@ -145,6 +141,10 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 			
 			lengthFromMaster map { source.withSide(_, direction) } getOrElse source
 		}
+		
+		override def isAttachedToMainHierarchy = item.isAttachedToMainHierarchy
+		
+		override def isAttachedToMainHierarchy_=(newAttachmentStatus: Boolean) = item.isAttachedToMainHierarchy = newAttachmentStatus
 		
 		override def resetCachedSize() =
 		{

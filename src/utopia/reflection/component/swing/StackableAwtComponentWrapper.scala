@@ -2,7 +2,7 @@ package utopia.reflection.component.swing
 
 import java.awt.Component
 
-import utopia.reflection.component.stack.CachingStackable
+import utopia.reflection.component.stack.{CachingStackable, StackLeaf}
 import utopia.reflection.container.swing.Framing
 import utopia.reflection.shape.StackSize
 
@@ -47,7 +47,8 @@ trait StackableAwtComponentWrapper extends AwtComponentWrapper with CachingStack
 	// def framed(margins: StackSize) = new Framing[StackableAwtComponentWrapper](this, margins)
 }
 
-private class StackWrapper(val component: Component, val getSize: () => StackSize, val update: () => Unit) extends StackableAwtComponentWrapper
+private class StackWrapper(val component: Component, val getSize: () => StackSize, val update: () => Unit)
+	extends StackableAwtComponentWrapper with StackLeaf
 {
 	override def updateLayout() = update()
 	

@@ -18,7 +18,7 @@ import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.{Alignable, Focusable}
 import utopia.reflection.component.input.InteractionWithPointer
-import utopia.reflection.component.stack.CachingStackable
+import utopia.reflection.component.stack.{CachingStackable, StackLeaf}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Alignment, Border, Insets, StackLength, StackSize}
 import utopia.reflection.text.{Font, Prompt, Regex}
@@ -202,7 +202,7 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 				resultFilter: Option[Regex] = None, initialAlignment: Alignment = Alignment.Left,
 				override val valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
 	extends JWrapper with CachingStackable with InteractionWithPointer[Option[String]] with Alignable with Focusable
-		with CustomDrawableWrapper
+		with CustomDrawableWrapper with StackLeaf
 {
 	// ATTRIBUTES	----------------------
 	

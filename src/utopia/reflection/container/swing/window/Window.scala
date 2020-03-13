@@ -13,7 +13,6 @@ import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.component.swing.button.ButtonLike
-import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.localization.LocalizedString
@@ -30,6 +29,8 @@ import scala.concurrent.Promise
 trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable with AwtContainerRelated
 {
     // ATTRIBUTES   ----------------
+    
+    private var _isAttachedToMainHierarchy = false
     
     private val cachedStackSize = new Lazy(() => calculatedStackSize)
     private val generatorActivated = new VolatileFlag()
@@ -94,6 +95,21 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     // IMPLEMENTED    --------------
     
     override def stackId = hashCode()
+    
+    override def isAttachedToMainHierarchy = _isAttachedToMainHierarchy
+    
+    override def isAttachedToMainHierarchy_=(newAttachmentStatus: Boolean) =
+    {
+        // Informs / affects the content of this window as well
+        if (_isAttachedToMainHierarchy != newAttachmentStatus)
+        {
+            _isAttachedToMainHierarchy = newAttachmentStatus
+            if (newAttachmentStatus)
+                content.attachToStackHierarchyUnder(this)
+            else
+                content.isAttachedToMainHierarchy = false
+        }
+    }
     
     override def stackSize = cachedStackSize.get
     
@@ -185,9 +201,10 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
         activateResizeHandling()
     
         // Registers self (and content) into stack hierarchy management
-        StackHierarchyManager.registerConnection(this, content)
+        _isAttachedToMainHierarchy = true
+        content.attachToStackHierarchyUnder(this)
         
-        component.addWindowListener(new CloseListener)
+        component.addWindowListener(CloseListener)
     }
     
 	/**
@@ -280,7 +297,6 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
                 size = stackSize.optimal
                 
                 val increase = size - oldSize
-                // FIXME You don't always want the window to remain centered
                 // Window movement is determined by resize alignment
                 val movement = Axis2D.values.map { axis =>
                     val move = resizeAlignment.directionAlong(axis) match
@@ -342,7 +358,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     
     // NESTED   -------------------------
     
-    private class CloseListener extends WindowAdapter
+    private object CloseListener extends WindowAdapter
     {
         override def windowClosed(e: WindowEvent) = handleClosing()
         
@@ -354,8 +370,8 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
             uponCloseAction.pop().foreach { _() }
             closePromise.trySuccess(Unit)
             
-            // Removes this window from the stack hierarchy
-            StackHierarchyManager.unregister(Window.this)
+            // Removes this window from the stack hierarchy (may preserve a portion of the content by detaching it first)
+            detachFromMainStackHierarchy()
         }
     }
 }

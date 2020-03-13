@@ -45,6 +45,8 @@ class SwitchPanel[C <: Stackable with AwtComponentRelated] extends SingleStackCo
 	
 	// IMPLEMENTED	-------------------
 	
+	override def children = super[SingleStackContainer].children
+	
 	override def drawable = panel
 	
 	override protected def wrapped = panel

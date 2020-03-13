@@ -14,10 +14,9 @@ import utopia.genesis.shape.{Axis2D, LinearAcceleration, Vector3D, VectorLike, V
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
-import utopia.reflection.component.Area
 import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.drawing.DrawLevel.Foreground
-import utopia.reflection.component.stack.CachingStackable
+import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.shape.{ScrollBarBounds, StackLengthLimit, StackSize}
 
 import scala.collection.immutable.HashMap
@@ -36,7 +35,7 @@ object ScrollAreaLike
   * @author Mikko Hilpinen
   * @since 15.5.2019, v1+
   */
-trait ScrollAreaLike extends CachingStackable
+trait ScrollAreaLike[C <: Stackable] extends CachingStackable with StackContainerLike[C]
 {
 	// ATTRIBUTES	----------------
 	
@@ -49,7 +48,7 @@ trait ScrollAreaLike extends CachingStackable
 	/**
 	  * @return The content in this scrollable
 	  */
-	def content: Area
+	def content: C
 	
 	/**
 	  * @return The scrolling axis / axes of this scroll view
@@ -72,11 +71,6 @@ trait ScrollAreaLike extends CachingStackable
 	  * @return The width of the scroll bar
 	  */
 	def scrollBarWidth: Int
-	
-	/**
-	  * @return The stack size of this area's contents
-	  */
-	def contentStackSize: StackSize
 	
 	/**
 	  * @return Amount of friction applied in pixels / millisecond&#94;2
@@ -138,9 +132,11 @@ trait ScrollAreaLike extends CachingStackable
 	
 	// IMPLEMENTED	----------------
 	
+	override def components = Vector(content)
+	
 	override protected def calculatedStackSize =
 	{
-		val contentSize = contentStackSize
+		val contentSize = content.stackSize
 		val lengths = Axis2D.values.map
 		{
 			axis =>
@@ -165,7 +161,7 @@ trait ScrollAreaLike extends CachingStackable
 	override def updateLayout() =
 	{
 		// Non-scrollable content side is dependent from this component's side while scrollable side(s) are always set to optimal
-		val contentSize = contentStackSize
+		val contentSize = content.stackSize
 		val contentAreaSize = size - scrollBarContentOverlap
 		
 		val lengths: Map[Axis2D, Double] = Axis2D.values.map
@@ -318,7 +314,7 @@ trait ScrollAreaLike extends CachingStackable
 		}
 		
 		// Performs actual scrolling
-		scroll(Vector3D(-xTransition, -yTransition), animated, false)
+		scroll(Vector3D(-xTransition, -yTransition), animated, preservePreviousMomentum = false)
 	}
 	
 	protected def drawWith(barDrawer: ScrollBarDrawer, drawer: Drawer) = Axis2D.values.foreach
@@ -472,9 +468,9 @@ trait ScrollAreaLike extends CachingStackable
 				
 				// Applies velocity
 				if (allows2DScrolling)
-					scroll(transition, false)
+					scroll(transition, animated = false)
 				else
-					axes.foreach { axis => scroll(transition.projectedOver(axis), false) }
+					axes.foreach { axis => scroll(transition.projectedOver(axis), animated = false) }
 				
 				// Applies friction to velocity
 				velocity = newVelocity
@@ -588,9 +584,9 @@ trait ScrollAreaLike extends CachingStackable
 			{
 				// Drag scrolling is different when both axes are being scrolled
 				if (allows2DScrolling)
-					scroll(event.transition, false)
+					scroll(event.transition, animated = false)
 				else
-					axes.foreach { axis => scroll(event.transition.projectedOver(axis), false) }
+					axes.foreach { axis => scroll(event.transition.projectedOver(axis), animated = false) }
 				
 				val now = Instant.now
 				velocities = velocities.dropWhile { _._1 < now - dragDuration } :+ (now, event.velocity, event.duration)

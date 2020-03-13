@@ -38,7 +38,8 @@ object Frame
       */
     def fullScreen[C <: Stackable with AwtContainerRelated](content: C, title: LocalizedString, showToolBar: Boolean = true,
                                                             resizeAlignment: Alignment = Center) =
-        new Frame(content, title, WindowResizePolicy.Program, resizeAlignment, true, true, showToolBar)
+        new Frame(content, title, WindowResizePolicy.Program, resizeAlignment, true, true,
+            showToolBar)
 }
 
 /**

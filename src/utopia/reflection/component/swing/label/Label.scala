@@ -59,8 +59,6 @@ class Label extends JWrapper with CustomDrawableWrapper
 	override def drawable: CustomDrawable = _label
 	
 	override def component: JComponent = label
-	
-	override def children = Vector()
 }
 
 private class CustomJLabel extends JLabel with CustomDrawComponent

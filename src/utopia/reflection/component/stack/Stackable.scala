@@ -158,6 +158,23 @@ trait Stackable extends ComponentLike
 	  */
 	def stackId: Int
 	
+	/**
+	  * Child components under this stackable instance (all of which should be stackable)
+	  */
+	override def children: Seq[Stackable] = Vector()
+	
+	/**
+	  * @return Whether this stackable instance is currently attached to the main stack hierarchy
+	  */
+	def isAttachedToMainHierarchy: Boolean
+	/**
+	  * Changes whether this stackable instance is currently attached to the main stack hierarchy
+	  * (should affect the children as well). This method is called for informing this stackable, not to cause a change
+	  * in the main stack hierarchy.
+	  * @param newAttachmentStatus Whether this stackable instance is now connected to the main stack hierarchy
+	  */
+	def isAttachedToMainHierarchy_=(newAttachmentStatus: Boolean)
+	
 	
 	// COMPUTED	---------------------
 	
@@ -175,9 +192,13 @@ trait Stackable extends ComponentLike
 	// OTHER	---------------------
 	
 	/**
-	  * Requests a revalidation for this item
+	  * Requests a revalidation for this item (only affects this item after connected to the main stack hierarchy)
 	  */
-	def revalidate() = StackHierarchyManager.requestValidationFor(this)
+	def revalidate() =
+	{
+		if (isAttachedToMainHierarchy)
+			StackHierarchyManager.requestValidationFor(this)
+	}
 	
 	/**
 	 * Sets the size of this component to optimal (by stack size)
@@ -188,4 +209,34 @@ trait Stackable extends ComponentLike
 	 * Sets the size of this component to minimum (by stack size)
 	 */
 	def setToMinSize() = size = stackSize.min
+	
+	/**
+	  * Detaches this stackable instance from the main stack hierarchy. If this instance was not connected to said
+	  * hierarchy, does nothing.
+	  */
+	def detachFromMainStackHierarchy() =
+	{
+		if (isAttachedToMainHierarchy)
+		{
+			StackHierarchyManager.unregister(this)
+			isAttachedToMainHierarchy = false
+		}
+	}
+	
+	/**
+	  * Attaches this instance to a stack hierarchy represented by a parent component. Registers this new
+	  * connection only if the parent is already attached to the main stack hierarchy.
+	  * @param parent Parent for this stackable to register under.
+	  */
+	def attachToStackHierarchyUnder(parent: Stackable) =
+	{
+		if (parent.isAttachedToMainHierarchy)
+		{
+			StackHierarchyManager.registerConnection(parent, this)
+			isAttachedToMainHierarchy = true
+		}
+		// If this component was attached to the main stack hierarchy under a different parent, disconnects from that one
+		else
+			detachFromMainStackHierarchy()
+	}
 }

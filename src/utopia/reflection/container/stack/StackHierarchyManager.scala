@@ -166,7 +166,8 @@ object StackHierarchyManager
 	}
 	
 	/**
-	  * Unregisters a component. This removes this component, as well as all its child components from this hierarchy
+	  * Disconnects the specified stackable and all its children from this stack hierarchy. If you ever re-add the
+	  * item to this stack hierarchy, you will also need to reattach all its child components.
 	  * @param item The stackable item to be removed from this hierarchy
 	  */
 	def unregister(item: Stackable) =
@@ -201,7 +202,7 @@ object StackHierarchyManager
 			addRoot(component)
 		// If the component was already registered, detaches it from under its parent
 		else
-			detach(component)
+			_detach(component)
 	}
 	
 	/**
@@ -282,7 +283,7 @@ object StackHierarchyManager
 			addRoot(item)
 	}
 	
-	private def detach(item: Stackable): Unit =
+	private def _detach(item: Stackable): Unit =
 	{
 		val childId = ids(item.stackId)
 		childId.parentId.foreach

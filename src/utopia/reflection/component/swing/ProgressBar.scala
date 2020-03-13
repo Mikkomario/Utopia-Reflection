@@ -7,7 +7,7 @@ import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
 import utopia.reflection.component.drawing.DrawLevel.Normal
-import utopia.reflection.component.stack.Stackable
+import utopia.reflection.component.stack.StackLeaf
 import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.shape.StackSize
 import utopia.reflection.util.ComponentContext
@@ -35,7 +35,7 @@ object ProgressBar
   */
 class ProgressBar[A](override val stackSize: StackSize, val backgroundColor: Color, val barColor: Color,
 					 val data: PointerWithEvents[A], val calculateProgress: A => Double)
-	extends AwtComponentWrapperWrapper with CustomDrawableWrapper with Stackable
+	extends AwtComponentWrapperWrapper with CustomDrawableWrapper with StackLeaf
 {
 	// ATTRIBUTES	---------------------
 	

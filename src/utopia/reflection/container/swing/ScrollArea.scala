@@ -1,14 +1,12 @@
 package utopia.reflection.container.swing
 
-import java.util.concurrent.TimeUnit
-
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.{Axis2D, LinearAcceleration}
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.reflection.component.drawing.CustomDrawableWrapper
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
-import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer, StackHierarchyManager}
+import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer}
 import utopia.reflection.shape.StackLengthLimit
 import utopia.reflection.util.ComponentContext
 
@@ -45,7 +43,7 @@ class ScrollArea[C <: Stackable with AwtComponentRelated](override val content: 
 														  override val friction: LinearAcceleration = ScrollAreaLike.defaultFriction,
 														  override val lengthLimits: Map[Axis2D, StackLengthLimit] = HashMap(),
 														  override val limitsToContentSize: Boolean = false)
-	extends ScrollAreaLike with AwtComponentWrapperWrapper with CustomDrawableWrapper with AwtContainerRelated with SwingComponentRelated
+	extends ScrollAreaLike[C] with AwtComponentWrapperWrapper with CustomDrawableWrapper with AwtContainerRelated with SwingComponentRelated
 {
 	// ATTRIBUTES	----------------------
 	
@@ -58,10 +56,11 @@ class ScrollArea[C <: Stackable with AwtComponentRelated](override val content: 
 	addResizeListener(updateLayout())
 	addCustomDrawer(scrollBarDrawerToCustomDrawer(scrollBarDrawer))
 	setupMouseHandling(actorHandler, scrollPerWheelClick)
-	StackHierarchyManager.registerConnection(this, content)
 	
 	
 	// IMPLEMENTED	----------------------
+	
+	override def children = super[ScrollAreaLike].children
 	
 	override def axes = Axis2D.values
 	
@@ -74,6 +73,4 @@ class ScrollArea[C <: Stackable with AwtComponentRelated](override val content: 
 	override def drawable = panel
 	
 	override protected def updateVisibility(visible: Boolean) = super[AwtComponentWrapperWrapper].isVisible_=(visible)
-	
-	override def contentStackSize = content.stackSize
 }

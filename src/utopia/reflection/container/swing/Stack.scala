@@ -203,6 +203,8 @@ class Stack[C <: Stack.AwtStackable](override val direction: Axis2D, override va
     
     // IMPLEMENTED    -------------------
     
+    override def children = super[StackLike].children
+    
     override def drawable = panel
     
     override def component = panel.component

@@ -1,7 +1,5 @@
 package utopia.reflection.container.swing
 
-import java.util.concurrent.TimeUnit
-
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.Axis.Y
 import utopia.genesis.shape.{Axis2D, LinearAcceleration}
@@ -47,7 +45,7 @@ class ScrollView[C <: Stackable with AwtComponentRelated](override val content: 
 														  override val friction: LinearAcceleration = ScrollAreaLike.defaultFriction,
 														  override val lengthLimit: StackLengthLimit = StackLengthLimit.noLimit,
 														  override val limitsToContentSize: Boolean = false)
-	extends ScrollViewLike with AwtComponentWrapperWrapper with CustomDrawableWrapper with AwtContainerRelated with SwingComponentRelated
+	extends ScrollViewLike[C] with AwtComponentWrapperWrapper with CustomDrawableWrapper with AwtContainerRelated with SwingComponentRelated
 {
 	// ATTRIBUTES	----------------------
 	
@@ -60,10 +58,11 @@ class ScrollView[C <: Stackable with AwtComponentRelated](override val content: 
 	addResizeListener(updateLayout())
 	addCustomDrawer(scrollBarDrawerToCustomDrawer(scrollBarDrawer))
 	setupMouseHandling(actorHandler, scrollPerWheelClick)
-	StackHierarchyManager.registerConnection(this, content)
 	
 	
 	// IMPLEMENTED	----------------------
+	
+	override def children = super[ScrollViewLike].children
 	
 	override def repaint(bounds: Bounds) = panel.component.repaint(bounds.toAwt)
 	
@@ -74,6 +73,4 @@ class ScrollView[C <: Stackable with AwtComponentRelated](override val content: 
 	override def drawable = panel
 	
 	override protected def updateVisibility(visible: Boolean) = super[AwtComponentWrapperWrapper].isVisible_=(visible)
-	
-	override def contentStackSize = content.stackSize
 }

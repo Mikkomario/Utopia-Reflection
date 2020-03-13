@@ -4,7 +4,7 @@ import utopia.flow.datastructure.mutable.Lazy
 import utopia.genesis.color.Color
 import utopia.genesis.shape.shape2D.{Bounds, Direction2D, Point, Size}
 import utopia.reflection.component.drawing.CustomDrawableWrapper
-import utopia.reflection.component.stack.{CachingStackable, Stackable}
+import utopia.reflection.component.stack.{CachingStackable, StackLeaf}
 import utopia.reflection.component.swing.{AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.StackLayout.{Fit, Leading, Trailing}
 import utopia.reflection.container.stack.{MultiStackContainer, StackLayout, Stacker}
@@ -189,7 +189,7 @@ class CollectionView[C <: AwtStackable](rowDirection: Direction2D, initialRowSpl
 		}
 	}
 	
-	private class RowWrapper(items: Vector[C], val stackSize: StackSize) extends Stackable
+	private class RowWrapper(items: Vector[C], val stackSize: StackSize) extends StackLeaf
 	{
 		// ATTRIBUTES	-------------------
 		

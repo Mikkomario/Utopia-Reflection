@@ -30,6 +30,8 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 	
 	// IMPLEMENTED	--------------------
 	
+	override def children = super[SingleStackContainer].children
+	
 	override protected def wrapped = container
 	
 	override def isVisible_=(isVisible: Boolean) = super[CachingStackable].isVisible_=(isVisible)

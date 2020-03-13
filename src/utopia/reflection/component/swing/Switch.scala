@@ -12,7 +12,7 @@ import utopia.inception.handling.{HandlerType, Mortal}
 import utopia.reflection.component.drawing.DrawLevel.Normal
 import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
 import utopia.reflection.component.input.InteractionWithPointer
-import utopia.reflection.component.stack.Stackable
+import utopia.reflection.component.stack.StackLeaf
 import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.shape.{StackLength, StackSize}
 import utopia.reflection.util.ComponentContext
@@ -39,7 +39,7 @@ object Switch
   * @since 4.5.2019, v1+
   */
 class Switch(val targetWidth: StackLength, val color: Color, actorHandler: ActorHandler)
-	extends AwtComponentWrapperWrapper with CustomDrawableWrapper with InteractionWithPointer[Boolean] with Stackable
+	extends AwtComponentWrapperWrapper with CustomDrawableWrapper with InteractionWithPointer[Boolean] with StackLeaf
 {
 	// ATTRIBUTES	-----------------
 	
