@@ -2,7 +2,7 @@ package utopia.reflection.container.swing
 
 import utopia.genesis.shape.shape2D.Direction2D
 import utopia.reflection.component.Alignable
-import utopia.reflection.component.drawing.CustomDrawableWrapper
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.component.swing.SwingComponentRelated
 import utopia.reflection.container.stack.AlignFrameLike
 import utopia.reflection.container.swing.Stack.AwtStackable

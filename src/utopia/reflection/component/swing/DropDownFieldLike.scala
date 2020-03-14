@@ -10,8 +10,8 @@ import utopia.genesis.handling.{KeyStateHandlerType, KeyStateListener, MouseButt
 import utopia.genesis.shape.shape2D.Point
 import utopia.inception.handling.HandlerType
 import utopia.inception.handling.immutable.Handleable
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.{Focusable, Refreshable}
-import utopia.reflection.component.drawing.CustomDrawer
 import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.container.stack.StackLayout
 import utopia.reflection.container.stack.StackLayout.Fit

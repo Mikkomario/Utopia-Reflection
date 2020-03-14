@@ -9,8 +9,9 @@ import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.shape2D.{Bounds, Circle, Point}
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.{HandlerType, Mortal}
-import utopia.reflection.component.drawing.DrawLevel.Normal
-import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
+import utopia.reflection.component.drawing.template.DrawLevel.Normal
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.StackLeaf
 import utopia.reflection.component.swing.label.EmptyLabel
@@ -43,6 +44,7 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 {
 	// ATTRIBUTES	-----------------
 	
+	// TODO: Use stackspace or emptyJComponent instead
 	private val label = new EmptyLabel()
 	
 	// private var _value = false

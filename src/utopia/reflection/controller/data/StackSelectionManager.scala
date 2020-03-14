@@ -11,7 +11,8 @@ import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
 import utopia.reflection.component.Refreshable
-import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawer}
+import utopia.reflection.component.drawing.mutable.CustomDrawable
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.container.stack.StackLike
 

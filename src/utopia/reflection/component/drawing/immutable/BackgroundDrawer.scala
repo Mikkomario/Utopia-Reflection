@@ -1,8 +1,10 @@
-package utopia.reflection.component.drawing
+package utopia.reflection.component.drawing.immutable
+
 import utopia.genesis.color.Color
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.drawing.DrawLevel.Background
+import utopia.reflection.component.drawing.template.DrawLevel.Background
+import utopia.reflection.component.drawing.template.{CustomDrawer, DrawLevel}
 
 /**
   * A custom drawer that draws a background for the targeted component

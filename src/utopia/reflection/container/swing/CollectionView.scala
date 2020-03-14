@@ -3,7 +3,7 @@ package utopia.reflection.container.swing
 import utopia.flow.datastructure.mutable.Lazy
 import utopia.genesis.color.Color
 import utopia.genesis.shape.shape2D.{Bounds, Direction2D, Point, Size}
-import utopia.reflection.component.drawing.CustomDrawableWrapper
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.component.stack.{CachingStackable, StackLeaf}
 import utopia.reflection.component.swing.{AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.StackLayout.{Fit, Leading, Trailing}

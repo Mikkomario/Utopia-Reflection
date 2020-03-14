@@ -1,7 +1,9 @@
-package utopia.reflection.component.drawing
+package utopia.reflection.component.drawing.mutable
 
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
+import utopia.reflection.component.drawing.template.DrawLevel.Normal
+import utopia.reflection.component.drawing.template.{CustomDrawer, DrawLevel}
 
 /**
   * This trait is extended by components that allow custom drawing
@@ -49,10 +51,10 @@ trait CustomDrawable
 	def clearCustomDrawers() = customDrawers = Vector()
 	/**
 	  * Wraps a function into a custom drawer and adds it to this component
-	  * @param drawLevel Target draw level
+	  * @param drawLevel Target draw level (default = normal)
 	  * @param f A drawing function
 	  */
-	def addCustomDrawer(drawLevel: DrawLevel, f: (Drawer, Bounds) => Unit): Unit = addCustomDrawer(CustomDrawer(drawLevel, f))
+	def addCustomDrawer(drawLevel: DrawLevel = Normal)(f: (Drawer, Bounds) => Unit): Unit = addCustomDrawer(CustomDrawer(drawLevel)(f))
 	
 	/**
 	  * Performs the custom draw

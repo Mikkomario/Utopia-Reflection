@@ -1,7 +1,9 @@
-package utopia.reflection.component.drawing
+package utopia.reflection.component.drawing.immutable
+
 import utopia.genesis.shape.shape2D.{Bounds, Size}
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.drawing.DrawLevel.{Foreground, Normal}
+import utopia.reflection.component.drawing.template.DrawLevel.{Foreground, Normal}
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.shape.{Border, Insets}
 
 import scala.collection.immutable.VectorBuilder

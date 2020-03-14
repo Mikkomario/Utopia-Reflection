@@ -5,8 +5,9 @@ import utopia.flow.event.Changing
 import utopia.flow.util.StringExtensions._
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.reflection.component.Refreshable
-import utopia.reflection.component.drawing.DrawLevel.Normal
-import utopia.reflection.component.drawing.{BackgroundDrawer, CustomDrawer}
+import utopia.reflection.component.drawing.template.DrawLevel.Normal
+import utopia.reflection.component.drawing.immutable.BackgroundDrawer
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.swing.label.{ItemLabel, TextLabel}
 import utopia.reflection.container.stack.StackLayout
 import utopia.reflection.container.stack.StackLayout.Fit
@@ -147,7 +148,7 @@ object SearchFrom
   * @param itemToSearchString Function for converting a selectable item to searchable string. Used when filtering items.
   */
 class SearchFrom[A, C <: AwtStackable with Refreshable[A]]
-(searchField: TextField, override val noResultsView: AwtStackable, override val actorHandler: ActorHandler,
+(searchField: TextField, override protected val noResultsView: AwtStackable, override protected val actorHandler: ActorHandler,
  selectionDrawer: CustomDrawer, betweenDisplaysMargin: StackLength = StackLength.any, displayStackLayout: StackLayout = Fit,
  override val contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
  selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),

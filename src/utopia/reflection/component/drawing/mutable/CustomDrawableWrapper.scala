@@ -1,4 +1,6 @@
-package utopia.reflection.component.drawing
+package utopia.reflection.component.drawing.mutable
+
+import utopia.reflection.component.drawing.template.CustomDrawer
 
 /**
   * These components don't perform custom drawing themselves, but wrap another component that does

@@ -6,7 +6,9 @@ import utopia.genesis.shape.Axis._
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer, DrawLevel}
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.drawing.template.DrawLevel
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.StackLayout.Fit

@@ -184,24 +184,39 @@ object Stacker
 		}
 	}
 	
+	/**
+	  * Adjusts the specified linear lengths to match the available space, if possible
+	  * @param lengths Lengths of items that cover the targeted space
+	  * @param availableSpace Linear space to cover
+	  * @return Final lengths of each item (in same order as 'lengths')
+	  */
+	def adjustLengths(lengths: Seq[StackLength], availableSpace: Double) =
+	{
+		// Calculates the required adjustment
+		val optimalLength = lengths.foldLeft(0.0) { (total, length) => total + length.optimal }
+		val requiredAdjustment = availableSpace - optimalLength
+		
+		// Performs the adjustment
+		val targets = lengths.map { new GapLengthAdjust(new Pointer(0.0), _) }
+		adjustLength(targets, requiredAdjustment)
+		targets.foreach { _() }
+		
+		// Returns the final lengths
+		targets.map { _.target.get }
+	}
+	
 	@scala.annotation.tailrec
 	private def adjustLength(targets: Traversable[LengthAdjust], adjustment: Double): Double =
 	{
-		// println(s"Adjusting length for ${targets.size} targets. Remaining adjustment: $adjustment")
-		
 		// Finds out how much each item should be adjusted
 		val adjustmentPerComponent = adjustment / targets.size
 		
 		// Adjusts the items (some may be maxed) and caches results
 		val results = targets map { target => target -> (target += adjustmentPerComponent) }
 		
-		// println(s"Remaining: (${results.map { _._2 }.fold(""){ _ + ", " + _ }})")
-		
 		// Finds out the remaining adjustment and available targets
 		val remainingAdjustment = results.foldLeft(0.0) { case (total, next) => total + next._2 }
 		val availableTargets = results.filter { _._2 == 0.0 }.map { _._1 }
-		
-		// println(s"Remaining total: $remainingAdjustment. Available targets: ${availableTargets.size}")
 		
 		// If necessary and possible, goes for the second round. Returns remaining adjustment
 		if (availableTargets.isEmpty)
@@ -288,7 +303,7 @@ object Stacker
 		def setLength(length: Double) = target.setLength(length, direction)
 	}
 	
-	private class GapLengthAdjust(private val target: Pointer[Double], val length: StackLength) extends LengthAdjust
+	private class GapLengthAdjust(val target: Pointer[Double], val length: StackLength) extends LengthAdjust
 	{
 		def setLength(length: Double) = target.set(length)
 	}

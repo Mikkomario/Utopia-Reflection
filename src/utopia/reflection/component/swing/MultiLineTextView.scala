@@ -6,7 +6,7 @@ import utopia.flow.util.CollectionExtensions._
 import utopia.genesis.color.Color
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.component.TextComponent
-import utopia.reflection.component.drawing.CustomDrawableWrapper
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.container.stack.StackLayout.{Center, Leading, Trailing}
 import utopia.reflection.container.swing.{AlignFrame, Stack, SwitchPanel}
 import utopia.reflection.localization.{LocalString, LocalizedString}

@@ -14,8 +14,8 @@ import utopia.genesis.shape.{Axis2D, LinearAcceleration, Vector3D, VectorLike, V
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
-import utopia.reflection.component.drawing.CustomDrawer
-import utopia.reflection.component.drawing.DrawLevel.Foreground
+import utopia.reflection.component.drawing.template.DrawLevel.Foreground
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.stack.{CachingStackable, Stackable}
 import utopia.reflection.shape.{ScrollBarBounds, StackLengthLimit, StackSize}
 
@@ -329,8 +329,8 @@ trait ScrollAreaLike[C <: Stackable] extends CachingStackable with StackContaine
 	  * @param barDrawer A scroll bar drawer
 	  * @return A custom drawer based on the scroll bar drawer
 	  */
-	protected def scrollBarDrawerToCustomDrawer(barDrawer: ScrollBarDrawer) = CustomDrawer(Foreground,
-		(d, _) => drawWith(barDrawer, d))
+	protected def scrollBarDrawerToCustomDrawer(barDrawer: ScrollBarDrawer) = CustomDrawer(Foreground) {
+		(d, _) => drawWith(barDrawer, d) }
 	
 	/**
 	  * Sets up animated scrolling for this scroll area. This method doesn't need to be called if

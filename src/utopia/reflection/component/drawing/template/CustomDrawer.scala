@@ -1,7 +1,8 @@
-package utopia.reflection.component.drawing
+package utopia.reflection.component.drawing.template
 
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
+import utopia.reflection.component.drawing.template.DrawLevel.Normal
 
 import scala.language.implicitConversions
 
@@ -9,11 +10,11 @@ object CustomDrawer
 {
 	/**
 	  * Wraps a function into custom drawer
-	  * @param level The target draw level
+	  * @param level The target draw level (default = Normal = Above component contents but below child contents)
 	  * @param f A function
 	  * @return A new custom drawer that calls that function
 	  */
-	def apply(level: DrawLevel, f: (Drawer, Bounds) => Unit): CustomDrawer = new FunctionalCustomDrawer(level, f)
+	def apply(level: DrawLevel = Normal)(f: (Drawer, Bounds) => Unit): CustomDrawer = new FunctionalCustomDrawer(level, f)
 }
 
 /**

@@ -2,8 +2,20 @@ package utopia.reflection.shape
 
 import utopia.genesis.shape.shape2D.{Direction2D, Point, Size}
 
+import scala.collection.immutable.HashMap
+
 object Insets extends InsetsFactory[Double, Size, Insets, Insets]
 {
+    // ATTRIBUTES   ------------------------
+    
+    /**
+      * A set of insets where each side is 0
+      */
+    val zero = new Insets(HashMap())
+    
+    
+    // OTHER    ----------------------------
+    
     /**
      * Converts an awt insets into insets
      */

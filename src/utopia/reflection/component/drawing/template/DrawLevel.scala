@@ -1,4 +1,4 @@
-package utopia.reflection.component.drawing
+package utopia.reflection.component.drawing.template
 
 object DrawLevel
 {

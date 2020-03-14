@@ -14,8 +14,9 @@ import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.X
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
-import utopia.reflection.component.drawing.DrawLevel.Normal
+import utopia.reflection.component.drawing.template.DrawLevel.Normal
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.{Alignable, Focusable}
 import utopia.reflection.component.input.InteractionWithPointer
 import utopia.reflection.component.stack.{CachingStackable, StackLeaf}

@@ -2,7 +2,7 @@ package utopia.reflection.component.swing.button
 
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.drawing.DrawLevel
+import utopia.reflection.component.drawing.template.DrawLevel
 
 /**
   * Used for drawing different button states

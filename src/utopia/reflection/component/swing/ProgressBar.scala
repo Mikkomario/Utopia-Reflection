@@ -5,8 +5,9 @@ import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.X
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
-import utopia.reflection.component.drawing.DrawLevel.Normal
+import utopia.reflection.component.drawing.template.DrawLevel.Normal
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.stack.StackLeaf
 import utopia.reflection.component.swing.label.EmptyLabel
 import utopia.reflection.shape.StackSize

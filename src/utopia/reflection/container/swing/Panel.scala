@@ -4,8 +4,8 @@ import java.awt.{Container, Graphics}
 
 import javax.swing.{JComponent, JPanel, SwingUtilities}
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
-import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawableWrapper}
 import utopia.reflection.component.ComponentLike
+import utopia.reflection.component.drawing.mutable.{CustomDrawable, CustomDrawableWrapper}
 import utopia.reflection.component.swing.{AwtComponentRelated, CustomDrawComponent, JWrapper}
 import utopia.reflection.container.MultiContainer
 

@@ -26,6 +26,8 @@ trait SingleLineTextComponent extends TextComponent with StackSizeCalculating
 	  */
 	protected def calculatedStackSize =
 	{
+		// FIXME: Needs to take into account margins on both sides
+		
 		// Adds margins to base text size. Alignment also matters.
 		val textW = textWidth.getOrElse(128)
 		val totalHMargin = if (alignment.horizontal == Center) hMargin * 2 else hMargin

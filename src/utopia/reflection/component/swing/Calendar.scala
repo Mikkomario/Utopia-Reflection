@@ -9,7 +9,8 @@ import utopia.flow.util.TimeExtensions._
 import utopia.genesis.color.Color
 import utopia.genesis.shape.Axis.{X, Y}
 import utopia.genesis.shape.shape2D.Size
-import utopia.reflection.component.drawing.{CustomDrawableWrapper, SelectionCircleDrawer}
+import utopia.reflection.component.drawing.immutable.SelectionCircleDrawer
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.component.input.{InteractionWithPointer, SelectionGroup}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.button.{ButtonImageSet, CustomDrawableButtonLike, ImageButton}

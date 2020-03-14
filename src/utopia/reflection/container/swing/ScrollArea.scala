@@ -3,7 +3,7 @@ package utopia.reflection.container.swing
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.shape.{Axis2D, LinearAcceleration}
 import utopia.genesis.shape.shape2D.Bounds
-import utopia.reflection.component.drawing.CustomDrawableWrapper
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.{AwtComponentRelated, AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer}

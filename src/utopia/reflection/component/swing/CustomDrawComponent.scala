@@ -3,8 +3,9 @@ package utopia.reflection.component.swing
 import java.awt.Graphics
 
 import utopia.genesis.util.Drawer
-import utopia.reflection.component.drawing.DrawLevel._
-import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawer}
+import utopia.reflection.component.drawing.template.DrawLevel._
+import utopia.reflection.component.drawing.mutable.CustomDrawable
+import utopia.reflection.component.drawing.template.CustomDrawer
 
 /**
   * This trait is extended by awt components that allow custom drawing. Please note that this trait should only be

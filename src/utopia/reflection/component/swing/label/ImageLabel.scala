@@ -5,8 +5,8 @@ import utopia.genesis.image.Image
 import utopia.genesis.shape.shape2D.{Bounds, Point}
 import utopia.genesis.util.Drawer
 import utopia.reflection.component.RefreshableWithPointer
-import utopia.reflection.component.drawing.CustomDrawer
-import utopia.reflection.component.drawing.DrawLevel.Normal
+import utopia.reflection.component.drawing.template.DrawLevel.Normal
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.stack.{CachingStackable, StackLeaf}
 import utopia.reflection.shape.StackSize
 import utopia.reflection.util.ComponentContext

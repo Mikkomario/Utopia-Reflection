@@ -1,7 +1,8 @@
 package utopia.reflection.container.swing
 
 import utopia.reflection.component.Alignable
-import utopia.reflection.component.drawing.{CustomDrawable, CustomDrawableWrapper, DrawLevel}
+import utopia.reflection.component.drawing.mutable.{CustomDrawable, CustomDrawableWrapper}
+import utopia.reflection.component.drawing.template.DrawLevel
 import utopia.reflection.component.stack.CachingStackable
 import utopia.reflection.component.swing.{AwtComponentWrapperWrapper, SwingComponentRelated}
 import utopia.reflection.container.stack.StackContainerLike
@@ -33,7 +34,7 @@ class LayeredView[Background <: AwtStackable with CustomDrawable, Foreground <: 
 	addResizeListener(updateLayout())
 	
 	// Foreground needs to be redrawn whenever the background is redrawn
-	background.addCustomDrawer(DrawLevel.Foreground, (_, _) => foreground.repaint())
+	background.addCustomDrawer(DrawLevel.Foreground) { (_, _) => foreground.repaint() }
 	
 	
 	// IMPLEMENTED	---------------------

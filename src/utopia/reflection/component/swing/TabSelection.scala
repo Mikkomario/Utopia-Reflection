@@ -9,8 +9,9 @@ import utopia.genesis.shape.Axis.{X, Y}
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
-import utopia.reflection.component.drawing.DrawLevel.Background
-import utopia.reflection.component.drawing.{CustomDrawableWrapper, CustomDrawer}
+import utopia.reflection.component.drawing.template.DrawLevel.Background
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.container.swing.{AwtContainerRelated, Framing, Stack}
