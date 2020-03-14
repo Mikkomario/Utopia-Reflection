@@ -15,6 +15,7 @@ import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
+import utopia.reflection.shape.StackInsets
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -35,15 +36,18 @@ object SegmentedRowTest extends App
 	
 	// Creates the labels
 	val basicFont = Font("Arial", 12, Plain, 2)
-	val labels = Vector("Here are some labels", "just for you", "once", "again!").map { s => TextLabel(s, basicFont, 16.any x 0.any) }
+	val labels = Vector("Here are some labels", "just for you", "once", "again!").map { s => TextLabel(s, basicFont,
+		insets = StackInsets.symmetric(16.any, 0.any)) }
 	labels.foreach { _.background = Color.yellow }
 	labels.foreach { _.alignCenter() }
 	
 	// Creates a button too
 	val largeFont = basicFont * 1.2
 	
-	val button1 = TextButton("Yeah!", largeFont, Color.magenta, 32.any x 8.any, 4) { () => labels(1).text += "!" }
-	val button2 = TextButton("For Sure!", largeFont, Color.magenta, 32.any x 8.any, 4) { () => labels(3).text += "!" }
+	val button1 = TextButton("Yeah!", largeFont, Color.magenta, insets = StackInsets.symmetric(32.any, 8.any),
+		borderWidth = 4) { () => labels(1).text += "!" }
+	val button2 = TextButton("For Sure!", largeFont, Color.magenta, insets = StackInsets.symmetric(32.any, 8.any),
+		borderWidth = 4) { () => labels(3).text += "!" }
 	
 	// Creates the rows
 	val hGroup = new SegmentedGroup(X)

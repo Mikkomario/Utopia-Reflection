@@ -6,7 +6,7 @@ import utopia.genesis.shape.{Axis2D, LinearAcceleration}
 import utopia.genesis.util.Drawer
 import utopia.reflection.color.ComponentColor
 import utopia.reflection.container.stack.{ScrollAreaLike, ScrollBarDrawer}
-import utopia.reflection.shape.{Alignment, Border, ScrollBarBounds, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, Border, ScrollBarBounds, StackInsets, StackLength}
 import utopia.reflection.text.Font
 
 /**
@@ -26,7 +26,7 @@ import utopia.reflection.text.Font
  * @param background Background color used for nearly all components, if any (default = None = transparent background)
  * @param barBackground Background color for bars (scroll, progress, etc.) (default = specified background color or
  *                      gray if that's not specified either)
- * @param insideMargins Margins placed inside components that support it (default = any margin, preferring zero)
+ * @param insets Insets placed inside components that support them (default = any, preferring zero)
  * @param border Border used for nearly all components (default = None = no special border)
  * @param borderWidth Border width used for some components that create their own borders
  *                    (default = width of overall border or half of inside margins (with minimum of 4 px))
@@ -48,7 +48,7 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 								   normalWidth: Int, textColor: Color = Color.textBlack, promptFont: Option[Font] = None,
 								   promptTextColor: Option[Color] = None, textHasMinWidth: Boolean = true,
 								   textAlignment: Alignment = Alignment.Left, background: Option[Color] = None,
-								   barBackground: Option[Color] = None, insideMargins: StackSize = StackSize.any,
+								   barBackground: Option[Color] = None, insets: StackInsets = StackInsets.any,
 								   border: Option[Border] = None, borderWidth: Option[Double] = None,
 								   stackMargin: StackLength = StackLength.any, relatedItemsStackMargin: Option[StackLength] = None,
 								   stackCap: StackLength = StackLength.fixed(0), dropDownWidthLimit: Option[Int] = None,
@@ -65,9 +65,9 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	 */
 	lazy val result = ComponentContext(actorHandler, font, highlightColor, focusColor, normalWidth, textColor,
 		promptFont.getOrElse(font), promptTextColor.getOrElse(textColor.timesAlpha(0.625)), textHasMinWidth,
-		textAlignment, background, barBackground.orElse(background).getOrElse(Color.gray(0.5)), insideMargins,
+		textAlignment, background, barBackground.orElse(background).getOrElse(Color.gray(0.5)), insets,
 		border, borderWidth.orElse(border.map { _.insets.average }).getOrElse(
-			(insideMargins.optimal.width / 2 min insideMargins.optimal.height / 2) max 4),
+			(insets.optimal.horizontal / 2 min insets.optimal.vertical / 2) max 4),
 		stackMargin, relatedItemsStackMargin.getOrElse(stackMargin), stackCap, dropDownWidthLimit,
 		switchWidth.getOrElse(StackLength.any(normalWidth / 4)), textFieldWidth.getOrElse(StackLength.any(normalWidth)),
 		scrollPerWheelClick, scrollBarWidth, scrollBarDrawer.getOrElse(new DefaultScrollBarDrawer),
@@ -116,9 +116,9 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 	def withColors(colors: ComponentColor) = copy(
 		background = Some(colors.background), textColor = colors.defaultTextColor)
 	
-	def withInnerMargins(margins: StackSize) = copy(insideMargins = margins)
+	def withInsets(insets: StackInsets) = copy(insets = insets)
 	
-	def mapInnerMargins(f: StackSize => StackSize) = copy(insideMargins = f(insideMargins))
+	def mapInsets(f: StackInsets => StackInsets) = copy(insets = f(insets))
 	
 	def withBorder(border: Border) = copy(border = Some(border))
 	

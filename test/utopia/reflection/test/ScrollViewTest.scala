@@ -20,7 +20,7 @@ import utopia.reflection.container.swing.{ScrollView, Stack}
 import utopia.reflection.controller.data.StackSelectionManager
 import utopia.reflection.localization.{DisplayFunction, Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
-import utopia.reflection.shape.StackLengthLimit
+import utopia.reflection.shape.{StackInsets, StackLengthLimit}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -45,7 +45,7 @@ object ScrollViewTest extends App
 	val displayFunction = DisplayFunction.interpolating("Label number %i")
 	def makeLabel(number: Int) =
 	{
-		val label = new ItemLabel(number, displayFunction, basicFont, 16.any x 4.fixed)
+		val label = new ItemLabel(number, displayFunction, basicFont, initialInsets = StackInsets.symmetric(16.any, 4.fixed))
 		label.background = Color.yellow
 		label.alignCenter()
 		
@@ -69,7 +69,7 @@ object ScrollViewTest extends App
 	contentManager.enableMouseHandling(false)
 	private val contentUpdateLoop = new ContentUpdateLoop(contentManager)
 	
-	stack.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_RIGHT, e => contentManager.updateSingle(2)))
+	stack.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_RIGHT, _ => contentManager.updateSingle(2)))
 	
 	// Creates the scroll view
 	val barDrawer = BoxScrollBarDrawer(Color.black.withAlpha(0.55), Color.red)

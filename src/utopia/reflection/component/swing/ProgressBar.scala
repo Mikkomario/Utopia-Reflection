@@ -8,8 +8,7 @@ import utopia.genesis.util.Drawer
 import utopia.reflection.component.drawing.template.DrawLevel.Normal
 import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.component.drawing.template.CustomDrawer
-import utopia.reflection.component.stack.StackLeaf
-import utopia.reflection.component.swing.label.EmptyLabel
+import utopia.reflection.component.stack.StackableWrapper
 import utopia.reflection.shape.StackSize
 import utopia.reflection.util.ComponentContext
 
@@ -26,7 +25,7 @@ object ProgressBar
 	  */
 	def contextual[A](stackSize: StackSize, data: PointerWithEvents[A])(calculateProgress: A => Double)
 					 (implicit context: ComponentContext) = new ProgressBar[A](stackSize, context.barBackground,
-		context.highlightColor, data, calculateProgress)
+		context.highlightColor, data)(calculateProgress)
 }
 
 /**
@@ -34,19 +33,18 @@ object ProgressBar
   * @author Mikko Hilpinen
   * @since 1.8.2019, v1+
   */
-class ProgressBar[A](override val stackSize: StackSize, val backgroundColor: Color, val barColor: Color,
-					 val data: PointerWithEvents[A], val calculateProgress: A => Double)
-	extends AwtComponentWrapperWrapper with CustomDrawableWrapper with StackLeaf
+class ProgressBar[A](_stackSize: StackSize, val backgroundColor: Color, val barColor: Color,
+					 val data: PointerWithEvents[A])(calculateProgress: A => Double)
+	extends StackableWrapper with CustomDrawableWrapper with SwingComponentRelated
 {
 	// ATTRIBUTES	---------------------
 	
-	private val label = new EmptyLabel()
+	private val label = StackSpace.drawingWith(ProgressDrawer, _stackSize)
 	private var _progress = calculateProgress(data.get) max 0 min 1
 	
 	
 	// INITIAL CODE	---------------------
 	
-	label.addCustomDrawer(new ProgressDrawer)
 	data.addListener { event =>
 		_progress = calculateProgress(event.newValue) max 0 min 1
 		repaint()
@@ -63,11 +61,7 @@ class ProgressBar[A](override val stackSize: StackSize, val backgroundColor: Col
 	
 	// IMPLEMENTED	----------------------
 	
-	override def updateLayout() = Unit
-	
-	override def resetCachedSize() = Unit
-	
-	override def stackId = hashCode()
+	override def component = label.component
 	
 	override protected def wrapped = label
 	
@@ -76,7 +70,7 @@ class ProgressBar[A](override val stackSize: StackSize, val backgroundColor: Col
 	
 	// NESTED	--------------------------
 	
-	private class ProgressDrawer extends CustomDrawer
+	object ProgressDrawer extends CustomDrawer
 	{
 		override def drawLevel = Normal
 		

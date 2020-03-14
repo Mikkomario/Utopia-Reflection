@@ -1,5 +1,6 @@
 package utopia.reflection.shape
 
+import utopia.reflection.shape.LengthExtensions._
 import utopia.genesis.shape.shape2D.{Direction2D, Point, Size}
 
 import scala.collection.immutable.HashMap
@@ -64,4 +65,55 @@ case class Insets(amounts: Map[Direction2D, Double]) extends InsetsLike[Double, 
       * @return A non-negative version of these insets
       */
     def positive = Insets(amounts.map { case (k, v) => k -> (v max 0) })
+    
+    /**
+      * @return A stack-compatible copy of these insets that supports any other value but prefers these
+      */
+    def any = toStackInsets { _.any }
+    
+    /**
+      * @return A stack-compatible copy of these insets that only allows these exact insets
+      */
+    def fixed = toStackInsets { _.fixed }
+    
+    /**
+      * @return A stack-compatible copy of these insets that allows these or smaller insets
+      */
+    def downscaling = toStackInsets { _.downscaling }
+    
+    /**
+      * @return A stack-compatible copy of these insets that allows these or larger insets
+      */
+    def upscaling = toStackInsets { _.upscaling }
+    
+    /**
+      * @param min Minimum set of insets
+      * @return A set of stack insets that allows values below these insets, down to specified insets
+      */
+    def downTo(min: Insets) = toStackInsetsWith(min) { (opt, min) => opt.downTo(min) }
+    
+    /**
+      * @param max Maximum set of insets
+      * @return A set of stack insets that allows values above these insets, up to specified insets
+      */
+    def upTo(max: Insets) = toStackInsetsWith(max) { (opt, max) => opt.upTo(max) }
+    
+    
+    // OTHER    ---------------------
+    
+    /**
+      * Converts these insets to stack insets by using the specified function
+      * @param f A function for converting a static length to a stack length
+      * @return Stack insets based on these insets
+      */
+    def toStackInsets(f: Double => StackLength) = StackInsets(amounts.map { case (d, l) => d -> f(l) })
+    
+    /**
+      * Creates a set of stack insets by combining these insets with another set of insets and using the specified merge function
+      * @param other Another set of insets
+      * @param f Function for producing stack lengths
+      * @return A new set of stack insets
+      */
+    def toStackInsetsWith(other: Insets)(f: (Double, Double) => StackLength) = StackInsets(
+        (amounts.keySet ++ other.amounts.keySet).map { d => d -> f(apply(d), other(d)) }.toMap)
 }

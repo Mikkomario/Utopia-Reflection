@@ -13,7 +13,7 @@ import utopia.reflection.container.swing.CollectionView
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.Program
 import utopia.reflection.localization.{Localizer, NoLocalization}
-import utopia.reflection.shape.StackSize
+import utopia.reflection.shape.{StackInsets, StackSize}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 import utopia.reflection.util.{ComponentContext, ComponentContextBuilder, SingleFrameSetup}
@@ -37,7 +37,7 @@ object CollectionViewTest extends App
 	// Creates component context
 	val actorHandler = ActorHandler()
 	val baseCB = ComponentContextBuilder(actorHandler, Font("Arial", 12, Plain, 2), Color.green, Color.yellow, 320,
-		insideMargins = 8.any x 8.any, stackMargin = 8.downscaling, relatedItemsStackMargin = Some(4.downscaling))
+		insets = StackInsets.symmetric(8.any), stackMargin = 8.downscaling, relatedItemsStackMargin = Some(4.downscaling))
 	
 	implicit val baseContext: ComponentContext = baseCB.result
 	

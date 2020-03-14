@@ -5,7 +5,6 @@ import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
 import utopia.genesis.event.{ConsumeEvent, MouseButtonStateEvent, MouseEvent}
 import utopia.genesis.handling.MouseButtonStateListener
-import utopia.genesis.shape.Axis.{X, Y}
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 import utopia.inception.handling.immutable.Handleable
@@ -14,11 +13,11 @@ import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.component.swing.label.TextLabel
-import utopia.reflection.container.swing.{AwtContainerRelated, Framing, Stack}
+import utopia.reflection.container.swing.{AwtContainerRelated, Stack}
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
 import utopia.reflection.shape.Alignment.Center
 import utopia.reflection.shape.LengthExtensions._
-import utopia.reflection.shape.{StackLength, StackSize}
+import utopia.reflection.shape.{StackInsets, StackLength}
 import utopia.reflection.text.Font
 import utopia.reflection.util.ComponentContext
 
@@ -38,8 +37,8 @@ object TabSelection
 	def contextual[A](displayFunction: DisplayFunction[A] = DisplayFunction.raw, initialChoices: Seq[A] = Vector(),
 					  selectionLineHeight: Double = 8.0)(implicit context: ComponentContext) =
 	{
-		val yMargin = context.insideMargins.along(Y)
-		val component = new TabSelection[A](context.font, context.highlightColor, context.insideMargins.along(X).optimal,
+		val yMargin = context.insets.vertical
+		val component = new TabSelection[A](context.font, context.highlightColor, context.insets.horizontal.optimal,
 			yMargin, selectionLineHeight, displayFunction, initialChoices, context.textColor)
 		context.setBorderAndBackground(component)
 		component
@@ -51,6 +50,7 @@ object TabSelection
   * @author Mikko Hilpinen
   * @since 4.5.2019, v1+
   */
+// TODO: Add support for proper insets
 class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMargin: Double, val vMargin: StackLength,
 					  val selectionLineHeight: Double = 8.0, val displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 					  initialChoices: Seq[A] = Vector(), initialTextColor: Color = Color.textBlack)
@@ -61,10 +61,11 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 	
 	private var _textColor = initialTextColor
 	
-	private val stack = Stack.row[Framing[TextLabel]](0.fixed)
-	private val textMargin = StackSize(StackLength(0, optimalHMargin), vMargin)
+	private val stack = Stack.row[TextLabel](0.fixed)
+	private val textInsets = StackInsets.vertical(vMargin + selectionLineHeight) +
+		StackInsets.horizontal(optimalHMargin.downscaling)
 	
-	private var labels: Map[A, Framing[TextLabel]] = HashMap()
+	private var labels: Map[A, TextLabel] = HashMap()
 	
 	override val valuePointer = new PointerWithEvents[Option[A]](None)
 	override val contentPointer = new PointerWithEvents[Seq[A]](Vector())
@@ -97,7 +98,7 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 		if (_textColor != newColor)
 		{
 			_textColor = newColor
-			labels.values.flatMap { _.content }.foreach { _.textColor = newColor }
+			labels.values.foreach { _.textColor = newColor }
 		}
 	}
 	
@@ -115,13 +116,13 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 	
 	// OTHER	-------------------
 	
-	private def styleSelected(label: Framing[TextLabel]) =
+	private def styleSelected(label: TextLabel) =
 	{
 		label.addCustomDrawer(SelectionDrawer)
 		label.setArrowCursor()
 	}
 	
-	private def styleNotSelected(label: Framing[TextLabel]) =
+	private def styleNotSelected(label: TextLabel) =
 	{
 		label.removeCustomDrawer(SelectionDrawer)
 		label.setHandCursor()
@@ -132,7 +133,7 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 	
 	private class ValueUpdateListener extends ChangeListener[Option[A]]
 	{
-		private var lastSelectedLabel: Option[Framing[TextLabel]] = None
+		private var lastSelectedLabel: Option[TextLabel] = None
 		
 		override def onChangeEvent(event: ChangeEvent[Option[A]]) =
 		{
@@ -168,12 +169,11 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 				{
 					val moreLabels = Vector.fill(newContent.size - oldLabels.size)
 					{
-						val label = new TextLabel(LocalizedString.empty, font, textMargin, false,
-							initialAlignment = Center, initialTextColor = _textColor)
-						val framedLabel = label.framed(selectionLineHeight.fixed.bottom)
-						styleNotSelected(framedLabel)
-						framedLabel.addMouseButtonListener(new LabelMouseListener(framedLabel))
-						framedLabel
+						val label = new TextLabel(LocalizedString.empty, font, _textColor, textInsets, Center,
+							hasMinWidth = false)
+						styleNotSelected(label)
+						label.addMouseButtonListener(new LabelMouseListener(label))
+						label
 					}
 					
 					stack ++= moreLabels
@@ -188,7 +188,7 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 			
 			// Assigns new values to labels
 			labels = newContent.zip(newLabels).toMap
-			newContent.foreach { v => labels.get(v).flatMap { _.content }.foreach { _.text = displayFunction(v) } }
+			newContent.foreach { v => labels.get(v).foreach { _.text = displayFunction(v) } }
 			
 			// Preserves selection, if possible
 			if (oldValue.exists(newContent.contains))
@@ -198,7 +198,7 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 		}
 	}
 	
-	private class LabelMouseListener(val label: Framing[TextLabel]) extends MouseButtonStateListener with Handleable
+	private class LabelMouseListener(val label: TextLabel) extends MouseButtonStateListener with Handleable
 	{
 		// ATTRIBUTES	----------
 		

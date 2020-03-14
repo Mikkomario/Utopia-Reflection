@@ -4,7 +4,7 @@ import utopia.genesis.color.Color
 import utopia.reflection.component.swing.StackableAwtComponentWrapperWrapper
 import utopia.reflection.component.swing.label.{ImageLabel, TextLabel}
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.{Alignment, Border, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, Border, StackInsets, StackLength}
 import utopia.reflection.text.Font
 import utopia.reflection.util.ComponentContext
 
@@ -16,7 +16,7 @@ object ImageAndTextButton
 	  * @param text Text displayed in this button
 	  * @param font Font used in this button's text
 	  * @param color This button's background color
-	  * @param margins Margins around this button's contents
+	  * @param insets Insets around this button's contents
 	  * @param borderWidth Width of border around this button's contents (in pixels)
 	  * @param beforeTextMargin Margin placed between this button's image and text (labels) (default = any, preferring 0)
 	  * @param textAlignment Alignment used with this button's text (default = left)
@@ -24,11 +24,11 @@ object ImageAndTextButton
 	  * @param action Action that is performed when this button is triggered
 	  * @return A new button
 	  */
-	def apply(images: ButtonImageSet, text: LocalizedString, font: Font, color: Color, margins: StackSize,
+	def apply(images: ButtonImageSet, text: LocalizedString, font: Font, color: Color, insets: StackInsets,
 			  borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
 			  textAlignment: Alignment = Alignment.Left, textColor: Color = Color.textBlack)(action: () => Unit) =
 	{
-		val button = new ImageAndTextButton(images, text, font, color, margins, borderWidth, beforeTextMargin,
+		val button = new ImageAndTextButton(images, text, font, color, insets, borderWidth, beforeTextMargin,
 			textAlignment, textColor)
 		button.registerAction(action)
 		button
@@ -43,7 +43,7 @@ object ImageAndTextButton
 	  * @return A new button
 	  */
 	def contextual(images: ButtonImageSet, text: LocalizedString)(action: () => Unit)(implicit context: ComponentContext) =
-		apply(images, text, context.font, context.buttonBackground, context.insideMargins, context.borderWidth,
+		apply(images, text, context.font, context.buttonBackground, context.insets, context.borderWidth,
 			context.relatedItemsStackMargin, context.textAlignment, context.textColor)(action)
 	
 	/**
@@ -54,7 +54,7 @@ object ImageAndTextButton
 	 * @return A new button
 	 */
 	def contextualWithoutAction(images: ButtonImageSet, text: LocalizedString)(implicit context: ComponentContext) =
-		new ImageAndTextButton(images, text, context.font, context.buttonBackground, context.insideMargins,
+		new ImageAndTextButton(images, text, context.font, context.buttonBackground, context.insets,
 			context.borderWidth, context.relatedItemsStackMargin, context.textAlignment, context.textColor)
 }
 
@@ -66,14 +66,14 @@ object ImageAndTextButton
   * @param initialText Text displayed in this button
   * @param font Font used in this button's text
   * @param color This button's background color
-  * @param margins Margins around this button's contents
+  * @param insets Insets around this button's contents
   * @param borderWidth Width of border around this button's contents (in pixels)
   * @param beforeTextMargin Margin placed between this button's image and text (labels)
   * @param textAlignment Alignment used with this button's text
  *  @param textColor Color for this button's text (default = black)
   */
 class ImageAndTextButton(initialImages: ButtonImageSet, initialText: LocalizedString, font: Font, val color: Color,
-						 margins: StackSize, borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
+						 insets: StackInsets, borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
 						 textAlignment: Alignment = Alignment.Left, textColor: Color = Color.textBlack)
 	extends StackableAwtComponentWrapperWrapper with ButtonLike
 {
@@ -82,9 +82,9 @@ class ImageAndTextButton(initialImages: ButtonImageSet, initialText: LocalizedSt
 	private var _images = initialImages
 	
 	private val imageLabel = new ImageLabel(initialImages.defaultImage)
-	private val textLabel = new TextLabel(initialText, font, StackSize.any.withLowPriority,
-		initialAlignment = textAlignment, initialTextColor = textColor)
-	private val content = imageLabel.rowWith(Vector(textLabel), margin = beforeTextMargin).framed(margins)
+	private val textLabel = new TextLabel(initialText, font, textColor, StackInsets.any.withLowPriority,
+		initialAlignment = textAlignment)
+	private val content = imageLabel.rowWith(Vector(textLabel), margin = beforeTextMargin).framed(insets)
 	
 	
 	// INITIAL CODE	------------------------

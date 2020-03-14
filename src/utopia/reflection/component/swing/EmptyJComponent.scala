@@ -2,7 +2,7 @@ package utopia.reflection.component.swing
 
 import java.awt.Graphics
 
-import javax.swing.JComponent
+import javax.swing.JLabel
 import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
 
 /**
@@ -10,7 +10,7 @@ import utopia.genesis.shape.shape2D.{Bounds, Point, Size}
   * @author Mikko Hilpinen
   * @since 14.3.2020, v1
   */
-class EmptyJComponent extends JComponent with CustomDrawComponent
+class EmptyJComponent extends JLabel with CustomDrawComponent
 {
 	// IMPLEMENTED	-----------------
 	

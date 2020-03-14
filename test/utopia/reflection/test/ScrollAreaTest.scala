@@ -17,7 +17,7 @@ import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.{ScrollArea, Stack}
 import utopia.reflection.localization.{DisplayFunction, Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
-import utopia.reflection.shape.StackLengthLimit
+import utopia.reflection.shape.{StackInsets, StackLengthLimit}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -39,7 +39,7 @@ object ScrollAreaTest extends App
 	// Creates the labels
 	val basicFont = Font("Arial", 12, Plain, 2)
 	val labels = (1 to 10).toVector.map { row => (1 to 50).toVector.map { i => new ItemLabel(row * i,
-		DisplayFunction.interpolating("Label number %i"), basicFont, 16.any x 4.fixed) }}
+		DisplayFunction.interpolating("Label number %i"), basicFont, initialInsets = StackInsets.symmetric(16.any, 4.fixed)) }}
 	val allLabels = labels.flatten
 	allLabels.foreach { _.background = Color.yellow }
 	allLabels.foreach { _.alignCenter() }

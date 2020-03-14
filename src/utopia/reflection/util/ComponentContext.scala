@@ -6,7 +6,7 @@ import utopia.genesis.shape.LinearAcceleration
 import utopia.reflection.component.ComponentLike
 import utopia.reflection.component.swing.SwingComponentRelated
 import utopia.reflection.container.stack.ScrollBarDrawer
-import utopia.reflection.shape.{Alignment, Border, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, Border, StackInsets, StackLength}
 import utopia.reflection.text.Font
 
 /**
@@ -16,7 +16,7 @@ import utopia.reflection.text.Font
   */
 case class ComponentContext(actorHandler: ActorHandler, font: Font, highlightColor: Color, focusColor: Color, normalWidth: Int,
 							textColor: Color, promptFont: Font, promptTextColor: Color, textHasMinWidth: Boolean,
-							textAlignment: Alignment, background: Option[Color], barBackground: Color, insideMargins: StackSize,
+							textAlignment: Alignment, background: Option[Color], barBackground: Color, insets: StackInsets,
 							border: Option[Border], borderWidth: Double, stackMargin: StackLength,
 							relatedItemsStackMargin: StackLength, stackCap: StackLength, dropDownWidthLimit: Option[Int],
 							switchWidth: StackLength, textFieldWidth: StackLength, scrollPerWheelClick: Double,

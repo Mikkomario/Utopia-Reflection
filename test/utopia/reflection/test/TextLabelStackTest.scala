@@ -16,6 +16,7 @@ import utopia.reflection.container.swing.{Framing, Stack}
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
+import utopia.reflection.shape.StackInsets
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -36,11 +37,13 @@ object TextLabelStackTest extends App
 	
 	// Creates the labels
 	val basicFont = Font("Arial", 12, Plain, 2)
-	val labels = Vector("Here are some labels", "just", "for you").map { s => TextLabel(s, basicFont, 16.any x 0.fixed) }
+	val labels = Vector("Here are some labels", "just", "for you").map { s => TextLabel(s, basicFont,
+		insets = StackInsets.symmetric(16.any, 8.fixed)) }
 	labels.foreach { _.background = Color.yellow }
 	
 	// Creates a button too
-	val button = TextButton("A Button!", basicFont, Color.magenta, 32.any x 8.any, 4) { () => println("The Button was pressed") }
+	val button = TextButton("A Button!", basicFont, Color.magenta, insets = StackInsets.symmetric(32.any, 8.any),
+		borderWidth = 4) { () => println("The Button was pressed") }
 	
 	// Creates the stack
 	val stack = Stack.columnWithItems(labels :+ button, 8.any, 16.any, Leading)
@@ -59,7 +62,10 @@ object TextLabelStackTest extends App
 	val frame = Frame.windowed(framing, "TextLabel Stack Test", User)
 	frame.setToExitOnClose()
 	
-	val buttonLoop = Loop(2.seconds) { button.isVisible = !button.isVisible }
+	val buttonLoop = Loop(2.seconds) {
+		button.isVisible = !button.isVisible
+		// println(StackHierarchyManager.description)
+	}
 	buttonLoop.registerToStopOnceJVMCloses()
 	buttonLoop.startAsync()
 	

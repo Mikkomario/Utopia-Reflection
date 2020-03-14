@@ -12,6 +12,7 @@ import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
+import utopia.reflection.shape.StackInsets
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -37,9 +38,9 @@ object DropDownTest extends App
 	val data = HashMap("Fighter" -> Vector("Aragorn", "Gimli", "Boromir"), "Archer" -> Vector("Legolas"),
 		"Wizard" -> Vector("Gandalf", "Radagast"))
 	
-	val categorySelect = new DropDown[String](16.any x 4.upscaling, "< Select Class >", basicFont,
+	val categorySelect = new DropDown[String](StackInsets.symmetric(16.any, 4.upscaling), "< Select Class >", basicFont,
 		Color.white, Color.magenta, initialContent = data.keySet.toVector.sorted)
-	val characterSelect = new DropDown[String](16.any x 4.upscaling, "< Select Character >", basicFont,
+	val characterSelect = new DropDown[String](StackInsets.symmetric(16.any, 4.upscaling), "< Select Character >", basicFont,
 		Color.white, Color.magenta)
 	
 	categorySelect.component.setFont(basicFont.toAwt)

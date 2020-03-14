@@ -34,6 +34,22 @@ object StackInsets extends InsetsFactory[StackLength, StackSize, StackInsets, St
   */
 case class StackInsets(amounts: Map[Direction2D, StackLength]) extends InsetsLike[StackLength, StackSize, StackInsets]
 {
+	// ATTRIBUTES	-----------------------
+	
+	/**
+	  * The optimal insets within these insets
+	  */
+	lazy val optimal = Insets(amounts.map { case (d, l) => d -> l.optimal })
+	
+	
+	// COMPUTED	---------------------------
+	
+	/**
+	  * @return A copy of these insets where each side is marked with low priority
+	  */
+	def withLowPriority = StackInsets(Direction2D.values.map { d => d -> apply(d).withLowPriority }.toMap)
+	
+	
 	// IMPLEMENTED	-----------------------
 	
 	override protected def makeCopy(newAmounts:  Map[Direction2D, StackLength])  = StackInsets(amounts)

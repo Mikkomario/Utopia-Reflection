@@ -15,6 +15,7 @@ import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
 import utopia.reflection.shape.LengthExtensions._
+import utopia.reflection.shape.StackInsets
 import utopia.reflection.text.FontStyle.Plain
 import utopia.reflection.text.Font
 
@@ -35,7 +36,8 @@ object SwitchTest extends App
 	
 	// Creates the hint labels
 	val basicFont = Font("Arial", 12, Plain, 2)
-	val labels = Vector("Enabled", "Disabled (OFF)", "Disabled (ON)").map { s => TextLabel(s, basicFont, 8.any x 0.any) }
+	val labels = Vector("Enabled", "Disabled (OFF)", "Disabled (ON)").map { s => TextLabel(s, basicFont,
+		insets = StackInsets.symmetric(8.any, 0.any)) }
 	labels.foreach { l => l.alignRight() }
 	
 	// Creates the switches

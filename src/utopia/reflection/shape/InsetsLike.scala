@@ -162,22 +162,22 @@ trait InsetsLike[L, +S, +Repr]
     /**
      * @return Insets for the left side
      */
-    def left = amounts.getOrElse(Left, makeZero)
+    def left = apply(Left)
     
     /**
      * @return Insets for the right side
      */
-    def right = amounts.getOrElse(Right, makeZero)
+    def right = apply(Right)
     
     /**
      * @return Insets for the top side
      */
-    def top = amounts.getOrElse(Up, makeZero)
+    def top = apply(Up)
     
     /**
      * @return Insets for the bottom side
      */
-    def bottom = amounts.getOrElse(Down, makeZero)
+    def bottom = apply(Down)
     
     /**
      * @return Total length of this inset's horizontal components
@@ -214,6 +214,26 @@ trait InsetsLike[L, +S, +Repr]
       */
     def average = amounts.values.reduceOption(combine).map { multiply(_, 0.25) }.getOrElse(makeZero)
     
+    /**
+      * @return A copy of these insets with only horizontal components (left & right)
+      */
+    def onlyHorizontal = onlyAxis(X)
+    
+    /**
+      * @return A copy of these insets with only vertical components (top & bottom)
+      */
+    def onlyVertical = onlyAxis(Y)
+    
+    /**
+      * @return A copy of these insets without any horizontal components (left or right)
+      */
+    def withoutHorizontal = withoutAxis(X)
+    
+    /**
+      * @return A copy of these insets without any vertical components (top or bottom)
+      */
+    def withoutVertical = withoutAxis(Y)
+    
     
     // OPERATORS    --------------
     
@@ -249,6 +269,12 @@ trait InsetsLike[L, +S, +Repr]
     // OTHER    ------------------
     
     /**
+      * @param direction Target direction
+      * @return The length of these insets towards that direction
+      */
+    def apply(direction: Direction2D) = amounts.getOrElse(direction, makeZero)
+    
+    /**
      * @param axis Target axis
      * @return Total length of these insets along specified axis
      */
@@ -275,4 +301,16 @@ trait InsetsLike[L, +S, +Repr]
      * @return A copy of these insets without specified direction
      */
     def withoutSide(direction: Direction2D) = makeCopy(amounts - direction)
+    
+    /**
+      * @param axis Targeted axis
+      * @return A copy of these insets with values only on the specified axis (Eg. for X-axis would only contain left and right)
+      */
+    def onlyAxis(axis: Axis2D) = makeCopy(amounts.filterKeys { _.axis == axis })
+    
+    /**
+      * @param axis Targeted axis
+      * @return A copy of these insets without any values for the specified axis
+      */
+    def withoutAxis(axis: Axis2D) = onlyAxis(axis.perpendicular)
 }

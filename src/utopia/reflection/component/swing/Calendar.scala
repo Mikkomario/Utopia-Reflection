@@ -14,12 +14,12 @@ import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
 import utopia.reflection.component.input.{InteractionWithPointer, SelectionGroup}
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.button.{ButtonImageSet, CustomDrawableButtonLike, ImageButton}
-import utopia.reflection.component.swing.label.{EmptyLabel, ItemLabel}
+import utopia.reflection.component.swing.label.ItemLabel
 import utopia.reflection.container.stack.StackLayout.Center
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.swing.{SegmentedRow, Stack, SwitchPanel}
 import utopia.reflection.localization.DisplayFunction
-import utopia.reflection.shape.{Alignment, StackLength, StackSize}
+import utopia.reflection.shape.{Alignment, StackInsets, StackLength, StackSize}
 import utopia.reflection.text.Font
 
 import scala.collection.immutable.HashMap
@@ -39,10 +39,10 @@ object Calendar
 	  * @param dayNameDisplayFunction Display function used with week days
 	  * @param dayNameFont Font used with day names
 	  * @param dayNameTextColor Text color used with day names
-	  * @param dayNameMargins Margins used inside day name labels
+	  * @param dayNameInsets Insets used inside day name labels
 	  * @param dateFont Font used with date number buttons
 	  * @param dateTextColor Text color used in date number buttons
-	  * @param dateMargins Margins used inside date number buttons
+	  * @param dateInsets Insets used inside date number buttons
 	  * @param selectionHoverColor Color used to highlight the field mouse is hovering over
 	  * @param selectedColor Color used to highlight selected field
 	  * @param firstDayOfWeek First day of a week (default = Monday)
@@ -51,31 +51,28 @@ object Calendar
 	def apply(monthDropDown: DropDown[Month], yearDropDown: DropDown[Year], forwardIcon: ButtonImageSet,
 			  backwardIcon: ButtonImageSet, headerHMargin: StackLength, afterHeaderMargin: StackLength,
 			  dayNameDisplayFunction: DisplayFunction[DayOfWeek], dayNameFont: Font, dayNameTextColor: Color,
-			  dayNameMargins: StackSize, dateFont: Font, dateTextColor: Color, dateMargins: StackSize,
+			  dayNameInsets: StackInsets, dateFont: Font, dateTextColor: Color, dateInsets: StackInsets,
 			  selectionHoverColor: Color, selectedColor: Color, firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY) =
 	{
 		def makeDayNameLabel(day: DayOfWeek) =
 		{
-			val label = new ItemLabel[DayOfWeek](day,
-				dayNameDisplayFunction, dayNameFont, dayNameMargins, initialAlignment = Alignment.Center)
-			label.textColor = dayNameTextColor
-			label
+			new ItemLabel[DayOfWeek](day, dayNameDisplayFunction, dayNameFont, dayNameTextColor, dayNameInsets, Alignment.Center)
 		}
-		def makeDateLabel(date: Int) = new DateLabel(date, dateFont, dateMargins, dateTextColor, selectionHoverColor,
+		def makeDateLabel(date: Int) = new DateLabel(date, dateFont, dateInsets, dateTextColor, selectionHoverColor,
 			selectedColor)
 		
 		new Calendar(monthDropDown, yearDropDown, forwardIcon, backwardIcon, headerHMargin, afterHeaderMargin,
 			StackSize.fixed(Size.zero), makeDayNameLabel, makeDateLabel)
 	}
 	
-	private class DateLabel(val date: Int, font: Font, margins: StackSize, textColor: Color, hoverColor: Color,
+	private class DateLabel(val date: Int, font: Font, insets: StackInsets, textColor: Color, hoverColor: Color,
 							selectedColor: Color)
 		extends StackableAwtComponentWrapperWrapper with CustomDrawableWrapper
 		with CustomDrawableButtonLike with InteractionWithPointer[Boolean]
 	{
 		// ATTRIBUTES	-----------------
 		
-		private val label = new ItemLabel[Int](date, DisplayFunction.raw, font, margins)
+		private val label = new ItemLabel[Int](date, DisplayFunction.raw, font, textColor, insets, Alignment.Center)
 		
 		override val valuePointer = new PointerWithEvents[Boolean](false)
 		
@@ -83,8 +80,6 @@ object Calendar
 		// INITIAL CODE	-----------------
 		
 		label.component.setFocusable(true)
-		label.alignCenter()
-		label.textColor = textColor
 		addCustomDrawer(new SelectionCircleDrawer(hoverColor, selectedColor, () => value, () => state))
 		
 		valuePointer.addListener { _ => repaint() }
@@ -332,11 +327,9 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 		{
 			// Adds empty labels as placeholders on partial weeks
 			val firstRow = if (buttons.head.size >= 7) buttons.head.map { _._2 } else
-				Vector.fill(7 - buttons.head.size) {
-					new EmptyLabel().withStackSize(StackSize.any.withLowPriority) } ++ buttons.head.map { _._2 }
+				Vector.fill(7 - buttons.head.size) { new StackSpace(StackSize.any.withLowPriority) } ++ buttons.head.map { _._2 }
 			val lastRow = if (buttons.last.size >= 7) buttons.last.map { _._2 } else
-				buttons.last.map { _._2 } ++ Vector.fill(7 - buttons.last.size) {
-					new EmptyLabel().withStackSize(StackSize.any.withLowPriority) }
+				buttons.last.map { _._2 } ++ Vector.fill(7 - buttons.last.size) { new StackSpace(StackSize.any.withLowPriority) }
 			val rowElements = firstRow +: buttons.slice(1, buttons.size - 1).map { _.map { _._2 } } :+ lastRow
 			
 			// Adds button listening

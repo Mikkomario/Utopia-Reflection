@@ -4,6 +4,7 @@ import utopia.genesis.shape.Axis.X
 import utopia.genesis.shape.shape2D.Bounds
 import utopia.genesis.util.Drawer
 import utopia.reflection.component.drawing.immutable.TextDrawContext
+import utopia.reflection.localization.LocalizedString
 
 /**
   * This custom drawer draws text over a component. This is a common trait for both mutable and immutable implementations.
@@ -22,7 +23,7 @@ trait TextDrawer extends CustomDrawer
 	/**
 	  * @return The text being drawn
 	  */
-	def text: String
+	def text: LocalizedString
 	
 	
 	// COMPUTED	---------------------------------
@@ -54,13 +55,13 @@ trait TextDrawer extends CustomDrawer
 	{
 		// TODO: Add support for placing multiline text correctly
 		// Only draws non-empty text
-		val textToDraw = text
+		val textToDraw = text.string
 		if (textToDraw.nonEmpty)
 		{
 			// Specifies the drawer
 			drawer.withEdgeColor(color).clippedTo(bounds).disposeAfter { d =>
 				// Draws the text with correct positioning
-				d.drawTextPositioned(text, font.toAwt) { textSize => alignment.position(textSize, bounds,
+				d.drawTextPositioned(textToDraw, font.toAwt) { textSize => alignment.position(textSize, bounds,
 					insets, fitWithinBounds = false).topLeft.positiveAlong(X) }
 			}
 		}

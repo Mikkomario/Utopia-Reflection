@@ -1,14 +1,14 @@
 package utopia.reflection.component.swing.button
 
 import utopia.genesis.color.Color
-import utopia.genesis.shape.Axis.X
-import utopia.reflection.component.SingleLineTextComponent
-import utopia.reflection.component.stack.StackLeaf
+import utopia.reflection.component.drawing.immutable.TextDrawContext
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.TextComponent
 import utopia.reflection.shape.Alignment.Center
-import utopia.reflection.component.swing.AwtTextComponentWrapper
-import utopia.reflection.component.swing.label.Label
+import utopia.reflection.component.swing.{StackableAwtComponentWrapperWrapper, SwingComponentRelated}
+import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.{Border, StackSize}
+import utopia.reflection.shape.{Alignment, Border, StackInsets}
 import utopia.reflection.text.Font
 import utopia.reflection.util.ComponentContext
 
@@ -19,15 +19,17 @@ object TextButton
 	  * @param text Text displayed in this button
 	  * @param font Font used when displaying text
 	  * @param color This button's background color
-	  * @param margins Margins placed around this button's text
+	  * @param textColor Color used for this button's text
+	  * @param insets Insets placed around this button's text
 	  * @param borderWidth Width of the border inside this button (in pixels)
 	  * @param action Action performed when this button is pressed
 	  * @return A new button
 	  */
-	def apply(text: LocalizedString, font: Font, color: Color, margins: StackSize, borderWidth: Double)
+	def apply(text: LocalizedString, font: Font, color: Color, textColor: Color = Color.textBlack,
+			  insets: StackInsets = StackInsets.any, borderWidth: Double = 0.0, alignment: Alignment = Center)
 			 (action: () => Unit) =
 	{
-		val button = new TextButton(text, font, color, margins, borderWidth)
+		val button = new TextButton(text, font, color, textColor, insets, borderWidth, alignment)
 		button.registerAction(action)
 		button
 	}
@@ -41,7 +43,8 @@ object TextButton
 	  */
 	def contextual(text: LocalizedString, action: Option[() => Unit] = None)(implicit context: ComponentContext): TextButton =
 	{
-		val button = new TextButton(text, context.font, context.buttonBackground, context.insideMargins, context.borderWidth)
+		val button = new TextButton(text, context.font, context.buttonBackground, context.textColor, context.insets,
+			context.borderWidth, context.textAlignment)
 		action.foreach(button.registerAction)
 		button
 	}
@@ -61,29 +64,47 @@ object TextButton
   * Buttons are used for user interaction
   * @author Mikko Hilpinen
   * @since 25.4.2019, v1+
-  * @param text Text displayed in this button
-  * @param font Font used when displaying text
+  * @param initialText Text displayed in this button
+  * @param initialFont Font used when displaying text
   * @param color This button's background color
-  * @param margins Margins placed around this button's text
-  * @param borderWidth Width of the border inside this button (in pixels)
+  * @param initialTextColor Text color used on this button (default = black)
+  * @param initialInsets Insets placed around this button's text (default = 0)
+  * @param borderWidth Width of the border inside this button (in pixels) (default = 0)
+  * @param initialAlignment Alignment used for the text (default = Center)
   */
-class TextButton(override val text: LocalizedString, override val font: Font, val color: Color, override val margins: StackSize,
-				 val borderWidth: Double)
-	extends Label with AwtTextComponentWrapper with SingleLineTextComponent with ButtonLike with StackLeaf
+class TextButton(initialText: LocalizedString, initialFont: Font, val color: Color,
+				 initialTextColor: Color = Color.textBlack, initialInsets: StackInsets = StackInsets.any,
+				 val borderWidth: Double = 0.0, initialAlignment: Alignment = Center)
+	extends StackableAwtComponentWrapperWrapper with TextComponent with ButtonLike with SwingComponentRelated with CustomDrawableWrapper
 {
+	// ATTRIBUTES	------------------
+	
+	private val label = new TextLabel(initialText, initialFont, initialTextColor, initialInsets, initialAlignment, hasMinWidth = true)
+	
+	
 	// INITIAL CODE	------------------
 	
-	label.setFont(font.toAwt)
-	label.setFocusable(true)
+	component.setFocusable(true)
 	setHandCursor()
-	label.setText(text.string)
 	background = color
-	Center.swingComponents.get(X).foreach(label.setHorizontalAlignment)
 	
 	initializeListeners()
 	
 	
 	// IMPLEMENTED	------------------
+	
+	override def drawContext = label.drawContext
+	
+	override def drawContext_=(newContext: TextDrawContext) = label.drawContext = newContext
+	
+	override def component = label.component
+	
+	override def text = label.text
+	def text_=(newText: LocalizedString) = label.text = newText
+	
+	override protected def wrapped = label
+	
+	override def drawable = label
 	
 	override protected def updateStyleForState(newState: ButtonState) =
 	{
@@ -91,12 +112,6 @@ class TextButton(override val text: LocalizedString, override val font: Font, va
 		background = newColor
 		updateBorder(newColor)
 	}
-	
-	override def alignment = Center
-	
-	override def hasMinWidth = true
-	
-	override def updateLayout() = Unit
 	
 	override def toString = s"Button($text)"
 	

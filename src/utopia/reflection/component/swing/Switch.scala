@@ -44,7 +44,6 @@ class Switch(val targetWidth: StackLength, val color: Color, actorHandler: Actor
 {
 	// ATTRIBUTES	-----------------
 	
-	// TODO: Use stackspace or emptyJComponent instead
 	private val label = new EmptyLabel()
 	
 	// private var _value = false

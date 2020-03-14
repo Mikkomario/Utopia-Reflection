@@ -3,12 +3,12 @@ package utopia.reflection.component.swing.label
 import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.{ChangeEvent, ChangeListener}
 import utopia.genesis.color.Color
-import utopia.genesis.shape.Axis.{X, Y}
-import utopia.reflection.component.stack.StackLeaf
-import utopia.reflection.component.swing.AwtTextComponentWrapper
-import utopia.reflection.component.{Alignable, RefreshableWithPointer, SingleLineTextComponent}
+import utopia.reflection.component.drawing.immutable.TextDrawContext
+import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.swing.{StackableAwtComponentWrapperWrapper, SwingComponentRelated}
+import utopia.reflection.component.{RefreshableWithPointer, TextComponent}
 import utopia.reflection.localization.DisplayFunction
-import utopia.reflection.shape.{Alignment, StackSize}
+import utopia.reflection.shape.{Alignment, StackInsets}
 import utopia.reflection.text.Font
 import utopia.reflection.util.ComponentContext
 
@@ -24,8 +24,8 @@ object ItemLabel
 	  */
 	def contextual[A](content: A, displayFunction: DisplayFunction[A])(implicit context: ComponentContext) =
 	{
-		val label = new ItemLabel[A](content, displayFunction, context.font, context.insideMargins,
-			context.textHasMinWidth, context.textAlignment, context.textColor)
+		val label = new ItemLabel[A](content, displayFunction, context.font, context.textColor, context.insets,
+			context.textAlignment, context.textHasMinWidth)
 		context.setBorderAndBackground(label)
 		label
 	}
@@ -34,66 +34,57 @@ object ItemLabel
 /**
   * These labels display an item of a specific type, transforming it into text format
   * @author Mikko Hilpinen
-  * @since 24.4.2019, v1+
+  * @since 24.4.2019, v1
   * @tparam A The type of item displayed in this label
   * @param initialContent The item first displayed in this label
   * @param displayFunction A function that transforms the item to displayable text
-  * @param font The font used in this label
-  * @param margins The margins (horizontal and vertical) around the text in this label
+  * @param initialFont The font used in this label
+  * @param initialTextColor The color used for displaying text (default = black)
+  * @param initialInsets The insets around the text in this label (default = 0 on each side)
+ *  @param initialAlignment The alignment used for this component initially (default = Left)
   * @param hasMinWidth Whether this label should have minimum width (always show all content text) (default = true)
- *  @param initialAlignment The alignment used for this component initially
- *  @param initialTextColor The color used for displaying text
   */
-class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], override val font: Font,
-				   override val margins: StackSize = StackSize.any, override val hasMinWidth: Boolean = true,
-				   initialAlignment: Alignment = Alignment.Left, initialTextColor: Color = Color.textBlack)
-	extends Label with AwtTextComponentWrapper with SingleLineTextComponent with Alignable
-		with RefreshableWithPointer[A] with StackLeaf
+class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], initialFont: Font,
+				   initialTextColor: Color = Color.textBlack, initialInsets: StackInsets = StackInsets.any,
+				   initialAlignment: Alignment = Alignment.Left, hasMinWidth: Boolean = true)
+	extends StackableAwtComponentWrapperWrapper with TextComponent with SwingComponentRelated
+		with CustomDrawableWrapper with RefreshableWithPointer[A]
 {
 	// ATTRIBUTES	--------------------
 	
-	private var _text = displayFunction(initialContent)
+	private val label = new TextLabel(displayFunction(initialContent), initialFont, initialTextColor, initialInsets,
+		initialAlignment, hasMinWidth)
 	
 	override val contentPointer = new PointerWithEvents[A](initialContent)
 	
 	
 	// INITIAL CODE	--------------------
 	
-	label.setFont(font.toAwt)
-	label.setText(_text.string)
-	textColor = initialTextColor
-	align(initialAlignment)
-	
 	// Reacts to changes in text
-	addContentListener(new ContentUpdateListener)
+	addContentListener(ContentUpdateListener)
 	
 	
 	// IMPLEMENTED	--------------------
 	
+	override def component = label.component
+	
+	override protected def wrapped = label
+	
+	override def drawContext = label.drawContext
+	
+	override def drawContext_=(newContext: TextDrawContext) = label.drawContext = newContext
+	
+	override def drawable = label
+	
 	override def toString = s"Label($text)"
 	
-	override def text = _text
-	
-	override def align(alignment: Alignment) =
-	{
-		val comps = alignment.swingComponents
-		comps.get(X).foreach(label.setHorizontalAlignment)
-		comps.get(Y).foreach(label.setVerticalAlignment)
-		revalidate()
-	}
-	
-	override def updateLayout() = Unit
+	override def text = label.text
 	
 	
 	// NESTED CLASSES	----------------
 	
-	private class ContentUpdateListener extends ChangeListener[A]
+	private object ContentUpdateListener extends ChangeListener[A]
 	{
-		override def onChangeEvent(event: ChangeEvent[A]) =
-		{
-			_text = displayFunction(event.newValue)
-			label.setText(_text.string)
-			revalidate()
-		}
+		override def onChangeEvent(event: ChangeEvent[A]) = label.text = displayFunction(event.newValue)
 	}
 }

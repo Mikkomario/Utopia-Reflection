@@ -119,7 +119,7 @@ object TextField
 				   valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
 				  (implicit context: ComponentContext) =
 	{
-		val field = new TextField(context.textFieldWidth, context.insideMargins, context.font, document,
+		val field = new TextField(context.textFieldWidth, context.insets.total, context.font, document,
 			initialText, prompt.map { Prompt(_, context.promptFont, context.promptTextColor) }, context.textColor,
 			resultFilter, context.textAlignment, valuePointer)
 		context.setBorderAndBackground(field)
@@ -197,6 +197,7 @@ object TextField
   * @param initialAlignment Alignment used for the text. Default = Left.
   * @param valuePointer Pointer for holding the current value in this field (default = new pointer)
   */
+// TODO: Switch from margins to insets (also support proper positioning & border)
 class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, font: Font,
 				val document: Document = new PlainDocument(), initialText: String = "",
 				val prompt: Option[Prompt] = None, val textColor: Color = Color.textBlack,

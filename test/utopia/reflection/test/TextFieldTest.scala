@@ -15,7 +15,7 @@ import utopia.reflection.container.swing.window.{Frame, Popup}
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.localization.{Localizer, NoLocalization}
-import utopia.reflection.shape.Alignment
+import utopia.reflection.shape.{Alignment, StackInsets}
 import utopia.reflection.shape.LengthExtensions._
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
@@ -40,7 +40,7 @@ object TextFieldTest extends App
 	// Creates component context
 	val actorHandler = ActorHandler()
 	val base = ComponentContextBuilder(actorHandler, Font("Arial", 12, Plain, 2), Color.green, Color.yellow, 320,
-		insideMargins = 8.any x 8.any, stackMargin = 8.downscaling, relatedItemsStackMargin = Some(4.downscaling))
+		insets = StackInsets.symmetric(8.any), stackMargin = 8.downscaling, relatedItemsStackMargin = Some(4.downscaling))
 	
 	val content = base.use { implicit context =>
 		

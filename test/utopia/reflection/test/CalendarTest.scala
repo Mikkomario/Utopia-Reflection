@@ -19,7 +19,7 @@ import utopia.reflection.container.swing.Framing
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{DisplayFunction, Localizer, NoLocalization}
-import utopia.reflection.shape.StackLength
+import utopia.reflection.shape.{StackInsets, StackLength}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -41,9 +41,9 @@ object CalendarTest extends App
 	val basicFont = Font("Arial", 14, Plain, 2)
 	val smallFont = basicFont * 0.75
 	
-	val yearSelect = new DropDown[Year](16.any x 4.upscaling, "Year", basicFont,
+	val yearSelect = new DropDown[Year](StackInsets.symmetric(16.any, 4.upscaling), "Year", basicFont,
 		Color.white, Color.magenta, initialContent = (1999 to 2050).map {Year.of}.toVector)
-	val monthSelect = new DropDown[Month](16.any x 4.upscaling, "Month", basicFont,
+	val monthSelect = new DropDown[Month](StackInsets.symmetric(16.any, 4.upscaling), "Month", basicFont,
 		Color.white, Color.magenta, initialContent = Month.values().toVector)
 	
 	val buttonImage = Image.readFrom(Paths.get("test-images/arrow-back-48dp.png")).get
@@ -52,8 +52,8 @@ object CalendarTest extends App
 	
 	val calendar = Calendar(monthSelect, yearSelect, forwardImages, backImages, 8.any, StackLength(0, 8, 16),
 		DisplayFunction.noLocalization[DayOfWeek] { _.getDisplayName(TextStyle.SHORT, Locale.getDefault) }, smallFont,
-		Color.textBlack, 4.upscaling x 8.upscaling, smallFont, Color.textBlack, 4.upscaling x 6.upscaling ,
-		Color.black.withAlpha(0.33), Color.cyan)
+		Color.textBlack, StackInsets.symmetric(4.upscaling, 8.upscaling), smallFont, Color.textBlack,
+		StackInsets.symmetric(4.upscaling, 6.upscaling) , Color.black.withAlpha(0.33), Color.cyan)
 	
 	calendar.addValueListener { e => println(s"New selected date: ${e.newValue}") }
 	

@@ -1,7 +1,6 @@
 package utopia.reflection.component
 
 import utopia.reflection.component.stack.StackSizeCalculating
-import utopia.reflection.shape.Alignment.Center
 import utopia.reflection.shape.{StackLength, StackSize}
 
 /**
@@ -26,16 +25,13 @@ trait SingleLineTextComponent extends TextComponent with StackSizeCalculating
 	  */
 	protected def calculatedStackSize =
 	{
-		// FIXME: Needs to take into account margins on both sides
-		
-		// Adds margins to base text size. Alignment also matters.
+		// Adds margins to base text size.
+		val insets = this.insets
 		val textW = textWidth.getOrElse(128)
-		val totalHMargin = if (alignment.horizontal == Center) hMargin * 2 else hMargin
-		val totalVMargin = if (alignment.vertical == Center) vMargin * 2 else vMargin
 		
-		val w = (if (hasMinWidth) StackLength.fixed(textW) else StackLength.downscaling(textW)) + totalHMargin
+		val w = (if (hasMinWidth) StackLength.fixed(textW) else StackLength.downscaling(textW)) + insets.horizontal
 		val textH = textHeight.getOrElse(32)
-		val h = StackLength.fixed(textH) + totalVMargin
+		val h = StackLength.fixed(textH) + insets.vertical
 		
 		StackSize(w, h)
 	}

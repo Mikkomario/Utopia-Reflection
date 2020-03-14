@@ -37,8 +37,8 @@ class DropDown2[A, C <: AwtStackable with Refreshable[A]]
 	
 	// initialText: LocalizedString,initialFont: Font,margins: StackSize = StackSize.any,hasMinWidth: Boolean = true,
 	// initialAlignment: Alignment = Alignment.Left,initialTextColor: Color = Color.textBlack)
-	private val textLabel = new TextLabel(selectionPrompt.text, selectionPrompt.font, textMargin, textHasMinWidth,
-		textAlignment, selectionPrompt.color)
+	//private val textLabel = new TextLabel(selectionPrompt.text, selectionPrompt.font, textMargin, textHasMinWidth,
+	//	textAlignment, selectionPrompt.color)
 	// TODO: Continue once text labels support proper text placement (margin on left)
 	
 	

@@ -3,6 +3,7 @@ package utopia.reflection.component.swing
 import java.awt.event.{ActionEvent, ActionListener}
 
 import javax.swing.plaf.basic.ComboPopup
+import utopia.reflection.localization.LocalString._
 import utopia.reflection.shape.LengthExtensions._
 import utopia.flow.util.CollectionExtensions._
 import javax.swing.{JComboBox, JList, ListCellRenderer}
@@ -12,9 +13,9 @@ import utopia.genesis.color.Color
 import utopia.reflection.component.Focusable
 import utopia.reflection.component.input.SelectableWithPointers
 import utopia.reflection.component.stack.{CachingStackable, StackLeaf}
-import utopia.reflection.component.swing.label.Label
+import utopia.reflection.component.swing.label.TextLabel
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
-import utopia.reflection.shape.{Border, Insets, StackSize}
+import utopia.reflection.shape.{StackInsets, StackLength, StackSize}
 import utopia.reflection.text.Font
 import utopia.reflection.util.ComponentContext
 
@@ -33,7 +34,7 @@ object DropDown
 	def contextual[A](selectText: LocalizedString, displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 					  initialChoices: Vector[A] = Vector())(implicit context: ComponentContext) =
 	{
-		val dropDown = new DropDown[A](context.insideMargins, selectText, context.font,
+		val dropDown = new DropDown[A](context.insets, selectText, context.font,
 			context.background.getOrElse(Color.white), context.focusColor, context.textColor, displayFunction,
 			initialChoices, context.dropDownWidthLimit)
 		context.border.foreach(dropDown.setBorder)
@@ -45,7 +46,7 @@ object DropDown
   * Dropdowns are used for selecting a single value from multiple alternatives
   * @author Mikko Hilpinen
   * @since 1.5.2019, v1+
-  * @param margins The margins placed around the text (affects stack size)
+  * @param insets The insets placed around the text (affects stack size)
   * @param selectText The text displayed when no value is selected
   * @param font The font used in this drop down
   * @param backgroundColor The default label background color
@@ -56,7 +57,7 @@ object DropDown
   * @param initialContent The initially available selections
   * @param maximumOptimalWidth The maximum optimal widht for this drop down (default = maximum based on text length & margin)
   */
-class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font: Font, backgroundColor: Color,
+class DropDown[A](val insets: StackInsets, val selectText: LocalizedString, font: Font, backgroundColor: Color,
 				  selectedBackground: Color, textColor: Color = Color.textBlack,
 				  val displayFunction: DisplayFunction[A] = DisplayFunction.raw, initialContent: Vector[A] = Vector(),
 				  val maximumOptimalWidth: Option[Int] = None)
@@ -81,7 +82,7 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 	field.setForeground(textColor.toAwt)
 	
 	// Modifies the renderer
-	field.setRenderer(new CellRenrerer(margins.width.optimal, backgroundColor, selectedBackground, textColor))
+	field.setRenderer(new CellRenrerer(insets.left, backgroundColor, selectedBackground, textColor))
 	
 	{
 		val popup = field.getUI.getAccessibleChild(field, 0)
@@ -144,8 +145,8 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		{
 			metrics =>
 				val maxTextWidth = (selectText +: displayValues).map { s => metrics.stringWidth(s.string) }.max
-				val textW = margins.width * 2 + maxTextWidth
-				val textH = margins.height * 2 + metrics.getHeight
+				val textW = insets.horizontal + maxTextWidth
+				val textH = insets.vertical + metrics.getHeight
 				
 				// May limit text width optimal (also adds width for drop down icon)
 				val finalW = (maximumOptimalWidth.map { max => if (textW.optimal > max) textW.withOptimal(max) else
@@ -243,12 +244,12 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		}
 	}
 	
-	private class CellRenrerer(hmargin: Double, val defaultBackground: Color, val selectedBackground: Color,
-								  val textColor: Color) extends Label with ListCellRenderer[String]
+	private class CellRenrerer(hmargin: StackLength, val defaultBackground: Color, val selectedBackground: Color,
+							   val textColor: Color) extends ListCellRenderer[String]
 	{
-		// INITIAL CODE	---------------------
+		// ATTRIBUTES	---------------------
 		
-		setBorder(Border(Insets.symmetric(hmargin, 0), None))
+		private val label = new TextLabel(LocalizedString.empty, font, textColor, StackInsets.left(hmargin))
 		
 		
 		// IMPLEMENTED	---------------------
@@ -256,17 +257,20 @@ class DropDown[A](val margins: StackSize, val selectText: LocalizedString, font:
 		override def getListCellRendererComponent(list: JList[_ <: String], value: String, index: Int, isSelected: Boolean, cellHasFocus: Boolean) =
 		{
 			if (value != null)
-				label.setText(value)
+			{
+				label.text = value.noLanguageLocalizationSkipped
+				label.component.setPreferredSize(label.stackSize.optimal.toDimension)
+			}
 			
 			// check if this cell is selected
 			if (isSelected)
-				background = selectedBackground
+				label.background = selectedBackground
 			// unselected, and not the DnD drop location
 			else
-				background = defaultBackground
+				label.background = defaultBackground
 			
-			label.setForeground((if (isShowingSelectOption && index == 0) textColor.timesAlpha(0.625) else textColor).toAwt)
-			label
+			label.textColor = if (isShowingSelectOption && index == 0) textColor.timesAlpha(0.625) else textColor
+			label.component
 		}
 	}
 }

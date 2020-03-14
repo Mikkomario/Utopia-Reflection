@@ -17,7 +17,7 @@ import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
 import utopia.reflection.localization.{Localizer, NoLocalization}
-import utopia.reflection.shape.Alignment
+import utopia.reflection.shape.{Alignment, StackInsets}
 import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 
@@ -42,20 +42,19 @@ object ButtonTest extends App
 		val progressPointer = new PointerWithEvents(0.0)
 		val action = () => progressPointer.value += 0.1
 		val color = Color.magenta
-		val textMargins = 8.any x 4.any
+		val textInsets = StackInsets.symmetric(8.any, 4.any)
 		val borderWitdh = 2
 		
 		// Creates the buttons
 		val imageButton = ImageButton(images)(action)
-		val textButton = TextButton("Text Button", basicFont, color, textMargins, borderWitdh)(action)
-		val comboButton = ImageAndTextButton(images, "Button", basicFont, color, textMargins, borderWitdh,
+		val textButton = TextButton("Text Button", basicFont, color, insets = textInsets, borderWidth = borderWitdh)(action)
+		val comboButton = ImageAndTextButton(images, "Button", basicFont, color, textInsets, borderWitdh,
 			4.downscaling, Alignment.Left)(action)
 		
 		val row = imageButton.rowWith(Vector(textButton, comboButton), margin = 16.any, layout = Fit)
 		
 		// Creates progress bar
-		val bar = new ProgressBar[Double](160.any x 12.downscaling, Color.gray(0.7), Color.magenta, progressPointer,
-			d => d)
+		val bar = new ProgressBar[Double](160.any x 12.downscaling, Color.gray(0.7), Color.magenta, progressPointer)({ d => d })
 		val content = row.columnWith(Vector(bar), margin = 16.downscaling)
 		
 		// Creates the frame and displays it
