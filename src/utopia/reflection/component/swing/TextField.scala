@@ -119,7 +119,7 @@ object TextField
 				   valuePointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None))
 				  (implicit context: ComponentContext) =
 	{
-		val field = new TextField(context.textFieldWidth, context.insets.total, context.font, document,
+		val field = new TextField(context.textFieldWidth, context.insets.total / 2, context.font, document,
 			initialText, prompt.map { Prompt(_, context.promptFont, context.promptTextColor) }, context.textColor,
 			resultFilter, context.textAlignment, valuePointer)
 		context.setBorderAndBackground(field)
