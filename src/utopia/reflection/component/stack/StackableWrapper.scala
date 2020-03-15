@@ -16,6 +16,8 @@ trait StackableWrapper extends ComponentWrapper with Stackable
 	
 	// IMPLEMENTED	-----------------
 	
+	override def children = wrapped.children
+	
 	override def updateLayout() = wrapped.updateLayout()
 	
 	override def stackSize = wrapped.stackSize

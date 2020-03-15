@@ -188,6 +188,21 @@ trait Stackable extends ComponentLike
 	  */
 	def isUnderSized = width < stackSize.minWidth || height < stackSize.minHeight
 	
+	/**
+	  * @return A description of this item's (and all its children) stack attachment status (true or false)
+	  */
+	def attachmentDescription: String =
+	{
+		val base = s"${getClass.getSimpleName}:$isAttachedToMainHierarchy"
+		val c = children
+		if (c.isEmpty)
+			base
+		else if (c.size == 1)
+			s"$base -> ${c.head.attachmentDescription}"
+		else
+			s"$base -> [${c.map { _.attachmentDescription }.mkString(", ")}]"
+	}
+	
 	
 	// OTHER	---------------------
 	

@@ -111,6 +111,8 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
         }
     }
     
+    override def children = Vector(content)
+    
     override def stackSize = cachedStackSize.get
     
     override def resetCachedSize() = cachedStackSize.reset()

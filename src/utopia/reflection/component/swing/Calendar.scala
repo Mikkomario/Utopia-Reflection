@@ -15,6 +15,7 @@ import utopia.reflection.component.input.{InteractionWithPointer, SelectionGroup
 import utopia.reflection.component.stack.Stackable
 import utopia.reflection.component.swing.button.{ButtonImageSet, CustomDrawableButtonLike, ImageButton}
 import utopia.reflection.component.swing.label.ItemLabel
+import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.stack.StackLayout.Center
 import utopia.reflection.container.stack.segmented.SegmentedGroup
 import utopia.reflection.container.swing.{SegmentedRow, Stack, SwitchPanel}
@@ -83,12 +84,14 @@ object Calendar
 		addCustomDrawer(new SelectionCircleDrawer(hoverColor, selectedColor, () => value, () => state))
 		
 		valuePointer.addListener { _ => repaint() }
-		registerAction(() => value = !value)
+		registerAction { () => value = !value }
 		initializeListeners()
 		setHandCursor()
 		
 		
 		// IMPLEMENTED	-----------------
+		
+		override def toString = s"DateLabel($date)"
 		
 		override protected def wrapped = label
 		
@@ -341,7 +344,7 @@ class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Ye
 			rowElements.map { items => SegmentedRow.withItems(segmentGroup, items, margin = insideCalendarMargin.along(X)) }
 		}
 		
-		val content = Stack.columnWithItems(rows, margin = insideCalendarMargin.along(Y))
+		val content = Stack.columnWithItems(rows, margin = insideCalendarMargin.height)
 		
 		
 		// INITIAL CODE	------------------

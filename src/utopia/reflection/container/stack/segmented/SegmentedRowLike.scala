@@ -124,6 +124,8 @@ trait SegmentedRowLike[C <: Stackable, C2 <: Stackable] extends MultiStackContai
 		
 		// IMPLEMENTED	-------------
 		
+		override def children = item.children
+		
 		override def stackId = item.stackId
 		
 		override def updateLayout() = item.updateLayout()

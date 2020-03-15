@@ -67,6 +67,8 @@ object CalendarTest extends App
 	val frame = Frame.windowed(framing, "Calendar Test", User)
 	frame.setToExitOnClose()
 	
+	println(s"Final connection status (from Frame): ${frame.attachmentDescription}")
+	
 	actionLoop.registerToStopOnceJVMCloses()
 	actionLoop.startAsync()
 	StackHierarchyManager.startRevalidationLoop()

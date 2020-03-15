@@ -83,12 +83,11 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated with Focusable
 	protected def initializeListeners() =
 	{
 		// Adds mouse handling
-		val listener = new ButtonMouseListener()
-		addMouseMoveListener(listener)
-		addMouseButtonListener(listener)
+		addMouseMoveListener(ButtonMouseListener)
+		addMouseButtonListener(ButtonMouseListener)
 		
 		// Adds key listening
-		addKeyStateListener(new ButtonKeyListener())
+		addKeyStateListener(ButtonKeyListener)
 		
 		// Adds focus listening
 		component.addFocusListener(new ButtonFocusListener())
@@ -112,7 +111,7 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated with Focusable
 		}
 	}
 	
-	private class ButtonKeyListener extends KeyStateListener
+	private object ButtonKeyListener extends KeyStateListener
 	{
 		// Only accepts enter & space presses
 		override val keyStateEventFilter = KeyStateEvent.wasPressedFilter &&
@@ -126,7 +125,7 @@ trait ButtonLike extends ComponentLike with AwtComponentRelated with Focusable
 		override def allowsHandlingFrom(handlerType: HandlerType) = isInFocus
 	}
 	
-	private class ButtonMouseListener extends MouseButtonStateListener with MouseMoveListener
+	private object ButtonMouseListener extends MouseButtonStateListener with MouseMoveListener
 	{
 		// ATTRIBUTES	--------------
 		

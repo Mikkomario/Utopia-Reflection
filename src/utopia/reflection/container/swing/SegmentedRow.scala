@@ -115,6 +115,8 @@ class SegmentedRow[C <: AwtStackable](val master: Segmented, override val direct
 	
 	private class AwtComponentSegment(val segment: Segment) extends StackableWrapper with AwtComponentRelated
 	{
+		override def toString = segment.item.toString
+		
 		override protected def wrapped = segment
 		
 		override def component = segment.item.component
