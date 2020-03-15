@@ -260,7 +260,7 @@ private class AwtComponentWrapperWrapperWithStackable(override val wrapped: AwtC
 {
     // IMPLEMENTED  ---------------------
     
-    override protected def calculatedStackSize = getSize()
+    override def calculatedStackSize = getSize()
     
     override protected def updateVisibility(visible: Boolean) = super[AwtComponentWrapperWrapper].isVisible_=(visible)
     

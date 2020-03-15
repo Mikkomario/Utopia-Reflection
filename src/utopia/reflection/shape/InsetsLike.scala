@@ -313,4 +313,109 @@ trait InsetsLike[L, +S, +Repr]
       * @return A copy of these insets without any values for the specified axis
       */
     def withoutAxis(axis: Axis2D) = onlyAxis(axis.perpendicular)
+    
+    /**
+      * Replaces one side of these insets
+      * @param side Targeted side
+      * @param amount New length for that side insets
+      * @return A copy of these insets with replaced side
+      */
+    def withSide(side: Direction2D, amount: L) = makeCopy(amounts + (side -> amount))
+    
+    /**
+      * @param amount New top length
+      * @return A copy of these insets with new top length
+      */
+    def withTop(amount: L) = withSide(Up, amount)
+    
+    /**
+      * @param amount New bottom length
+      * @return A copy of these insets with new bottom length
+      */
+    def withBottom(amount: L) = withSide(Down, amount)
+    
+    /**
+      * @param amount New left length
+      * @return A copy of these insets with new left length
+      */
+    def withLeft(amount: L) = withSide(Left, amount)
+    
+    /**
+      * @param amount New right length
+      * @return A copy of these insets with new right length
+      */
+    def withRight(amount: L) = withSide(Right, amount)
+    
+    /**
+      * Performs a mapping function over a single side in these insets
+      * @param side Targeted side
+      * @param f A mapping function
+      * @return Copy of these insets with mapped side
+      */
+    def mapSide(side: Direction2D)(f: L => L) = withSide(side, f(apply(side)))
+    
+    /**
+      * Modifies the top of these insets
+      * @param f Mapping function
+      * @return A copy of these insets with mapped top
+      */
+    def mapTop(f: L => L) = mapSide(Up)(f)
+    
+    /**
+      * Modifies the bottom of these insets
+      * @param f Mapping function
+      * @return A copy of these insets with mapped bottom
+      */
+    def mapBottom(f: L => L) = mapSide(Down)(f)
+    
+    /**
+      * Modifies the left of these insets
+      * @param f Mapping function
+      * @return A copy of these insets with mapped left
+      */
+    def mapLeft(f: L => L) = mapSide(Left)(f)
+    
+    /**
+      * Modifies the right of these insets
+      * @param f Mapping function
+      * @return A copy of these insets with mapped right
+      */
+    def mapRight(f: L => L) = mapSide(Right)(f)
+    
+    /**
+      * Maps multiple sides of these insets
+      * @param sides Targeted sides
+      * @param f Mapping function
+      * @return A copy of these insets with mapped sides
+      */
+    def mapSides(sides: TraversableOnce[Direction2D])(f: L => L) = makeCopy(amounts ++ sides.map { d => d -> f(apply(d)) })
+    
+    /**
+      * Maps sides along the specified axis
+      * @param axis Targeted axis
+      * @param f Mapping function
+      * @return A copy of these insets with two sides mapped
+      */
+    def mapAxis(axis: Axis2D)(f: L => L) = mapSides(axis.directions)(f)
+    
+    /**
+      * Maps left & right
+      * @param f Mapping function
+      * @return A mapped copy of these insets
+      */
+    def mapHorizontal(f: L => L) = mapAxis(X)(f)
+    
+    /**
+      * Maps top & bottom
+      * @param f Mapping function
+      * @return A mapped copy of these insets
+      */
+    def mapVertical(f: L => L) = mapAxis(Y)(f)
+    
+    /**
+      * Maps all sides in these insets
+      * @param f A mapping function
+      * @return copy of these insets with each side mapped
+      */
+    def map(f: L => L) = mapSides(Direction2D.values)(f)
 }

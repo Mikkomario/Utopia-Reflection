@@ -138,7 +138,7 @@ class DropDown[A](val insets: StackInsets, val selectText: LocalizedString, font
 	
 	override def component = field
 	
-	override protected def calculatedStackSize =
+	override def calculatedStackSize =
 	{
 		// If this drop down contains fields, they may affect the width
 		fontMetrics.map
@@ -158,8 +158,6 @@ class DropDown[A](val insets: StackInsets, val selectText: LocalizedString, font
 	}
 	
 	override def updateLayout() = component.revalidate()
-	
-	override def isInFocus = field.hasFocus
 	
 	override def requestFocusInWindow() = field.requestFocusInWindow()
 	

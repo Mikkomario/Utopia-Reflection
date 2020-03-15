@@ -22,7 +22,8 @@ object ItemLabel
 	  * @tparam A Type of presented item
 	  * @return A new label
 	  */
-	def contextual[A](content: A, displayFunction: DisplayFunction[A])(implicit context: ComponentContext) =
+	def contextual[A](content: A, displayFunction: DisplayFunction[A] = DisplayFunction.raw)
+					 (implicit context: ComponentContext) =
 	{
 		val label = new ItemLabel[A](content, displayFunction, context.font, context.textColor, context.insets,
 			context.textAlignment, context.textHasMinWidth)

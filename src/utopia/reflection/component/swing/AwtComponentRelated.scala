@@ -88,6 +88,11 @@ trait AwtComponentRelated
 	  * @param anotherComponent Targeted awt component wrapper
 	  */
 	def relayAwtKeyEventsTo(anotherComponent: AwtComponentRelated): Unit = relayAwtKeyEventsTo(anotherComponent.component)
+	
+	/**
+	  * @return Whether this component is currently in focus
+	  */
+	def isInFocus = component.isFocusOwner
 }
 
 private class FunctionalFocusListener(onFocusGained: Option[() => Unit], onFocusLost: Option[() => Unit]) extends FocusListener

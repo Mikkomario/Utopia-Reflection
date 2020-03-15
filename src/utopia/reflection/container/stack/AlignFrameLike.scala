@@ -60,7 +60,7 @@ trait AlignFrameLike[C <: Stackable] extends SingleStackContainer[C] with Compon
 		}
 	}
 	
-	override protected def calculatedStackSize =
+	override def calculatedStackSize =
 	{
 		content.map { c =>
 			// Uses content's stack size as base, but doesn't have a maximum limit on alignable axis / axes

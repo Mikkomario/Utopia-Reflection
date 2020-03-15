@@ -76,7 +76,7 @@ trait StackLike[C <: Stackable] extends MultiStackContainer[C] with StackSizeCal
         super.-=(component)
     }
     
-    protected def calculatedStackSize = Stacker.calculateStackSize(
+    def calculatedStackSize = Stacker.calculateStackSize(
         _components.filter { _.isVisible }.map { _.stackSize }, direction, margin, cap, layout)
     
     def updateLayout() =

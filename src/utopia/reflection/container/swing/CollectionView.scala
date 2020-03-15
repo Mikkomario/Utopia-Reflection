@@ -115,7 +115,7 @@ class CollectionView[C <: AwtStackable](rowDirection: Direction2D, initialRowSpl
 		panel -= component
 	}
 	
-	override protected def calculatedStackSize =
+	override def calculatedStackSize =
 	{
 		// Places items in rows first and checks the length based on those
 		Stacker.calculateStackSize(rowSizes, rowDirection.axis.perpendicular, margin, layout = rowPlacementLayout)

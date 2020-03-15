@@ -41,7 +41,15 @@ object Border
 	  * @param color Color of this border
 	  * @return A new border
 	  */
-	def square(side: Double, color: Color) = Border(Insets(side, side, side, side), color)
+	def square(side: Double, color: Color) = Border(Insets.symmetric(side), color)
+	
+	/**
+	  * Creates a symmetric border
+	  * @param side Length of each side
+	  * @param color Color used in this border
+	  * @return A symmetric border
+	  */
+	def symmetric(side: Double, color: Color) = square(side, color)
 	
 	/**
 	  * Creates a symmetric border

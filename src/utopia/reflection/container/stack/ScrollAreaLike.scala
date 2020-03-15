@@ -134,7 +134,7 @@ trait ScrollAreaLike[C <: Stackable] extends CachingStackable with StackContaine
 	
 	override def components = Vector(content)
 	
-	override protected def calculatedStackSize =
+	override def calculatedStackSize =
 	{
 		val contentSize = content.stackSize
 		val lengths = Axis2D.values.map

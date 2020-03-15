@@ -62,7 +62,7 @@ class SwitchPanel[C <: Stackable with AwtComponentRelated] extends SingleStackCo
 		repaint()
 	}
 	
-	override protected def calculatedStackSize = content.map { _.stackSize } getOrElse StackSize.any
+	override def calculatedStackSize = content.map { _.stackSize } getOrElse StackSize.any
 	
 	override def components = panel.components
 	

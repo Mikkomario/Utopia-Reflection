@@ -52,5 +52,5 @@ private class StackWrapper(val component: Component, val getSize: () => StackSiz
 {
 	override def updateLayout() = update()
 	
-	override protected def calculatedStackSize = getSize()
+	override def calculatedStackSize = getSize()
 }

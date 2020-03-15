@@ -314,15 +314,13 @@ class TextField(initialTargetWidth: StackLength, val insideMargins: StackSize, f
 	
 	override def component: JTextField = field
 	
-	override protected def calculatedStackSize =
+	override def calculatedStackSize =
 	{
 		val h = textHeight.map { insideMargins.height * 2 + _ } getOrElse 32.any
 		StackSize(targetWidth, h)
 	}
 	
 	override def align(alignment: Alignment) = alignment.horizontal.swingComponents.get(X).foreach(field.setHorizontalAlignment)
-	
-	override def isInFocus = field.hasFocus
 	
 	override def requestFocusInWindow() = field.requestFocusInWindow()
 	

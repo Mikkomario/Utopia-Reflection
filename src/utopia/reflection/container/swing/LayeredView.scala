@@ -52,7 +52,7 @@ class LayeredView[Background <: AwtStackable with CustomDrawable, Foreground <: 
 	override def align(alignment: Alignment) = foregroundContainer.align(alignment)
 	
 	// The stack size is defined by both the background and foreground
-	override protected def calculatedStackSize = background.stackSize max foregroundContainer.stackSize
+	override def calculatedStackSize = background.stackSize max foregroundContainer.stackSize
 	
 	override def updateLayout() =
 	{

@@ -50,7 +50,7 @@ object StackHierarchyTest extends App
         
         override def updateLayout() = Unit
     
-        override protected def calculatedStackSize =
+        override def calculatedStackSize =
         {
             println("Requesting up-to-date stack size calculation")
             currentSize

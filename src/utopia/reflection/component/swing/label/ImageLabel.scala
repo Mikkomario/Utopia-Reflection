@@ -93,7 +93,7 @@ class ImageLabel(initialImage: Image, val alwaysFillArea: Boolean = true, val al
 		repaint()
 	}
 	
-	override protected def calculatedStackSize =
+	override def calculatedStackSize =
 	{
 		// Optimal size is always set to image size
 		// Upscaling may also be allowed (limited if upscaling is not allowed and image must fill area)

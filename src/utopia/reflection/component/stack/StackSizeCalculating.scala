@@ -13,5 +13,5 @@ trait StackSizeCalculating
 	  * Calculates an up-to-date stack size for this component
 	  * @return An up-to-date stack size for this component
 	  */
-	protected def calculatedStackSize: StackSize
+	def calculatedStackSize: StackSize
 }

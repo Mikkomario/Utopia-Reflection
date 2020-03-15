@@ -23,7 +23,7 @@ trait SingleLineTextComponent extends TextComponent with StackSizeCalculating
 	/**
 	  * @return The calculated stack size of this component
 	  */
-	protected def calculatedStackSize =
+	def calculatedStackSize =
 	{
 		// Adds margins to base text size.
 		val insets = this.insets
