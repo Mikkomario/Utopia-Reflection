@@ -52,7 +52,7 @@ case class StackInsets(amounts: Map[Direction2D, StackLength]) extends InsetsLik
 	
 	// IMPLEMENTED	-----------------------
 	
-	override protected def makeCopy(newAmounts:  Map[Direction2D, StackLength])  = StackInsets(amounts)
+	override protected def makeCopy(newAmounts: Map[Direction2D, StackLength]) = StackInsets(newAmounts)
 	override protected def makeZero  = StackLength.fixedZero
 	override protected def combine(first: StackLength, second: StackLength)  = first + second
 	override protected def multiply(a: StackLength, multiplier: Double)  = a * multiplier

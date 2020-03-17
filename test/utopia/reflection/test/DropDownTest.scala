@@ -5,7 +5,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.reflection.component.swing.DropDown
+import utopia.reflection.component.swing.JDropDownWrapper
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.container.swing.window.WindowResizePolicy.User
@@ -38,9 +38,9 @@ object DropDownTest extends App
 	val data = HashMap("Fighter" -> Vector("Aragorn", "Gimli", "Boromir"), "Archer" -> Vector("Legolas"),
 		"Wizard" -> Vector("Gandalf", "Radagast"))
 	
-	val categorySelect = new DropDown[String](StackInsets.symmetric(16.any, 4.upscaling), "< Select Class >", basicFont,
+	val categorySelect = new JDropDownWrapper[String](StackInsets.symmetric(16.any, 4.upscaling), "< Select Class >", basicFont,
 		Color.white, Color.magenta, initialContent = data.keySet.toVector.sorted)
-	val characterSelect = new DropDown[String](StackInsets.symmetric(16.any, 4.upscaling), "< Select Character >", basicFont,
+	val characterSelect = new JDropDownWrapper[String](StackInsets.symmetric(16.any, 4.upscaling), "< Select Character >", basicFont,
 		Color.white, Color.magenta)
 	
 	categorySelect.component.setFont(basicFont.toAwt)

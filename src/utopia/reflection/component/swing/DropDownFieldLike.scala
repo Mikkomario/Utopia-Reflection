@@ -139,9 +139,18 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 				popupContentView.set(searchStack)
 			}
 		}, Some(Vector()))
+		if (currentSelectionOptionsPointer.value.isEmpty)
+			popupContentView.set(noResultsView)
 		
 		// When value is updated from an external source, it also affects selection stack
 		addValueListener({ e => displaysManager.value = e.newValue }, Some(None))
+		
+		// When display manager updates its value (for example due to content change), updates current value
+		// (if not displaying a pop-up at the time)
+		displaysManager.addValueListener { e =>
+			if (!isDisplayingPopUp)
+				value = e.newValue
+		}
 		
 		displaysManager.enableMouseHandling()
 		displaysManager.enableKeyHandling(actorHandler, listenEnabledCondition = Some(() => mainDisplay.isInFocus ||
@@ -153,7 +162,7 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 	
 	private def displayPopup() =
 	{
-		if (visiblePopup.isEmpty && content.nonEmpty)
+		if (visiblePopup.isEmpty)
 		{
 			// Creates and displays the popup
 			val popup = Popup(mainDisplay, popupContentView, actorHandler) {
@@ -202,6 +211,9 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 		
 		override def onMouseButtonState(event: MouseButtonStateEvent) =
 		{
+			// Grabs focus if possible
+			if (!mainDisplay.isInFocus)
+				mainDisplay.requestFocusInWindow()
 			displayPopup()
 			Some(ConsumeEvent("Search From Field Clicked"))
 		}

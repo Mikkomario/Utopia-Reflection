@@ -235,6 +235,11 @@ trait InsetsLike[L, +S, +Repr]
     def withoutVertical = withoutAxis(Y)
     
     
+    // IMPLEMENTED  --------------
+    
+    override def toString = s"[${amounts.map { case (d, l) => s"$d:$l" }.mkString(", ")}]"
+    
+    
     // OPERATORS    --------------
     
     /**

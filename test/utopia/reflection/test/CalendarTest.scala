@@ -12,7 +12,7 @@ import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.ActorLoop
 import utopia.genesis.handling.mutable.ActorHandler
 import utopia.genesis.image.Image
-import utopia.reflection.component.swing.{Calendar, DropDown}
+import utopia.reflection.component.swing.{Calendar, JDropDownWrapper}
 import utopia.reflection.component.swing.button.ButtonImageSet
 import utopia.reflection.container.stack.StackHierarchyManager
 import utopia.reflection.container.swing.Framing
@@ -41,9 +41,9 @@ object CalendarTest extends App
 	val basicFont = Font("Arial", 14, Plain, 2)
 	val smallFont = basicFont * 0.75
 	
-	val yearSelect = new DropDown[Year](StackInsets.symmetric(16.any, 4.upscaling), "Year", basicFont,
+	val yearSelect = new JDropDownWrapper[Year](StackInsets.symmetric(16.any, 4.upscaling), "Year", basicFont,
 		Color.white, Color.magenta, initialContent = (1999 to 2050).map {Year.of}.toVector)
-	val monthSelect = new DropDown[Month](StackInsets.symmetric(16.any, 4.upscaling), "Month", basicFont,
+	val monthSelect = new JDropDownWrapper[Month](StackInsets.symmetric(16.any, 4.upscaling), "Month", basicFont,
 		Color.white, Color.magenta, initialContent = Month.values().toVector)
 	
 	val buttonImage = Image.readFrom(Paths.get("test-images/arrow-back-48dp.png")).get

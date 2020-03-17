@@ -49,7 +49,7 @@ object Calendar
 	  * @param firstDayOfWeek First day of a week (default = Monday)
 	  * @return A new calendar
 	  */
-	def apply(monthDropDown: DropDown[Month], yearDropDown: DropDown[Year], forwardIcon: ButtonImageSet,
+	def apply(monthDropDown: JDropDownWrapper[Month], yearDropDown: JDropDownWrapper[Year], forwardIcon: ButtonImageSet,
 			  backwardIcon: ButtonImageSet, headerHMargin: StackLength, afterHeaderMargin: StackLength,
 			  dayNameDisplayFunction: DisplayFunction[DayOfWeek], dayNameFont: Font, dayNameTextColor: Color,
 			  dayNameInsets: StackInsets, dateFont: Font, dateTextColor: Color, dateInsets: StackInsets,
@@ -114,7 +114,7 @@ object Calendar
   * @param makeDateButton A function for making an interactive element for each day of a month
   * @param firstDayOfWeek The day to be considered first in a week (default = Monday)
   */
-class Calendar(val monthDropDown: DropDown[Month], val yearDropDown: DropDown[Year], forwardIcon: ButtonImageSet,
+class Calendar(val monthDropDown: JDropDownWrapper[Month], val yearDropDown: JDropDownWrapper[Year], forwardIcon: ButtonImageSet,
 			   backwardIcon: ButtonImageSet, headerHMargin: StackLength, afterHeaderMargin: StackLength,
 			   val insideCalendarMargin: StackSize, makeDayNameLabel: DayOfWeek => AwtComponentRelated with Stackable,
 			   private val makeDateButton: Int => AwtComponentRelated with Stackable with InteractionWithPointer[Boolean],

@@ -5,7 +5,7 @@ import utopia.reflection.shape.LengthExtensions._
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.mutable.ActorHandler
-import utopia.reflection.component.swing.{DropDown, MultiLineTextView, TextField}
+import utopia.reflection.component.swing.{JDropDownWrapper, MultiLineTextView, TextField}
 import utopia.reflection.container.swing.Stack
 import utopia.reflection.container.swing.window.Frame
 import utopia.reflection.localization.{LocalString, Localizer, NoLocalization}
@@ -49,7 +49,7 @@ object MultiLineTextViewTest extends App
 		mainStack += Stack.buildRowWithContext(isRelated = true) { bottomRow =>
 			bottomRow += textInput
 			
-			val alignSelect = DropDown.contextual("Select Alignment", initialChoices = Alignment.values)
+			val alignSelect = JDropDownWrapper.contextual("Select Alignment", initialChoices = Alignment.values)
 			alignSelect.selectOne(Alignment.Left)
 			alignSelect.addValueListener { _.newValue.foreach { a => textView.alignment = a } }
 			

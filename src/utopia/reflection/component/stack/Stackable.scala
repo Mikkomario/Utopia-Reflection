@@ -249,6 +249,8 @@ trait Stackable extends ComponentLike
 		{
 			StackHierarchyManager.registerConnection(parent, this)
 			isAttachedToMainHierarchy = true
+			// Revalidates this item upon attachment since it may be that some revalidations were skipped in the meanwhile
+			revalidate()
 		}
 		// If this component was attached to the main stack hierarchy under a different parent, disconnects from that one
 		else

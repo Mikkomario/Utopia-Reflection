@@ -67,7 +67,7 @@ case class ComponentContextBuilder(actorHandler: ActorHandler, font: Font, highl
 		promptFont.getOrElse(font), promptTextColor.getOrElse(textColor.timesAlpha(0.625)), textHasMinWidth,
 		textAlignment, background, barBackground.orElse(background).getOrElse(Color.gray(0.5)), insets,
 		border, borderWidth.orElse(border.map { _.insets.average }).getOrElse(
-			(insets.optimal.horizontal / 2 min insets.optimal.vertical / 2) max 4),
+			((insets.optimal.horizontal / 2) min (insets.optimal.vertical / 2)) max 4),
 		stackMargin, relatedItemsStackMargin.getOrElse(stackMargin), stackCap, dropDownWidthLimit,
 		switchWidth.getOrElse(StackLength.any(normalWidth / 4)), textFieldWidth.getOrElse(StackLength.any(normalWidth)),
 		scrollPerWheelClick, scrollBarWidth, scrollBarDrawer.getOrElse(new DefaultScrollBarDrawer),
