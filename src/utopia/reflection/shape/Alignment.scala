@@ -11,75 +11,116 @@ import scala.collection.immutable.HashMap
 object Alignment
 {
 	/**
+	  * Common trait for alignments that only represent a single direction
+	  */
+	sealed trait SingleDirectionAlignment extends Alignment
+	{
+		// ABSTRACT	---------------------
+		
+		/**
+		  * @return Axis used by this alignment
+		  */
+		def axis: Axis2D
+		
+		/**
+		  * @return Whether this alignment moves items to the positive (+) direction on the specified axis
+		  */
+		def isPositiveDirection: Boolean
+		
+		
+		// COMPUTED	---------------------
+		
+		/**
+		  * @return The direction matching this alignment
+		  */
+		def direction = Direction2D(axis, isPositiveDirection)
+		
+		
+		// IMPLEMENTED	-----------------
+		
+		override def supportedAxes = Set(axis)
+		
+		override def directions = Vector(direction)
+	}
+	
+	/**
+	  * Common trait for alignments that only represent a horizontal direction
+	  */
+	sealed trait HorizontalAlignment extends SingleDirectionAlignment
+	{
+		// IMPLEMENTED	-------------------
+		
+		override def axis = X
+		
+		override def vertical = Center
+	}
+	
+	/**
+	  * Common trait for alignments that only represent a vertical direction
+	  */
+	sealed trait VerticalAlignment extends SingleDirectionAlignment
+	{
+		// IMPLEMENTED	-------------------
+		
+		override def axis = Y
+		
+		override def horizontal = Center
+	}
+	
+	/**
 	  * In left alignment, content is leading
 	  */
-	case object Left extends Alignment
+	case object Left extends HorizontalAlignment
 	{
-		override val supportedAxes = Set(X)
+		override def isPositiveDirection = false
 		
 		override def opposite = Right
 		
 		override def swingComponents = HashMap(X -> SwingConstants.LEADING)
 		
 		override def horizontal = this
-		
-		override def vertical = Center
-		
-		override def directions = Vector(Direction2D.Left)
 	}
 	
 	/**
 	  * In right alignment, content is trailing
 	  */
-	case object Right extends Alignment
+	case object Right extends HorizontalAlignment
 	{
-		override val supportedAxes = Set(X)
+		override def isPositiveDirection = true
 		
 		override def opposite = Left
 		
 		override def swingComponents = HashMap(X -> SwingConstants.TRAILING)
 		
 		override def horizontal = this
-		
-		override def vertical = Center
-		
-		override def directions = Vector(Direction2D.Right)
 	}
 	
 	/**
 	  * In top alignment, content is positioned at the the top of a component
 	  */
-	case object Top extends Alignment
+	case object Top extends VerticalAlignment
 	{
-		override val supportedAxes = Set(Y)
+		override def isPositiveDirection = false
 		
 		override def opposite = Bottom
 		
 		override def swingComponents = HashMap(Y -> SwingConstants.TOP)
 		
-		override def horizontal = Center
-		
 		override def vertical = this
-		
-		override def directions = Vector(Direction2D.Up)
 	}
 	
 	/**
 	  * In bottom alignment, content is positioned at the bottom of a component
 	  */
-	case object Bottom extends Alignment
+	case object Bottom extends VerticalAlignment
 	{
-		override val supportedAxes = Set(Y)
+		override def isPositiveDirection = true
 		
 		override def opposite = Top
 		
 		override def swingComponents = HashMap(Y -> SwingConstants.BOTTOM)
 		
-		override def horizontal = Center
-		
 		override def vertical = this
-		
-		override def directions = Vector(Direction2D.Down)
 	}
 	
 	/**

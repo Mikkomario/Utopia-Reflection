@@ -23,9 +23,13 @@ object ItemLabel
 	  * @return A new label
 	  */
 	def contextual[A](content: A, displayFunction: DisplayFunction[A] = DisplayFunction.raw)
-					 (implicit context: ComponentContext) =
+					 (implicit context: ComponentContext) = contextualWithPointer(
+		new PointerWithEvents(content), displayFunction)
+	
+	def contextualWithPointer[A](pointer: PointerWithEvents[A], displayFunction: DisplayFunction[A] = DisplayFunction.raw)
+								(implicit context: ComponentContext) =
 	{
-		val label = new ItemLabel[A](content, displayFunction, context.font, context.textColor, context.insets,
+		val label = new ItemLabel[A](pointer, displayFunction, context.font, context.textColor, context.insets,
 			context.textAlignment, context.textHasMinWidth)
 		context.setBorderAndBackground(label)
 		label
@@ -37,7 +41,7 @@ object ItemLabel
   * @author Mikko Hilpinen
   * @since 24.4.2019, v1
   * @tparam A The type of item displayed in this label
-  * @param initialContent The item first displayed in this label
+  * @param contentPointer Pointer for the value displayed by this label
   * @param displayFunction A function that transforms the item to displayable text
   * @param initialFont The font used in this label
   * @param initialTextColor The color used for displaying text (default = black)
@@ -45,7 +49,7 @@ object ItemLabel
  *  @param initialAlignment The alignment used for this component initially (default = Left)
   * @param hasMinWidth Whether this label should have minimum width (always show all content text) (default = true)
   */
-class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], initialFont: Font,
+class ItemLabel[A](override val contentPointer: PointerWithEvents[A], val displayFunction: DisplayFunction[A], initialFont: Font,
 				   initialTextColor: Color = Color.textBlack, initialInsets: StackInsets = StackInsets.any,
 				   initialAlignment: Alignment = Alignment.Left, hasMinWidth: Boolean = true)
 	extends StackableAwtComponentWrapperWrapper with TextComponent with SwingComponentRelated
@@ -53,10 +57,8 @@ class ItemLabel[A](initialContent: A, val displayFunction: DisplayFunction[A], i
 {
 	// ATTRIBUTES	--------------------
 	
-	private val label = new TextLabel(displayFunction(initialContent), initialFont, initialTextColor, initialInsets,
+	private val label = new TextLabel(displayFunction(contentPointer.value), initialFont, initialTextColor, initialInsets,
 		initialAlignment, hasMinWidth)
-	
-	override val contentPointer = new PointerWithEvents[A](initialContent)
 	
 	
 	// INITIAL CODE	--------------------

@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent
 import java.util.concurrent.TimeUnit
 
 import utopia.flow.async.ThreadPool
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.{ActorLoop, KeyStateListener}
@@ -38,7 +39,7 @@ object ScrollAreaTest extends App
 	
 	// Creates the labels
 	val basicFont = Font("Arial", 12, Plain, 2)
-	val labels = (1 to 10).toVector.map { row => (1 to 50).toVector.map { i => new ItemLabel(row * i,
+	val labels = (1 to 10).toVector.map { row => (1 to 50).toVector.map { i => new ItemLabel(new PointerWithEvents(row * i),
 		DisplayFunction.interpolating("Label number %i"), basicFont, initialInsets = StackInsets.symmetric(16.any, 4.fixed)) }}
 	val allLabels = labels.flatten
 	allLabels.foreach { _.background = Color.yellow }

@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent
 
 import utopia.flow.util.TimeExtensions._
 import utopia.flow.async.{Loop, ThreadPool}
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.util.WaitTarget
 import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
@@ -45,7 +46,8 @@ object ScrollViewTest extends App
 	val displayFunction = DisplayFunction.interpolating("Label number %i")
 	def makeLabel(number: Int) =
 	{
-		val label = new ItemLabel(number, displayFunction, basicFont, initialInsets = StackInsets.symmetric(16.any, 4.fixed))
+		val label = new ItemLabel(new PointerWithEvents(number), displayFunction, basicFont,
+			initialInsets = StackInsets.symmetric(16.any, 4.fixed))
 		label.background = Color.yellow
 		label.alignCenter()
 		

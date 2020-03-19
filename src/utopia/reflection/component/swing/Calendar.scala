@@ -57,7 +57,8 @@ object Calendar
 	{
 		def makeDayNameLabel(day: DayOfWeek) =
 		{
-			new ItemLabel[DayOfWeek](day, dayNameDisplayFunction, dayNameFont, dayNameTextColor, dayNameInsets, Alignment.Center)
+			new ItemLabel[DayOfWeek](new PointerWithEvents(day), dayNameDisplayFunction, dayNameFont, dayNameTextColor,
+				dayNameInsets, Alignment.Center)
 		}
 		def makeDateLabel(date: Int) = new DateLabel(date, dateFont, dateInsets, dateTextColor, selectionHoverColor,
 			selectedColor)
@@ -73,7 +74,8 @@ object Calendar
 	{
 		// ATTRIBUTES	-----------------
 		
-		private val label = new ItemLabel[Int](date, DisplayFunction.raw, font, textColor, insets, Alignment.Center)
+		private val label = new ItemLabel[Int](new PointerWithEvents(date), DisplayFunction.raw, font, textColor,
+			insets, Alignment.Center)
 		
 		override val valuePointer = new PointerWithEvents[Boolean](false)
 		
