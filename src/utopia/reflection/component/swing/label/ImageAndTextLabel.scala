@@ -14,6 +14,43 @@ import utopia.reflection.localization.DisplayFunction
 import utopia.reflection.shape.Alignment.{Bottom, Top}
 import utopia.reflection.shape.{Alignment, StackInsets, StackLength}
 import utopia.reflection.text.Font
+import utopia.reflection.util.ComponentContext
+
+object ImageAndTextLabel
+{
+	/**
+	  * Creates a new image and text label using a component creation context
+	  * @param pointer Content pointer
+	  * @param displayFunction Function for creating text display
+	  * @param itemToImage Function for creating image display
+	  * @param context Component creation context (implicit)
+	  * @tparam A Type of displayed item
+	  * @return A new label
+	  */
+	def contextualWithPointer[A](pointer: PointerWithEvents[A],
+								 displayFunction: DisplayFunction[A] = DisplayFunction.raw)(itemToImage: A => Image)
+								(implicit context: ComponentContext) =
+	{
+		val label = new ImageAndTextLabel[A](pointer, context.font, displayFunction, context.insets, context.insets,
+			context.stackMargin, context.textAlignment, context.textColor, context.textHasMinWidth,
+			context.allowImageUpscaling)(itemToImage)
+		context.setBorderAndBackground(label)
+		label
+	}
+	
+	/**
+	  * Creates a new image and text label using a component creation context
+	  * @param item Initially displayed item
+	  * @param displayFunction Function for creating text display
+	  * @param itemToImage Function for creating image display
+	  * @param context Component creation context (implicit)
+	  * @tparam A Type of displayed item
+	  * @return A new label
+	  */
+	def contextual[A](item: A, displayFunction: DisplayFunction[A] = DisplayFunction.raw)(itemToImage: A => Image)
+					 (implicit context: ComponentContext) =
+		contextualWithPointer(new PointerWithEvents(item), displayFunction)(itemToImage)
+}
 
 /**
   * Used for displaying items with an image + text combination
@@ -21,7 +58,6 @@ import utopia.reflection.text.Font
   * @since 19.3.2020, v1
   * @param contentPointer Pointer used for holding the displayed item
   * @param initialFont Font used when displaying item text
-  * @param itemToImageFunction Function used for selecting proper image for each item
   * @param displayFunction Function used for displaying an item as text (default = toString)
   * @param textInsets Insets used in text display (default = any insets)
   * @param imageInsets Insets used in image display (default = any insets)
@@ -30,14 +66,15 @@ import utopia.reflection.text.Font
   * @param initialTextColor Text color used initially (default = black)
   * @param textHasMinWidth Whether text should always be fully displayed (default = true)
   * @param allowImageUpscaling Whether image should be allowed to scale up (default = false)
+  * @param itemToImageFunction Function used for selecting proper image for each item
   */
 // TODO: Replace image with a stack image
 class ImageAndTextLabel[A](override val contentPointer: PointerWithEvents[A], initialFont: Font,
-						   itemToImageFunction: A => Image, displayFunction: DisplayFunction[A] = DisplayFunction.raw,
+						   displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 						   textInsets: StackInsets = StackInsets.any, imageInsets: StackInsets = StackInsets.any,
 						   betweenItemsMargin: StackLength = StackLength.any, alignment: Alignment = Alignment.Left,
 						   initialTextColor: Color = Color.textBlack, textHasMinWidth: Boolean = true,
-						   allowImageUpscaling: Boolean = false)
+						   allowImageUpscaling: Boolean = false)(itemToImageFunction: A => Image)
 	extends StackableAwtComponentWrapperWrapper with RefreshableWithPointer[A] with TextComponent with SwingComponentRelated
 {
 	// ATTRIBUTES	-------------------------
