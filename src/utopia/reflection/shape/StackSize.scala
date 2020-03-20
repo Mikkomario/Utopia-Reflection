@@ -3,6 +3,7 @@ package utopia.reflection.shape
 import utopia.genesis.shape.shape2D.Size
 import utopia.genesis.shape.Axis2D
 import utopia.genesis.shape.Axis._
+import utopia.reflection.shape.LengthPriority.Low
 
 object StackSize
 {
@@ -192,7 +193,17 @@ case class StackSize(width: StackLength, height: StackLength)
     /**
       * @return A copy of this size with low priority for both width and height
       */
-    def withLowPriority = mapWidth { _.withLowPriority }.mapHeight { _.withLowPriority }
+    def withLowPriority = mapSides { _.withLowPriority }
+    
+    /**
+      * @return A copy of this size that is more easily shrinked
+      */
+    def shrinking = mapSides { _.shrinking }
+    
+    /**
+      * @return A copy of this size that is more easily expanded
+      */
+    def expanding = mapSides { _.expanding }
     
     
     // IMPLEMENTED    ----------------
@@ -252,10 +263,17 @@ case class StackSize(width: StackLength, height: StackLength)
     def perpendicularTo(axis: Axis2D) = along(axis.perpendicular)
     
     /**
-      * @param axis Target axis
-      * @return Whether this size is considered of low priority for the specified axis
+      * @param axis Targeted axis
+      * @return Length priority of this size for the specified axis
       */
-    def isLowPriorityFor(axis: Axis2D) = along(axis).isLowPriority
+    def priorityFor(axis: Axis2D) = along(axis).priority
+    
+    /**
+      * @param axis Target axis
+      * @param adjustment Proposed adjustment
+      * @return Whether this size is considered of low priority for the specified axis and adjustment combination
+      */
+    def isLowPriorityFor(axis: Axis2D, adjustment: Double) = priorityFor(axis).isFirstAdjustedBy(adjustment)
     
     /**
       * @param w New width
@@ -297,7 +315,7 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param map A mapping function
       * @return A copy of this size with a mapped side
       */
-    def mapSide(axis: Axis2D, map: StackLength => StackLength) = axis match 
+    def mapSide(axis: Axis2D)(map: StackLength => StackLength) = axis match
     {
         case X => mapWidth(map)
         case Y => mapHeight(map)
@@ -318,10 +336,17 @@ case class StackSize(width: StackLength, height: StackLength)
     def map(f: (Axis2D, StackLength) => StackLength) = StackSize(f(X, width), f(Y, height))
     
     /**
+      * @param priority Length priority
+      * @param axis Targeted axis
+      * @return A copy of this stack size with specified length priority on targeted axis
+      */
+    def withPriorityFor(priority: LengthPriority, axis: Axis2D) = mapSide(axis) { _.withPriority(priority) }
+    
+    /**
       * @param axis Target axis
       * @return A copy of this size with low priority for specified axis
       */
-    def withLowPriorityFor(axis: Axis2D) = if (isLowPriorityFor(axis)) this else mapSide(axis, _.withLowPriority)
+    def withLowPriorityFor(axis: Axis2D) = withPriorityFor(Low, axis)
     
     /**
       * @param length New fixed length
@@ -347,7 +372,7 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param axis target axis
       * @return A copy of this size with new maximum length for specified side
       */
-    def withMaxSide(maxLength: Double, axis: Axis2D) = mapSide(axis, _.withMax(maxLength))
+    def withMaxSide(maxLength: Double, axis: Axis2D) = mapSide(axis) { _.withMax(maxLength) }
     
     /**
       * @param maxW New maximum width
@@ -372,7 +397,7 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param axis Target axis
       * @return A copy of this size with specified optimal length for the specified axis
       */
-    def withOptimalSide(optimalLength: Double, axis: Axis2D) = mapSide(axis, _.withOptimal(optimalLength))
+    def withOptimalSide(optimalLength: Double, axis: Axis2D) = mapSide(axis) { _.withOptimal(optimalLength) }
     
     /**
       * @param optimalW New optimal width
@@ -397,7 +422,7 @@ case class StackSize(width: StackLength, height: StackLength)
       * @param axis Target axis
       * @return A copy of this size with specified minimum length for the specified axis
       */
-    def withMinSide(minLength: Double, axis: Axis2D) = mapSide(axis, _.withMin(minLength))
+    def withMinSide(minLength: Double, axis: Axis2D) = mapSide(axis) { _.withMin(minLength) }
     
     /**
       * @param minW A new minimum width

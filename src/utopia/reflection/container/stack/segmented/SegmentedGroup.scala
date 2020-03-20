@@ -44,7 +44,7 @@ class SegmentedGroup(override val direction: Axis2D) extends Segmented
 			val rawOptimal = lengths.map { _.optimal }.max
 			val optimal = max.map { rawOptimal min _ } getOrElse rawOptimal
 			
-			Some(StackLength(min, optimal, max, lengths.forall { _.isLowPriority }))
+			Some(StackLength(min, optimal, max, lengths.map { _.priority }.reduce { _ max _ }))
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package utopia.reflection.shape
 
 import utopia.flow.util.Equatable
+import utopia.reflection.shape.LengthPriority.{Expanding, Low, Normal, Shrinking}
 
 object StackLength
 {
@@ -23,11 +24,11 @@ object StackLength
 	  * @param min Minimum length
 	  * @param optimal Optimal length
 	  * @param max Maximum length. None if not limited. Default = None
-	  * @param lowPriority Whether this length should be treated as a low priority constraint. Default = false.
+	  * @param priority Priority used with this stack length
 	  * @return A new stack length
 	  */
     def apply(min: Double, optimal: Double, max: Option[Double] = None,
-            lowPriority: Boolean = false) = new StackLength(min, optimal, max, lowPriority)
+			  priority: LengthPriority = Normal) = new StackLength(min, optimal, max, priority)
 	
 	/**
 	  * @param min Minimum length
@@ -83,9 +84,9 @@ object StackLength
   * @param rawMin Minimum length
   * @param rawOptimal Optimum length
   * @param rawMax Maximum length. None if not limited. Defaults to None.
-  * @param isLowPriority Whether this length should be treated as a low priority constraint. Default = false.
+  * @param priority The priority used for this length
 **/
-class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = None, val isLowPriority: Boolean = false) extends Equatable
+class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = None, val priority: LengthPriority = Normal) extends Equatable
 {
     // ATTRIBUTES    ------------------------
 	
@@ -117,7 +118,17 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	/**
 	  * @return A version of this stack length that has low priority
 	  */
-	def withLowPriority = withPriority(true)
+	def withLowPriority = withPriority(Low)
+	
+	/**
+	  * @return A copy of this length with a priority that allows easier shrinking
+	  */
+	def shrinking = if (priority.shrinksFirst) this else withPriority(Shrinking)
+	
+	/**
+	  * @return A copy of this length with a priority that allows easier expanding
+	  */
+	def expanding = if (priority.expandsFirst) this else withPriority(Expanding)
 	
 	/**
 	  * @return A version of this stack length that has no mimimum (set to 0)
@@ -130,9 +141,9 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	def noMax = withMax(None)
 	
 	/**
-	  * @return A version of this stack length with no mimum or maximum
+	  * @return A version of this stack length with no minimum or maximum
 	  */
-	def noLimits = StackLength(0, optimal, None, isLowPriority)
+	def noLimits = copy(newMin = 0, newMax = None)
 	
 	/**
 	  * @return A version of this stack length with no maximum value (same as noMax)
@@ -172,7 +183,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	
 	// IMPLEMENTED    -----------------------
 	
-	def properties = Vector(min, optimal, max, isLowPriority)
+	def properties = Vector(min, optimal, max, priority)
 	
 	override def toString =
 	{
@@ -184,8 +195,8 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	    
 	    max foreach { m => s.append(m.toInt) }
 	    
-	    if (isLowPriority)
-	        s append " (low prio)"
+	    if (priority != Normal)
+	        s append s" ($priority)"
 	    
 	    s.toString()
 	}
@@ -197,7 +208,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	  * @param length Increase in length
 	  * @return An increased version of this stack length (min, optimal and max adjusted, if present)
 	  */
-	def +(length: Double) = StackLength(min + length, optimal + length, max.map(_ + length), isLowPriority)
+	def +(length: Double) = map { _ + length }
 	
 	/**
 	  * @param other Another stack length
@@ -206,7 +217,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	def +(other: StackLength) =
 	{
 	    val newMax = if (max.isDefined && other.max.isDefined) Some(max.get + other.max.get) else None
-	    StackLength(min + other.min, optimal + other.optimal, newMax, isLowPriority || other.isLowPriority)
+	    StackLength(min + other.min, optimal + other.optimal, newMax, priority min other.priority)
 	}
 	
 	/**
@@ -219,7 +230,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	  * @param multi A multiplier
 	  * @return A multiplied version of this length where min, optimal and max lengths are all affected, if present
 	  */
-	def *(multi: Double) = StackLength(min * multi, optimal * multi, max.map { _ * multi }, isLowPriority)
+	def *(multi: Double) = map { _ * multi }
 	
 	/**
 	  * @param div A divider
@@ -238,22 +249,44 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	// OTHER    ---------------------------
 	
 	/**
+	  * Creates a copy of this stack length (usually one or more parameters should be specified)
+	  * @param newMin New minimum length (default = current minimum length)
+	  * @param newOptimal New optimal length (default = current optimal length)
+	  * @param newMax New maximum length (default = current maximum length)
+	  * @param newPriority New priority (default = current priority)
+	  */
+	def copy(newMin: Double = min, newOptimal: Double = optimal, newMax: Option[Double] = max,
+			 newPriority: LengthPriority = priority) = new StackLength(newMin, newOptimal, newMax, newPriority)
+	
+	/**
+	  * @param f A mapping function
+	  * @return A copy of this length where each value has been mapped (maximum is mapped only if present)
+	  */
+	def map(f: Double => Double) = StackLength(f(min), f(optimal), max.map(f), priority)
+	
+	/**
+	  * Creates a copy of this length with a new priority
+	  * @param newPriority New priority for this length
+	  */
+	def withPriority(newPriority: LengthPriority) = if (priority == newPriority) this else copy(newPriority = newPriority)
+	
+	/**
 	  * @param newMin A new minimum value
 	  * @return An updated version of this length with specified minimum value (optimal and max may also be adjusted if necessary)
 	  */
-	def withMin(newMin: Double) = StackLength(newMin, optimal, max, isLowPriority)
+	def withMin(newMin: Double) = copy(newMin = newMin)
 	
 	/**
 	  * @param newOptimal A new optimal value
 	  * @return An updated version of this length with specified optimum value (maximum may also be adjusted if necessary)
 	  */
-	def withOptimal(newOptimal: Double) = StackLength(min, newOptimal, max, isLowPriority)
+	def withOptimal(newOptimal: Double) = copy(newOptimal = newOptimal)
 	
 	/**
 	  * @param newMax A new maximum value (None if no maximum)
 	  * @return An updated version of this length with specified maximum length
 	  */
-	def withMax(newMax: Option[Double]) = StackLength(min, optimal, newMax, isLowPriority)
+	def withMax(newMax: Option[Double]) = copy(newMax = newMax)
 	
 	/**
 	  * @param newMax A new maximum value
@@ -262,18 +295,11 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	def withMax(newMax: Double): StackLength = withMax(Some(newMax))
 	
 	/**
-	  * @param isLowPriority Whether the new length should be considered a low priority constraint
-	  * @return A copy of this stack length with specified priority status
-	  */
-	def withPriority(isLowPriority: Boolean) = if (this.isLowPriority == isLowPriority) this else
-		StackLength(min, optimal, max, isLowPriority)
-	
-	/**
 	  * @param other Another stack length
 	  * @return A minimum between this length and the other (min, optimal and max will be picked from the minimum value)
 	  */
 	def min(other: StackLength): StackLength = StackLength(min min other.min, optimal min other.optimal,
-		Vector(max, other.max).flatten.reduceOption(_ min _), isLowPriority || other.isLowPriority)
+		Vector(max, other.max).flatten.reduceOption(_ min _), priority min other.priority)
 	
 	/**
 	  * @param other Another stack length
@@ -282,7 +308,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	def max(other: StackLength): StackLength =
 	{
 		val newMax = if (max.isEmpty || other.max.isEmpty) None else Some(max.get max other.max.get)
-		StackLength(min max other.min, optimal max other.optimal, newMax, isLowPriority || other.isLowPriority)
+		StackLength(min max other.min, optimal max other.optimal, newMax, priority min other.priority)
 	}
 	
 	/**
@@ -291,9 +317,9 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	def combineWith(other: StackLength) =
 	{
 	    val newMin = min max other.min
-	    val newMax = Vector(max, other.max).flatten.reduceOption(_ min _)
+	    val newMax = Vector(max, other.max).flatten.reduceOption { _ min _ }
 	    val newOptimal = optimal max other.optimal
-	    val prio = isLowPriority || other.isLowPriority
+	    val prio = priority min other.priority
 	    
 	    // Optimal is limited by maximum length
 	    if (newMax exists { _ < newOptimal })
@@ -316,7 +342,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 			val newMax = max.map { m => minimum max m min maximum.get } getOrElse maximum.get
 			val newOptimal = newMin max optimal min newMax
 			
-			StackLength(newMin, newOptimal, Some(newMax), isLowPriority)
+			StackLength(newMin, newOptimal, Some(newMax), priority)
 		}
 		else
 		{
@@ -324,7 +350,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 			val newMax = max.map { minimum max _ }
 			val newOptimal = newMin max optimal
 			
-			StackLength(newMin, newOptimal, newMax, isLowPriority)
+			StackLength(newMin, newOptimal, newMax, priority)
 		}
 	}
 	
@@ -354,7 +380,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 			(limits.maxOptimal orElse limits.max).map { minLimited min _ } getOrElse minLimited
 		}
 		
-		StackLength(minUnderMax, newOptimal, newMax, isLowPriority)
+		StackLength(minUnderMax, newOptimal, newMax, priority)
 	}
 	
 	/**

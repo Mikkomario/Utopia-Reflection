@@ -128,11 +128,13 @@ trait FramingLike[C <: Stackable] extends SingleStackContainer[C] with Component
 										   (getMaxAdjust: StackLength => Option[Double]): (Double, Double) =
 	{
 		// Determines the default split based on length priorities
+		val firstPriority = firstLength.priority.isFirstAdjustedBy(adjustment)
+		val secondPriority = secondLength.priority.isFirstAdjustedBy(adjustment)
 		val (defaultFirstAdjust, defaultSecondAdjust) =
 		{
-			if (firstLength.isLowPriority == secondLength.isLowPriority)
+			if (firstPriority == secondPriority)
 				(adjustment.abs / 2) -> (adjustment.abs / 2)
-			else if (firstLength.isLowPriority)
+			else if (firstPriority)
 				adjustment.abs -> 0.0
 			else
 				0.0 -> adjustment

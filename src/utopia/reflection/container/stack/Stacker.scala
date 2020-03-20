@@ -58,7 +58,7 @@ object Stacker
 				else
 					breadths.reduce { _ max _ }.withMax(None)
 					
-				}.withPriority(breadths forall { _.isLowPriority })
+			}.withPriority(breadths.map { _.priority }.reduce { _ max _ })
 			
 			// Returns the final size
 			StackSize(length, breadth, stackAxis)
@@ -113,7 +113,7 @@ object Stacker
 			}
 			
 			// First adjusts the length of low priority items, then of all remaining items (if necessary)
-			val groupedTargets = targets.groupBy { _.isLowPriority }
+			val groupedTargets = targets.groupBy { _.isLowPriorityFor(lengthAdjustment) }
 			val lowPrioTargets = groupedTargets.getOrElse(true, Vector())
 			
 			val remainingAdjustment =
@@ -243,7 +243,7 @@ object Stacker
 		
 		// COMPUTED    -------------------
 		
-		def isLowPriority = length.isLowPriority
+		def isLowPriorityFor(adjustment: Double) = length.priority.isFirstAdjustedBy(adjustment)
 		
 		private def max = length.max map { _ - length.optimal }
 		
