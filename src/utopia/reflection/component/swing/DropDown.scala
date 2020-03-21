@@ -32,6 +32,7 @@ object DropDown
 	  * @param displayStackLayout Stack layout used for selection displays (default = Fit)
 	  * @param contentPointer Pointer that holds current selection options (default = new pointer)
 	  * @param valuePointer Pointer that holds currently selected value (default = new pointer)
+	  * @param shouldDisplayPopUpOnFocusGain Whether this component should always open selection pop-up on focus gain (default = true)
 	  * @param equalsCheck Function for checking equality between selection options (default = a == b)
 	  * @param makeDisplayFunction Function for producing new selection displays
 	  * @param context Component creation context
@@ -46,6 +47,7 @@ object DropDown
 	 displayStackLayout: StackLayout = Fit,
 	 contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 	 valuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
+	 shouldDisplayPopUpOnFocusGain: Boolean = true,
 	 equalsCheck: (A, A) => Boolean = (a: A, b: A) => a == b)
 	(makeDisplayFunction: A => C)
 	(implicit context: ComponentContext, exc: ExecutionContext) =
@@ -55,7 +57,7 @@ object DropDown
 			context.font, context.textColor, displayFunction, context.textAlignment, context.insets,
 			context.insets.mapVertical { _.withLowPriority }, borderColor,
 			context.borderWidth, context.stackMargin, displayStackLayout, contentPointer, valuePointer,
-			context.textHasMinWidth, context.allowImageUpscaling, equalsCheck)(makeDisplayFunction)
+			context.textHasMinWidth, context.allowImageUpscaling, shouldDisplayPopUpOnFocusGain, equalsCheck)(makeDisplayFunction)
 		context.background.foreach { dd.background = _ }
 		dd
 	}
@@ -69,6 +71,7 @@ object DropDown
 	  * @param borderColor Color used in component border (default = black)
 	  * @param contentPointer Pointer that holds current selection options (default = new pointer)
 	  * @param valuePointer Pointer that holds currently selected value (default = new pointer)
+	  * @param shouldDisplayPopUpOnFocusGain Whether this component should always open selection pop-up on focus gain (default = true)
 	  * @param equalsCheck Function for checking equality between selection options (default = a == b)
 	  * @param context Component creation context
 	  * @param exc Implicit execution context
@@ -80,11 +83,12 @@ object DropDown
 	 displayFunction: DisplayFunction[A] = DisplayFunction.raw, borderColor: Color = Color.textBlack,
 	 contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 	 valuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
+	 shouldDisplayPopUpOnFocusGain: Boolean = true,
 	 equalsCheck: (A, A) => Boolean = (a: A, b: A) => a == b)(implicit context: ComponentContext, exc: ExecutionContext) =
 	{
 		def makeDisplay(item: A) = ItemLabel.contextual(item, displayFunction)
 		contextual(noResultsView, icon, selectionPromptText, displayFunction, borderColor, Fit, contentPointer,
-			valuePointer, equalsCheck)(makeDisplay)
+			valuePointer, shouldDisplayPopUpOnFocusGain, equalsCheck)(makeDisplay)
 	}
 }
 
@@ -102,7 +106,8 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
  borderWidth: Double = 2.0, betweenDisplaysMargin: StackLength = StackLength.any, displayStackLayout: StackLayout = Fit,
  override val contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
  valuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None), textHasMinWidth: Boolean = true,
- allowImageUpscaling: Boolean = false, equalsCheck: (A, A) => Boolean = (a: A, b: A) => a == b)
+ allowImageUpscaling: Boolean = false, shouldDisplayPopUpOnFocusGain: Boolean = true,
+ equalsCheck: (A, A) => Boolean = (a: A, b: A) => a == b)
 (makeDisplayFunction: A => C)(implicit exc: ExecutionContext)
 	extends DropDownFieldLike[A, C](selectionDrawer, betweenDisplaysMargin, displayStackLayout, contentPointer, valuePointer)
 {
@@ -117,7 +122,6 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
 	private val imageLabel = new ImageLabel(icon, allowUpscaling = allowImageUpscaling)
 	
 	private val view = Stack.rowWithItems(Vector(textLabel, imageLabel.framed(imageInsets)), StackLength.fixedZero)
-	
 	
 	// INITIAL CODE	------------------------------
 	
@@ -134,7 +138,7 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
 	}
 	
 	view.addConstraint(MainDisplayWidthConstraint)
-	setup()
+	setup(shouldDisplayPopUpOnFocusGain)
 	setHandCursor()
 	
 	// Because of size constraint, revalidates component whenever content updates
@@ -157,6 +161,10 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
 	
 	
 	// IMPLEMENTED	------------------------------
+	
+	override def isInFocus = view.isInFocus
+	
+	override def requestFocusInWindow() = view.component.requestFocusInWindow()
 	
 	override protected def checkEquals(first: A, second: A) = equalsCheck(first, second)
 	

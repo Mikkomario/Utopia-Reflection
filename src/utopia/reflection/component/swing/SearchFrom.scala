@@ -28,6 +28,7 @@ object SearchFrom
 	  * @param displayStackLayout Stack layout used for the selection display items
 	  * @param contentPointer Content pointer used (default = new pointer)
 	  * @param selectedValuePointer Pointer that holds the currently selected item (default = new pointer)
+	  * @param shouldDisplayPopUpOnFocusGain Whether pop-up window should be opened whenever this field gains focus (default = true)
 	  * @param checkEquals Function for checking item equality (default = use standard equals)
 	  * @param makeDisplay Function for creating display components
 	  * @param itemToSearchString Function for converting selectable items to search / display strings
@@ -41,12 +42,13 @@ object SearchFrom
 	(searchField: TextField, noResultsView: AwtStackable, displayStackLayout: StackLayout = Fit,
 	 contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 	 selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
+	 shouldDisplayPopUpOnFocusGain: Boolean = true,
 	 checkEquals: (A, A) => Boolean = (a: A, b: A) => a == b)(makeDisplay: A => C)(itemToSearchString: A => String)
 	(implicit context: ComponentContext, exc: ExecutionContext) =
 	{
 		val field = new SearchFrom[A, C](searchField, noResultsView, context.actorHandler,
 			new BackgroundDrawer(context.highlightColor, Normal), context.stackMargin, displayStackLayout,
-			contentPointer, selectedValuePointer, checkEquals)(makeDisplay)(itemToSearchString)
+			contentPointer, selectedValuePointer, shouldDisplayPopUpOnFocusGain, checkEquals)(makeDisplay)(itemToSearchString)
 		context.setBorderAndBackground(field)
 		field
 	}
@@ -59,6 +61,8 @@ object SearchFrom
 	  * @param contentPointer     Content pointer used (default = new pointer)
 	  * @param selectedValuePointer Pointer that holds the currently selected item (default = new pointer)
 	  * @param searchFieldPointer Pointer that holds the search field's current value / text (default = new pointer)
+	  * @param shouldDisplayPopUpOnFocusGain Whether pop-up window should be opened whenever this field gains focus (default = true)
+	  * @param checkEquals Function for checking item equality (default = use standard equals)
 	  * @param makeDisplay        Function for creating display components
 	  * @param itemToSearchString Function for converting selectable items to search / display strings
 	  * @param context Component creation context (implicit)
@@ -72,12 +76,13 @@ object SearchFrom
 	 contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 	 selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
 	 searchFieldPointer: PointerWithEvents[Option[String]] = new PointerWithEvents[Option[String]](None),
+	 shouldDisplayPopUpOnFocusGain: Boolean = true,
 	 checkEquals: (A, A) => Boolean = (a: A, b: A) => a == b)(makeDisplay: A => C)(itemToSearchString: A => String)
 	(implicit context: ComponentContext, exc: ExecutionContext) =
 	{
 		val searchField = TextField.contextual(prompt = Some(selectionPrompt), valuePointer = searchFieldPointer)
 		wrapFieldWithContext(searchField, noResultsView, displayStackLayout, contentPointer, selectedValuePointer,
-			checkEquals)(makeDisplay)(itemToSearchString)
+			shouldDisplayPopUpOnFocusGain, checkEquals)(makeDisplay)(itemToSearchString)
 	}
 	
 	/**
@@ -89,6 +94,7 @@ object SearchFrom
 	  * @param contentPointer Content pointer used (default = new pointer)
 	  * @param selectedValuePointer Pointer for currently selected value (default = new pointer)
 	  * @param searchFieldPointer Pointer for search field's current text (default = new pointer)
+	  * @param shouldDisplayPopUpOnFocusGain Whether pop-up window should be opened whenever this field gains focus (default = true)
 	  * @param checkEquals Function for checking item equality (default = use standard equals)
 	  * @param context Component creation context (implicit)
 	  * @param exc Execution context (implicit)
@@ -101,15 +107,16 @@ object SearchFrom
 								  contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 								  selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
 								  searchFieldPointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None),
+								  shouldDisplayPopUpOnFocusGain: Boolean = true,
 								  checkEquals: (A, A) => Boolean = (a: A, b: A) => a == b)
 								 (implicit context: ComponentContext, exc: ExecutionContext) =
 	{
-		// TODO: Challenge: Pop-up doesn't have a margin on the left side
 		def makeField(item: A) = ItemLabel.contextual(item, displayFunction)
 		def itemToSearchString(item: A) = displayFunction(item).string
 		
 		contextual(noResultsView, selectionPrompt, displayStackLayout,
-			contentPointer, selectedValuePointer, searchFieldPointer, checkEquals)(makeField)(itemToSearchString)
+			contentPointer, selectedValuePointer, searchFieldPointer, shouldDisplayPopUpOnFocusGain,
+			checkEquals)(makeField)(itemToSearchString)
 	}
 	
 	// TODO: Add one more constructor that displays text + icon
@@ -142,6 +149,7 @@ object SearchFrom
   * @param displayStackLayout Stack layout used for the selection displays stack (default = Fit)
   * @param contentPointer Pointer for selection pool (default = new pointer)
   * @param selectedValuePointer Pointer for currently selected value (default = new pointer)
+  * @param shouldDisplayPopUpOnFocusGain Whether Pop-up should be opened whenever field gains focus
   * @param equalsCheck Function for comparing two selectable items, whether they represent the same option
   *                    (default = { a == b })
   * @param makeDisplayFunction Function for creating new selection displays. Takes the initially displayed item.
@@ -152,7 +160,8 @@ class SearchFrom[A, C <: AwtStackable with Refreshable[A]]
  selectionDrawer: CustomDrawer, betweenDisplaysMargin: StackLength = StackLength.any, displayStackLayout: StackLayout = Fit,
  override val contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
  selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
- equalsCheck: (A, A) => Boolean = (a: A, b: A) => a == b)(makeDisplayFunction: A => C)(itemToSearchString: A => String)
+ shouldDisplayPopUpOnFocusGain: Boolean = true, equalsCheck: (A, A) => Boolean = (a: A, b: A) => a == b)
+(makeDisplayFunction: A => C)(itemToSearchString: A => String)
 (implicit exc: ExecutionContext)
 	extends DropDownFieldLike[A, C](selectionDrawer, betweenDisplaysMargin, displayStackLayout,
 		valuePointer = selectedValuePointer) with SwingComponentRelated
@@ -167,7 +176,7 @@ class SearchFrom[A, C <: AwtStackable with Refreshable[A]]
 	
 	// INITIAL CODE	-----------------------------
 	
-	setup()
+	setup(shouldDisplayPopUpOnFocusGain)
 	
 	// When focus is lost and an item is selected, updates the text as well (unless field is empty,
 	// in which case selection is removed)
@@ -223,6 +232,8 @@ class SearchFrom[A, C <: AwtStackable with Refreshable[A]]
 	
 	
 	// IMPLEMENTED	----------------------------
+	
+	override def requestFocusInWindow() = searchField.requestFocusInWindow()
 	
 	override def component = searchField.component
 	

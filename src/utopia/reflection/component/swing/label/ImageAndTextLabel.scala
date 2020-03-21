@@ -68,7 +68,6 @@ object ImageAndTextLabel
   * @param allowImageUpscaling Whether image should be allowed to scale up (default = false)
   * @param itemToImageFunction Function used for selecting proper image for each item
   */
-// TODO: Replace image with a stack image
 class ImageAndTextLabel[A](override val contentPointer: PointerWithEvents[A], initialFont: Font,
 						   displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 						   textInsets: StackInsets = StackInsets.any, imageInsets: StackInsets = StackInsets.any,
@@ -127,4 +126,19 @@ class ImageAndTextLabel[A](override val contentPointer: PointerWithEvents[A], in
 	override def drawContext_=(newContext: TextDrawContext) = textLabel.drawContext = newContext
 	
 	override protected def wrapped = view
+	
+	
+	// OTHER	----------------------------
+	
+	/**
+	  * Refreshes the text display in this label. Useful if you use display functions that rely on an external mutable
+	  * state
+	  */
+	def refreshText() = textLabel.refreshText()
+	
+	/**
+	  * Refreshes the image display in this label without changing content. Useful if your item to image function
+	  * relies on an external mutable state
+	  */
+	def refreshImage() = imageLabel.image = itemToImageFunction(content)
 }

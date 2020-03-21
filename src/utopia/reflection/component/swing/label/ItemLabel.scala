@@ -84,6 +84,15 @@ class ItemLabel[A](override val contentPointer: PointerWithEvents[A], val displa
 	override def text = label.text
 	
 	
+	// OTHER	------------------------
+	
+	/**
+	  * Refreshes the displayed text (but not content) in this label. Useful when using display functions that rely
+	  * on external state.
+	  */
+	def refreshText() = label.text = displayFunction(content)
+	
+	
 	// NESTED CLASSES	----------------
 	
 	private object ContentUpdateListener extends ChangeListener[A]

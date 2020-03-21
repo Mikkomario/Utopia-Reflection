@@ -39,7 +39,7 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
  protected val currentSelectionOptionsPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
  override val valuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None))
 (implicit exc: ExecutionContext)
-	extends StackableAwtComponentWrapperWrapper with SelectableWithPointers[Option[A], Vector[A]]
+	extends StackableAwtComponentWrapperWrapper with SelectableWithPointers[Option[A], Vector[A]] with Focusable
 {
 	// ABSTRACT	--------------------------------
 	
@@ -97,6 +97,11 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 	  */
 	def currentSearchStackSize = searchStack.stackSize
 	
+	/**
+	  * @return Currently used item displays
+	  */
+	def currentDisplays = displaysManager.displays
+	
 	
 	// IMPLEMENTED	----------------------------
 	
@@ -115,16 +120,19 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 	/**
 	  * Sets up interactive events within this component. Should be called once after this component has been initialized.
 	  */
-	protected def setup() =
+	protected def setup(shouldDisplayPopUpOnFocusGain: Boolean) =
 	{
 		searchStack.background = background
 		
 		// When the field gains focus, displays the pop-up window (if not yet displayed)
-		mainDisplay.addFocusGainedListener {
-			if (focusGainSkips > 0)
-				focusGainSkips -= 1
-			else
-				displayPopup()
+		if (shouldDisplayPopUpOnFocusGain)
+		{
+			mainDisplay.addFocusGainedListener {
+				if (focusGainSkips > 0)
+					focusGainSkips -= 1
+				else
+					displayPopup()
+			}
 		}
 		
 		currentSelectionOptionsPointer.addListener({ e =>
