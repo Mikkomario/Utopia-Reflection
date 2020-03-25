@@ -257,7 +257,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
       * @param moreButtons More buttons for this window
       */
     def registerButtons(defaultButton: ButtonLike, moreButtons: ButtonLike*) =
-        addKeyStateListener(DefaultButtonHandler(defaultButton, moreButtons: _*))
+        addKeyStateListener(DefaultButtonHandler(defaultButton, moreButtons: _*) { isFocusedWindow })
     
     /**
      * Makes it so that this window will close one escape is pressed

@@ -32,8 +32,7 @@ object ImageAndTextLabel
 								(implicit context: ComponentContext) =
 	{
 		val label = new ImageAndTextLabel[A](pointer, context.font, displayFunction, context.insets, context.insets,
-			context.stackMargin, context.textAlignment, context.textColor, context.textHasMinWidth,
-			context.allowImageUpscaling)(itemToImage)
+			context.textAlignment, context.textColor, context.textHasMinWidth, context.allowImageUpscaling)(itemToImage)
 		context.setBorderAndBackground(label)
 		label
 	}
@@ -61,7 +60,6 @@ object ImageAndTextLabel
   * @param displayFunction Function used for displaying an item as text (default = toString)
   * @param textInsets Insets used in text display (default = any insets)
   * @param imageInsets Insets used in image display (default = any insets)
-  * @param betweenItemsMargin Margin between the image and the text (default = any margin)
   * @param alignment Alignment used for placing the items + text alignment (default = left)
   * @param initialTextColor Text color used initially (default = black)
   * @param textHasMinWidth Whether text should always be fully displayed (default = true)
@@ -71,7 +69,7 @@ object ImageAndTextLabel
 class ImageAndTextLabel[A](override val contentPointer: PointerWithEvents[A], initialFont: Font,
 						   displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 						   textInsets: StackInsets = StackInsets.any, imageInsets: StackInsets = StackInsets.any,
-						   betweenItemsMargin: StackLength = StackLength.any, alignment: Alignment = Alignment.Left,
+						   alignment: Alignment = Alignment.Left,
 						   initialTextColor: Color = Color.textBlack, textHasMinWidth: Boolean = true,
 						   allowImageUpscaling: Boolean = false)(itemToImageFunction: A => Image)
 	extends StackableAwtComponentWrapperWrapper with RefreshableWithPointer[A] with TextComponent with SwingComponentRelated
@@ -105,7 +103,7 @@ class ImageAndTextLabel[A](override val contentPointer: PointerWithEvents[A], in
 			case Alignment.Right => Trailing
 			case _ => StackLayout.Center
 		}
-		Stack.withItems(items, direction, betweenItemsMargin, layout = layout)
+		Stack.withItems(items, direction, StackLength.fixedZero, layout = layout)
 	}
 	
 	

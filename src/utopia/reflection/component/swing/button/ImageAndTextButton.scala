@@ -18,18 +18,16 @@ object ImageAndTextButton
 	  * @param color This button's background color
 	  * @param insets Insets around this button's contents
 	  * @param borderWidth Width of border around this button's contents (in pixels)
-	  * @param beforeTextMargin Margin placed between this button's image and text (labels) (default = any, preferring 0)
 	  * @param textAlignment Alignment used with this button's text (default = left)
 	 *  @param textColor Color used for the text (default = black)
 	  * @param action Action that is performed when this button is triggered
 	  * @return A new button
 	  */
 	def apply(images: ButtonImageSet, text: LocalizedString, font: Font, color: Color, insets: StackInsets,
-			  borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
-			  textAlignment: Alignment = Alignment.Left, textColor: Color = Color.textBlack)(action: () => Unit) =
+			  borderWidth: Double, textAlignment: Alignment = Alignment.Left, textColor: Color = Color.textBlack)(
+		action: () => Unit) =
 	{
-		val button = new ImageAndTextButton(images, text, font, color, insets, borderWidth, beforeTextMargin,
-			textAlignment, textColor)
+		val button = new ImageAndTextButton(images, text, font, color, insets, borderWidth, textAlignment, textColor)
 		button.registerAction(action)
 		button
 	}
@@ -44,7 +42,7 @@ object ImageAndTextButton
 	  */
 	def contextual(images: ButtonImageSet, text: LocalizedString)(action: () => Unit)(implicit context: ComponentContext) =
 		apply(images, text, context.font, context.buttonBackground, context.insets, context.borderWidth,
-			context.relatedItemsStackMargin, context.textAlignment, context.textColor)(action)
+			context.textAlignment, context.textColor)(action)
 	
 	/**
 	 * Creates a new button using contextual information. An action for the button needs to be registered separately.
@@ -55,7 +53,7 @@ object ImageAndTextButton
 	 */
 	def contextualWithoutAction(images: ButtonImageSet, text: LocalizedString)(implicit context: ComponentContext) =
 		new ImageAndTextButton(images, text, context.font, context.buttonBackground, context.insets,
-			context.borderWidth, context.relatedItemsStackMargin, context.textAlignment, context.textColor)
+			context.borderWidth, context.textAlignment, context.textColor)
 }
 
 /**
@@ -68,12 +66,11 @@ object ImageAndTextButton
   * @param color This button's background color
   * @param insets Insets around this button's contents
   * @param borderWidth Width of border around this button's contents (in pixels)
-  * @param beforeTextMargin Margin placed between this button's image and text (labels)
   * @param textAlignment Alignment used with this button's text
  *  @param textColor Color for this button's text (default = black)
   */
 class ImageAndTextButton(initialImages: ButtonImageSet, initialText: LocalizedString, font: Font, val color: Color,
-						 insets: StackInsets, borderWidth: Double, beforeTextMargin: StackLength = StackLength.any,
+						 insets: StackInsets, borderWidth: Double,
 						 textAlignment: Alignment = Alignment.Left, textColor: Color = Color.textBlack)
 	extends StackableAwtComponentWrapperWrapper with ButtonLike
 {
@@ -82,9 +79,9 @@ class ImageAndTextButton(initialImages: ButtonImageSet, initialText: LocalizedSt
 	private var _images = initialImages
 	
 	private val imageLabel = new ImageLabel(initialImages.defaultImage)
-	private val textLabel = new TextLabel(initialText, font, textColor, StackInsets.any.withLowPriority,
+	private val textLabel = new TextLabel(initialText, font, textColor, insets.withLeft(StackLength.fixedZero),
 		initialAlignment = textAlignment)
-	private val content = imageLabel.rowWith(Vector(textLabel), margin = beforeTextMargin).framed(insets)
+	private val content = imageLabel.framed(insets).rowWith(Vector(textLabel), margin = StackLength.fixedZero)
 	
 	
 	// INITIAL CODE	------------------------
