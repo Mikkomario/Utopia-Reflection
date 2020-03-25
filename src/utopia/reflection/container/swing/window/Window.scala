@@ -10,13 +10,13 @@ import utopia.genesis.handling._
 import utopia.genesis.shape.{Axis, Axis2D, Vector3D}
 import utopia.genesis.shape.shape2D.{Point, Size}
 import utopia.genesis.view.{ConvertingKeyListener, MouseEventGenerator}
-import utopia.reflection.component.stack.Stackable
+import utopia.reflection.component.stack.{Constrainable, Stackable}
 import utopia.reflection.component.swing.AwtComponentRelated
 import utopia.reflection.component.swing.button.ButtonLike
 import utopia.reflection.container.swing.AwtContainerRelated
 import utopia.reflection.event.ResizeListener
 import utopia.reflection.localization.LocalizedString
-import utopia.reflection.shape.{Alignment, Insets}
+import utopia.reflection.shape.{Alignment, Insets, StackSizeModifier}
 import utopia.reflection.util.Screen
 
 import scala.concurrent.Promise
@@ -26,13 +26,14 @@ import scala.concurrent.Promise
 * @author Mikko Hilpinen
 * @since 25.3.2019
 **/
-trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable with AwtContainerRelated
+trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable with AwtContainerRelated with Constrainable
 {
     // ATTRIBUTES   ----------------
     
     private var _isAttachedToMainHierarchy = false
+    private var _constraints = Vector[StackSizeModifier]()
     
-    private val cachedStackSize = new Lazy(() => calculatedStackSize)
+    private val cachedStackSize = Lazy { calculatedStackSizeWithConstraints }
     private val generatorActivated = new VolatileFlag()
     private val closePromise = Promise[Unit]()
     
@@ -94,6 +95,14 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     
     // IMPLEMENTED    --------------
     
+    override def constraints = _constraints
+    
+    override def constraints_=(newConstraints: Vector[StackSizeModifier]) =
+    {
+        _constraints = newConstraints
+        revalidate()
+    }
+    
     override def stackId = hashCode()
     
     override def isAttachedToMainHierarchy = _isAttachedToMainHierarchy
@@ -126,7 +135,7 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     override def position = Point(component.getX, component.getY)
     override def position_=(newPosition: Point) = component.setLocation(newPosition.toAwtPoint)
     
-    private def calculatedStackSize =
+    override def calculatedStackSize =
     {
         val maxSize =
         {

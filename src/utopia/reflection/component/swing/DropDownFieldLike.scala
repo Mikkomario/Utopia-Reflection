@@ -19,7 +19,7 @@ import utopia.reflection.container.swing.Stack.AwtStackable
 import utopia.reflection.container.swing.window.{Popup, Window}
 import utopia.reflection.container.swing.{Stack, SwitchPanel}
 import utopia.reflection.controller.data.StackSelectionManager
-import utopia.reflection.shape.StackLength
+import utopia.reflection.shape.{StackLength, StackSize, StackSizeModifier}
 
 import scala.concurrent.ExecutionContext
 
@@ -177,6 +177,7 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 				(fieldSize, _) => Point(0, fieldSize.height) }
 			visiblePopup = Some(popup)
 			// Relays key events to the search field
+			popup.addConstraint(PopUpWidthModifier)
 			popup.relayAwtKeyEventsTo(mainDisplay)
 			popup.addKeyStateListener(KeyStateListener(_ => if (popup.isFocusedWindow) popup.close(),
 				KeyStateEvent.keysFilter(KeyEvent.VK_TAB, KeyEvent.VK_ENTER, KeyEvent.VK_ESCAPE) && KeyStateEvent.wasPressedFilter))
@@ -225,5 +226,11 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 			displayPopup()
 			Some(ConsumeEvent("Search From Field Clicked"))
 		}
+	}
+	
+	private object PopUpWidthModifier extends StackSizeModifier
+	{
+		// Stack size width must be at least the current width of the main field
+		override def apply(size: StackSize) = size.mapWidth { _.mapOptimal { _ max mainDisplay.width } }
 	}
 }

@@ -4,16 +4,17 @@ import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.flow.event.Changing
 import utopia.flow.util.StringExtensions._
 import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.image.Image
 import utopia.reflection.component.Refreshable
 import utopia.reflection.component.drawing.template.DrawLevel.Normal
-import utopia.reflection.component.drawing.immutable.BackgroundDrawer
+import utopia.reflection.component.drawing.immutable.{BackgroundDrawer, ImageDrawer}
 import utopia.reflection.component.drawing.template.CustomDrawer
 import utopia.reflection.component.swing.label.{ItemLabel, TextLabel}
 import utopia.reflection.container.stack.StackLayout
 import utopia.reflection.container.stack.StackLayout.Fit
 import utopia.reflection.container.swing.Stack.AwtStackable
 import utopia.reflection.localization.{DisplayFunction, LocalizedString}
-import utopia.reflection.shape.StackLength
+import utopia.reflection.shape.{Alignment, StackInsets, StackLength}
 import utopia.reflection.util.ComponentContext
 
 import scala.collection.immutable.HashMap
@@ -26,6 +27,7 @@ object SearchFrom
 	  * @param searchField Search field to be wrapped
 	  * @param noResultsView View displayed when no result exist or none are found with current filter
 	  * @param displayStackLayout Stack layout used for the selection display items
+	  * @param searchIcon Icon displayed at the right side of the search field (optional)
 	  * @param contentPointer Content pointer used (default = new pointer)
 	  * @param selectedValuePointer Pointer that holds the currently selected item (default = new pointer)
 	  * @param shouldDisplayPopUpOnFocusGain Whether pop-up window should be opened whenever this field gains focus (default = true)
@@ -39,7 +41,7 @@ object SearchFrom
 	  * @return A new search from field
 	  */
 	def wrapFieldWithContext[A, C <: AwtStackable with Refreshable[A]]
-	(searchField: TextField, noResultsView: AwtStackable, displayStackLayout: StackLayout = Fit,
+	(searchField: TextField, noResultsView: AwtStackable, displayStackLayout: StackLayout = Fit, searchIcon: Option[Image] = None,
 	 contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 	 selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
 	 shouldDisplayPopUpOnFocusGain: Boolean = true,
@@ -47,8 +49,9 @@ object SearchFrom
 	(implicit context: ComponentContext, exc: ExecutionContext) =
 	{
 		val field = new SearchFrom[A, C](searchField, noResultsView, context.actorHandler,
-			new BackgroundDrawer(context.highlightColor, Normal), context.stackMargin, displayStackLayout,
-			contentPointer, selectedValuePointer, shouldDisplayPopUpOnFocusGain, checkEquals)(makeDisplay)(itemToSearchString)
+			new BackgroundDrawer(context.highlightColor, Normal), context.stackMargin, displayStackLayout, searchIcon,
+			context.insets, contentPointer, selectedValuePointer, shouldDisplayPopUpOnFocusGain, checkEquals)(
+			makeDisplay)(itemToSearchString)
 		context.setBorderAndBackground(field)
 		field
 	}
@@ -58,6 +61,7 @@ object SearchFrom
 	  * @param noResultsView View displayed when no result exist of none are found with current filter
 	  * @param selectionPrompt Prompt text displayed on the search field
 	  * @param displayStackLayout Stack layout used for the selection display items
+	  * @param searchIcon Icon displayed at the right side of the search field (optional)
 	  * @param contentPointer     Content pointer used (default = new pointer)
 	  * @param selectedValuePointer Pointer that holds the currently selected item (default = new pointer)
 	  * @param searchFieldPointer Pointer that holds the search field's current value / text (default = new pointer)
@@ -73,7 +77,7 @@ object SearchFrom
 	  */
 	def contextual[A, C <: AwtStackable with Refreshable[A]]
 	(noResultsView: AwtStackable, selectionPrompt: LocalizedString, displayStackLayout: StackLayout = Fit,
-	 contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
+	 searchIcon: Option[Image] = None, contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 	 selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
 	 searchFieldPointer: PointerWithEvents[Option[String]] = new PointerWithEvents[Option[String]](None),
 	 shouldDisplayPopUpOnFocusGain: Boolean = true,
@@ -81,7 +85,7 @@ object SearchFrom
 	(implicit context: ComponentContext, exc: ExecutionContext) =
 	{
 		val searchField = TextField.contextual(prompt = Some(selectionPrompt), valuePointer = searchFieldPointer)
-		wrapFieldWithContext(searchField, noResultsView, displayStackLayout, contentPointer, selectedValuePointer,
+		wrapFieldWithContext(searchField, noResultsView, displayStackLayout, searchIcon, contentPointer, selectedValuePointer,
 			shouldDisplayPopUpOnFocusGain, checkEquals)(makeDisplay)(itemToSearchString)
 	}
 	
@@ -90,6 +94,7 @@ object SearchFrom
 	  * @param noResultsView View displayed when no results are available or none were found with current filter
 	  * @param displayFunction Display function used for transforming items to text
 	  * @param selectionPrompt Prompt that is displayed
+	  * @param searchIcon Icon displayed at the right side of the search field (optional)
 	  * @param displayStackLayout Stack layout used in selection items display (default = Fit)
 	  * @param contentPointer Content pointer used (default = new pointer)
 	  * @param selectedValuePointer Pointer for currently selected value (default = new pointer)
@@ -103,7 +108,7 @@ object SearchFrom
 	  */
 	def contextualWithTextOnly[A](noResultsView: AwtStackable, selectionPrompt: LocalizedString,
 								  displayFunction: DisplayFunction[A] = DisplayFunction.raw,
-								  displayStackLayout: StackLayout = Fit,
+								  displayStackLayout: StackLayout = Fit, searchIcon: Option[Image] = None,
 								  contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
 								  selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
 								  searchFieldPointer: PointerWithEvents[Option[String]] = new PointerWithEvents(None),
@@ -114,7 +119,7 @@ object SearchFrom
 		def makeField(item: A) = ItemLabel.contextual(item, displayFunction)
 		def itemToSearchString(item: A) = displayFunction(item).string
 		
-		contextual(noResultsView, selectionPrompt, displayStackLayout,
+		contextual(noResultsView, selectionPrompt, displayStackLayout, searchIcon,
 			contentPointer, selectedValuePointer, searchFieldPointer, shouldDisplayPopUpOnFocusGain,
 			checkEquals)(makeField)(itemToSearchString)
 	}
@@ -147,6 +152,8 @@ object SearchFrom
   * @param selectionDrawer Drawer used for highlighting currently selected item in selection pop-up
   * @param betweenDisplaysMargin Margin placed between displayed items (default = any margin)
   * @param displayStackLayout Stack layout used for the selection displays stack (default = Fit)
+  * @param searchIcon Icon displayed at the right side of the search field (optional)
+  * @param searchIconInsets Insets placed around the search icon (default = any insets)
   * @param contentPointer Pointer for selection pool (default = new pointer)
   * @param selectedValuePointer Pointer for currently selected value (default = new pointer)
   * @param shouldDisplayPopUpOnFocusGain Whether Pop-up should be opened whenever field gains focus
@@ -158,6 +165,7 @@ object SearchFrom
 class SearchFrom[A, C <: AwtStackable with Refreshable[A]]
 (searchField: TextField, override protected val noResultsView: AwtStackable, override protected val actorHandler: ActorHandler,
  selectionDrawer: CustomDrawer, betweenDisplaysMargin: StackLength = StackLength.any, displayStackLayout: StackLayout = Fit,
+ searchIcon: Option[Image] = None, searchIconInsets: StackInsets = StackInsets.any,
  override val contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
  selectedValuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None),
  shouldDisplayPopUpOnFocusGain: Boolean = true, equalsCheck: (A, A) => Boolean = (a: A, b: A) => a == b)
@@ -198,7 +206,8 @@ class SearchFrom[A, C <: AwtStackable with Refreshable[A]]
 	addContentListener({ e =>
 		currentOptions = e.newValue.map { a => itemToSearchString(a) -> a }.toMap
 		updateDisplayedOptions()
-		searchField.targetWidth = if (content.isEmpty) defaultWidth else currentSearchStackSize.width
+		searchField.targetWidth = (if (content.isEmpty) defaultWidth else currentSearchStackSize.width) +
+			searchIcon.map { _.width + searchIconInsets.horizontal.optimal }.getOrElse(0.0)
 	}, Some(Vector()))
 	
 	// When text field updates (while no value is selected)
@@ -229,6 +238,9 @@ class SearchFrom[A, C <: AwtStackable with Refreshable[A]]
 				searchField.clear()
 		}
 	}, Some(None))
+	
+	// Possibly adds custom drawing for the search image
+	searchIcon.foreach { img => searchField.addCustomDrawer(new ImageDrawer(img, searchIconInsets, Alignment.Right)) }
 	
 	
 	// IMPLEMENTED	----------------------------

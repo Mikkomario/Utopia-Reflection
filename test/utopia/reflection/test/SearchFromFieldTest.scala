@@ -8,6 +8,7 @@ import utopia.genesis.color.Color
 import utopia.genesis.generic.GenesisDataType
 import utopia.genesis.handling.KeyStateListener
 import utopia.genesis.handling.mutable.ActorHandler
+import utopia.genesis.image.Image
 import utopia.reflection.component.swing.SearchFrom
 import utopia.reflection.component.swing.button.TextButton
 import utopia.reflection.container.stack.StackHierarchyManager
@@ -19,6 +20,7 @@ import utopia.reflection.text.Font
 import utopia.reflection.text.FontStyle.Plain
 import utopia.reflection.util.{ComponentContext, ComponentContextBuilder, SingleFrameSetup}
 import utopia.reflection.shape.LengthExtensions._
+import utopia.flow.util.FileExtensions._
 import utopia.reflection.shape.StackInsets
 
 import scala.concurrent.ExecutionContext
@@ -44,10 +46,11 @@ object SearchFromFieldTest extends App
 	implicit val baseContext: ComponentContext = baseCB.result
 	implicit val exc: ExecutionContext = new ThreadPool("Reflection").executionContext
 	
+	val searchImage = Image.readFrom("test-images/arrow-back-48dp.png")
 	val searchPointer = new PointerWithEvents[Option[String]](None)
 	val field = SearchFrom.contextualWithTextOnly[String](
 		SearchFrom.noResultsLabel("No results for '%s'", searchPointer), "Search for string",
-		searchFieldPointer = searchPointer)
+		searchIcon = searchImage.toOption, searchFieldPointer = searchPointer)
 	val button = TextButton.contextual("OK", () => println(field.value))
 	val content = Stack.buildColumnWithContext() { s =>
 		s += field
