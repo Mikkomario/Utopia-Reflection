@@ -39,7 +39,12 @@ case class StackInsets(amounts: Map[Direction2D, StackLength]) extends InsetsLik
 	/**
 	  * The optimal insets within these insets
 	  */
-	lazy val optimal = Insets(amounts.map { case (d, l) => d -> l.optimal })
+	lazy val optimal = mapToInsets { _.optimal }
+	
+	/**
+	  * The minimum insets within these insets
+	  */
+	lazy val min = mapToInsets { _.min }
 	
 	
 	// COMPUTED	---------------------------
@@ -57,4 +62,14 @@ case class StackInsets(amounts: Map[Direction2D, StackLength]) extends InsetsLik
 	override protected def combine(first: StackLength, second: StackLength)  = first + second
 	override protected def multiply(a: StackLength, multiplier: Double)  = a * multiplier
 	override protected def make2D(horizontal: StackLength, vertical: StackLength)  = StackSize(horizontal, vertical)
+	
+	
+	// OTHER	---------------------------
+	
+	/**
+	  * Converts these stack insets to normal insets
+	  * @param f A mapping function
+	  * @return A set of insets with mapped side values
+	  */
+	def mapToInsets(f: StackLength => Double) = Insets(amounts.map { case (d, l) => d -> f(l) })
 }
