@@ -50,7 +50,6 @@ object TabSelection
   * @author Mikko Hilpinen
   * @since 4.5.2019, v1+
   */
-// TODO: Add support for proper insets
 class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMargin: Double, val vMargin: StackLength,
 					  val selectionLineHeight: Double = 8.0, val displayFunction: DisplayFunction[A] = DisplayFunction.raw,
 					  initialChoices: Seq[A] = Vector(), initialTextColor: Color = Color.textBlack)
@@ -62,8 +61,8 @@ class TabSelection[A](val font: Font, val highlightColor: Color, val optimalHMar
 	private var _textColor = initialTextColor
 	
 	private val stack = Stack.row[TextLabel](0.fixed)
-	private val textInsets = StackInsets.vertical(vMargin + selectionLineHeight) +
-		StackInsets.horizontal(optimalHMargin.downscaling)
+	private val textInsets = StackInsets.vertical(vMargin, vMargin + selectionLineHeight) +
+		StackInsets.horizontal(optimalHMargin.any.expanding)
 	
 	private var labels: Map[A, TextLabel] = HashMap()
 	
