@@ -79,7 +79,10 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 	private val searchStack = Stack.column[C](margin = betweenDisplaysMargin, layout = displayStackLayout)
 	private val displaysManager = new StackSelectionManager[A, C](searchStack, selectionDrawer, checkEquals,
 		currentSelectionOptionsPointer)(makeDisplay)
-	private val popupContentView = SwitchPanel[AwtStackable](searchStack)
+	/**
+	  * The view component that contains the currently displayed content for the pop-up (will be placed within each created pop-up)
+	  */
+	protected val popupContentView = SwitchPanel[AwtStackable](searchStack)
 	
 	private var focusGainSkips = 0
 	private var visiblePopup: Option[Window[_]] = None

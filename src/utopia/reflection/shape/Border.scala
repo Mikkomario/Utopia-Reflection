@@ -7,6 +7,16 @@ import utopia.genesis.shape.shape2D.Size
 
 object Border
 {
+	// ATTRIBUTES	-------------------------
+	
+	/**
+	  * A border with no size and no color
+	  */
+	val zero = empty(Insets.zero)
+	
+	
+	// OTHER	-----------------------------
+	
 	/**
 	  * Creates a new border
 	  * @param insets Border insets

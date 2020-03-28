@@ -67,6 +67,22 @@ case class StackInsets(amounts: Map[Direction2D, StackLength]) extends InsetsLik
 	// OTHER	---------------------------
 	
 	/**
+	  * @param amount Length increase affecting each side of these insets
+	  * @return A copy of these insets with each side increased
+	  */
+	def +(amount: Double) = if (amount == 0) this else map { _ + amount }
+	/**
+	  * @param other Length increase affecting each side of these insets
+	  * @return A copy of these insets with each side increased
+	  */
+	def +(other: StackLength) = map { _ + other }
+	/**
+	  * @param amount Length decrease affecting each side of these insets
+	  * @return A copy of these insets with each side decreased
+	  */
+	def -(amount: Double) = if (amount == 0) this else map { _ - amount }
+	
+	/**
 	  * Converts these stack insets to normal insets
 	  * @param f A mapping function
 	  * @return A set of insets with mapped side values

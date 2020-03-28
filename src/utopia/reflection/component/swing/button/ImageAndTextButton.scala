@@ -1,12 +1,15 @@
 package utopia.reflection.component.swing.button
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.genesis.color.Color
+import utopia.reflection.component.drawing.mutable.BorderDrawer
 import utopia.reflection.component.swing.StackableAwtComponentWrapperWrapper
 import utopia.reflection.component.swing.label.{ImageLabel, TextLabel}
 import utopia.reflection.localization.LocalizedString
 import utopia.reflection.shape.{Alignment, Border, StackInsets, StackLength}
 import utopia.reflection.text.Font
 import utopia.reflection.util.ComponentContext
+import utopia.reflection.shape.LengthExtensions._
 
 object ImageAndTextButton
 {
@@ -79,18 +82,33 @@ class ImageAndTextButton(initialImages: ButtonImageSet, initialText: LocalizedSt
 	private var _images = initialImages
 	
 	private val imageLabel = new ImageLabel(initialImages.defaultImage)
-	private val textLabel = new TextLabel(initialText, font, textColor, insets.withLeft(StackLength.fixedZero),
-		initialAlignment = textAlignment)
-	private val content = imageLabel.framed(insets).rowWith(Vector(textLabel), margin = StackLength.fixedZero)
+	private val textLabel = new TextLabel(initialText, font, textColor,
+		insets.withLeft(StackLength.fixedZero).mapRight { _.expanding }, initialAlignment = textAlignment)
+	private val content =
+	{
+		val inside = imageLabel.framed(insets).rowWith(Vector(textLabel), margin = StackLength.fixedZero)
+		if (borderWidth > 0)
+			inside.framed(StackInsets.symmetric(borderWidth.fixed))
+		else
+			inside
+	}
+	
+	private val borderPointer = new PointerWithEvents(makeBorder(color))
 	
 	
 	// INITIAL CODE	------------------------
 	
 	content.background = color
-	updateBorder(color)
 	setHandCursor()
 	content.component.setFocusable(true)
 	initializeListeners()
+	
+	// Adds border drawing
+	if (borderWidth > 0)
+	{
+		content.addCustomDrawer(new BorderDrawer(borderPointer))
+		borderPointer.addListener { _ => content.repaint() }
+	}
 	
 	
 	// COMPUTED	----------------------------
@@ -120,12 +138,12 @@ class ImageAndTextButton(initialImages: ButtonImageSet, initialText: LocalizedSt
 	{
 		val newColor = newState.modify(color)
 		background = newColor
-		updateBorder(newColor)
 		imageLabel.image = _images(newState)
+		borderPointer.value = makeBorder(newColor)
 	}
 	
 	
 	// OTHER	----------------------------
 	
-	private def updateBorder(baseColor: Color) = content.setBorder(Border.raised(borderWidth, baseColor, 0.5))
+	private def makeBorder(baseColor: Color) = Border.raised(borderWidth, baseColor, 0.5)
 }

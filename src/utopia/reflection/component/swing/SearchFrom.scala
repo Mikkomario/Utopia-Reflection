@@ -60,7 +60,7 @@ object SearchFrom
 	  * Creates a new search from field using component creation context
 	  * @param noResultsView View displayed when no result exist of none are found with current filter
 	  * @param selectionPrompt Prompt text displayed on the search field
-	  * @param displayStackLayout Stack layout used for the selection display items
+	  * @param displayStackLayout Stack layout used for the selection display items (default = Fit)
 	  * @param searchIcon Icon displayed at the right side of the search field (optional)
 	  * @param contentPointer     Content pointer used (default = new pointer)
 	  * @param selectedValuePointer Pointer that holds the currently selected item (default = new pointer)

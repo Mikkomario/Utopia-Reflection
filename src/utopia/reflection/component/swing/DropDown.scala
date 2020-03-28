@@ -103,7 +103,7 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
  defaultTextColor: Color = Color.textBlack, displayFunction: DisplayFunction[A] = DisplayFunction.raw,
  textAlignment: Alignment = Alignment.Left, textInsets: StackInsets = StackInsets.any,
  imageInsets: StackInsets = StackInsets.any, borderColor: Color = Color.textBlack,
- borderWidth: Double = 2.0, betweenDisplaysMargin: StackLength = StackLength.any, displayStackLayout: StackLayout = Fit,
+ borderWidth: Double = 1.0, betweenDisplaysMargin: StackLength = StackLength.any, displayStackLayout: StackLayout = Fit,
  override val contentPointer: PointerWithEvents[Vector[A]] = new PointerWithEvents[Vector[A]](Vector()),
  valuePointer: PointerWithEvents[Option[A]] = new PointerWithEvents[Option[A]](None), textHasMinWidth: Boolean = true,
  allowImageUpscaling: Boolean = false, shouldDisplayPopUpOnFocusGain: Boolean = true,
@@ -113,7 +113,7 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
 {
 	// ATTRIBUTES	------------------------------
 	
-	private val finalTextInsets = textInsets.mapRight { _.noMax.withLowPriority }
+	private val finalTextInsets = textInsets.mapRight { _.noMax.withLowPriority } + borderWidth
 	private val noValueContext = TextDrawContext(selectionPrompt.font, selectionPrompt.color, textAlignment, finalTextInsets)
 	private val valueSelectedContext = TextDrawContext(defaultFont, defaultTextColor, textAlignment, finalTextInsets)
 	
@@ -121,7 +121,8 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
 		finalTextInsets, textAlignment, textHasMinWidth)
 	private val imageLabel = new ImageLabel(icon, allowUpscaling = allowImageUpscaling)
 	
-	private val view = Stack.rowWithItems(Vector(textLabel, imageLabel.framed(imageInsets)), StackLength.fixedZero)
+	private val view = Stack.rowWithItems(Vector(textLabel, imageLabel.framed(imageInsets + borderWidth)), StackLength.fixedZero)
+	
 	
 	// INITIAL CODE	------------------------------
 	
@@ -145,8 +146,12 @@ class DropDown[A, C <: AwtStackable with Refreshable[A]]
 	addContentListener { _ => revalidate() }
 	
 	// Adds border drawing to the view
-	view.addCustomDrawer(new BorderDrawer(Border.symmetric(borderWidth, borderColor)))
-	textLabel.addCustomDrawer(new BorderDrawer(Border(Insets.right(borderWidth), borderColor)))
+	{
+		val basicBorderDrawer = new BorderDrawer(Border.symmetric(borderWidth, borderColor))
+		view.addCustomDrawer(basicBorderDrawer)
+		textLabel.addCustomDrawer(new BorderDrawer(Border(Insets.right(borderWidth), borderColor)))
+		popupContentView.addCustomDrawer(basicBorderDrawer)
+	}
 	
 	// Updates the item display whenever value changes
 	addValueListener { _.newValue match

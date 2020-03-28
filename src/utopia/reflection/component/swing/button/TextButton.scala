@@ -1,8 +1,9 @@
 package utopia.reflection.component.swing.button
 
+import utopia.flow.datastructure.mutable.PointerWithEvents
 import utopia.genesis.color.Color
 import utopia.reflection.component.drawing.immutable.TextDrawContext
-import utopia.reflection.component.drawing.mutable.CustomDrawableWrapper
+import utopia.reflection.component.drawing.mutable.{BorderDrawer, CustomDrawableWrapper}
 import utopia.reflection.component.TextComponent
 import utopia.reflection.shape.Alignment.Center
 import utopia.reflection.component.swing.{StackableAwtComponentWrapperWrapper, SwingComponentRelated}
@@ -79,7 +80,9 @@ class TextButton(initialText: LocalizedString, initialFont: Font, val color: Col
 {
 	// ATTRIBUTES	------------------
 	
-	private val label = new TextLabel(initialText, initialFont, initialTextColor, initialInsets, initialAlignment, hasMinWidth = true)
+	private val label = new TextLabel(initialText, initialFont, initialTextColor, initialInsets + borderWidth,
+		initialAlignment, hasMinWidth = true)
+	private val borderPointer = new PointerWithEvents(makeBorder(color))
 	
 	
 	// INITIAL CODE	------------------
@@ -90,8 +93,19 @@ class TextButton(initialText: LocalizedString, initialFont: Font, val color: Col
 	
 	initializeListeners()
 	
+	// Adds border drawing
+	if (borderWidth > 0)
+	{
+		addCustomDrawer(new BorderDrawer(borderPointer))
+		borderPointer.addListener { _ => repaint() }
+	}
+	
 	
 	// IMPLEMENTED	------------------
+	
+	override def insets = super.insets - borderWidth
+	
+	override def insets_=(newInsets: StackInsets) = super.insets_=(newInsets + borderWidth)
 	
 	override def drawContext = label.drawContext
 	
@@ -110,7 +124,7 @@ class TextButton(initialText: LocalizedString, initialFont: Font, val color: Col
 	{
 		val newColor = newState.modify(color)
 		background = newColor
-		updateBorder(newColor)
+		borderPointer.value = makeBorder(newColor)
 	}
 	
 	override def toString = s"Button($text)"
@@ -118,5 +132,5 @@ class TextButton(initialText: LocalizedString, initialFont: Font, val color: Col
 	
 	// OTHER	----------------------
 	
-	private def updateBorder(baseColor: Color) = setBorder(Border.raised(borderWidth, baseColor, 0.5))
+	private def makeBorder(baseColor: Color) = Border.raised(borderWidth, baseColor, 0.5)
 }

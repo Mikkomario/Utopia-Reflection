@@ -224,7 +224,7 @@ class StackLength(rawMin: Double, rawOptimal: Double, rawMax: Option[Double] = N
 	  * @param length A decrease in length
 	  * @return A decreased version of this stack length (min, optimal and max adjusted, if present). Minimum won't go below 0
 	  */
-	def -(length: Double) = +(-length)
+	def -(length: Double): StackLength = this + (-length)
 	
 	/**
 	  * @param multi A multiplier
