@@ -182,14 +182,14 @@ abstract class DropDownFieldLike[A, C <: AwtStackable with Refreshable[A]]
 			// Relays key events to the search field
 			popup.addConstraint(PopUpWidthModifier)
 			popup.relayAwtKeyEventsTo(mainDisplay)
-			popup.addKeyStateListener(KeyStateListener(_ => if (popup.isFocusedWindow) popup.close(),
-				KeyStateEvent.keysFilter(KeyEvent.VK_TAB, KeyEvent.VK_ENTER, KeyEvent.VK_ESCAPE) && KeyStateEvent.wasPressedFilter))
-			popup.addMouseButtonListener(MouseButtonStateListener(_ =>
-			{
+			popup.addKeyStateListener(KeyStateListener(
+				KeyStateEvent.keysFilter(KeyEvent.VK_TAB, KeyEvent.VK_ENTER, KeyEvent.VK_ESCAPE) &&
+					KeyStateEvent.wasPressedFilter) { _ => if (popup.isFocusedWindow) popup.close() })
+			popup.addMouseButtonListener(MouseButtonStateListener(MouseButtonStateEvent.wasReleasedFilter){ _ =>
 				if (popup.isFocusedWindow)
 					popup.close()
 				None
-			}, MouseButtonStateEvent.wasReleasedFilter))
+			})
 			popup.display()
 			popup.closeFuture.foreach { _ =>
 				focusGainSkips += 1

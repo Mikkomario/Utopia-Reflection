@@ -71,7 +71,7 @@ object ScrollViewTest extends App
 	contentManager.enableMouseHandling(false)
 	private val contentUpdateLoop = new ContentUpdateLoop(contentManager)
 	
-	stack.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_RIGHT, _ => contentManager.updateSingle(2)))
+	stack.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_RIGHT) { _ => contentManager.updateSingle(2) })
 	
 	// Creates the scroll view
 	val barDrawer = BoxScrollBarDrawer(Color.black.withAlpha(0.55), Color.red)

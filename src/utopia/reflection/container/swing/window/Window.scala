@@ -227,16 +227,16 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
         generatorActivated.runAndSet
         {
 			// Starts mouse listening
-            val mouseButtonListener = MouseButtonStateListener { e => content.distributeMouseButtonEvent(e); None }
-            val mouseMovelistener = MouseMoveListener { content.distributeMouseMoveEvent(_) }
-            val mouseWheelListener = MouseWheelListener { content.distributeMouseWheelEvent(_) }
+            val mouseButtonListener = MouseButtonStateListener() { e => content.distributeMouseButtonEvent(e); None }
+            val mouseMovelistener = MouseMoveListener() { content.distributeMouseMoveEvent(_) }
+            val mouseWheelListener = MouseWheelListener() { content.distributeMouseWheelEvent(_) }
             
             val mouseEventGenerator = new MouseEventGenerator(content.component, mouseMovelistener, mouseButtonListener,
                 mouseWheelListener, () => 1.0)
             actorHandler += mouseEventGenerator
 			
 			// Starts key listening
-			val keyStateListener = KeyStateListener { content.distributeKeyStateEvent(_) }
+			val keyStateListener = KeyStateListener() { content.distributeKeyStateEvent(_) }
 			val keyTypedListener = KeyTypedListener { content.distributeKeyTypedEvent(_) }
     
             val keyEventGenerator = new ConvertingKeyListener(keyStateListener, keyTypedListener)
@@ -262,8 +262,8 @@ trait Window[Content <: Stackable with AwtComponentRelated] extends Stackable wi
     /**
      * Makes it so that this window will close one escape is pressed
      */
-    def setToCloseOnEsc() = addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_ESCAPE, _ =>
-        if (isFocusedWindow) close()))
+    def setToCloseOnEsc() = addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_ESCAPE) { _ =>
+        if (isFocusedWindow) close() })
     
     /**
       * Updates the bounds of this window's contents to match those of this window

@@ -60,13 +60,13 @@ object MouseTest extends App
 	
 	// Sets up mouse listening
 	items.head.addMouseMoveListener(new MouseEnterExitListener(items.head))
-	items(1).addMouseMoveListener(MouseMoveListener(e => println("Moving " + e.mousePosition),
-		MouseEvent.isOverAreaFilter(items(1).bounds)))
-	items(2).addMouseButtonListener(MouseButtonStateListener.onLeftPressedInside(items(2).bounds,
-		e => { println(e.mousePosition); None }))
-	items(2).addMouseWheelListener(MouseWheelListener.onWheelInsideArea(items(2).bounds, { e => println(e.wheelTurn); None }))
+	items(1).addMouseMoveListener(MouseMoveListener(MouseEvent.isOverAreaFilter(items(1).bounds)) { e =>
+		println("Moving " + e.mousePosition) })
+	items(2).addMouseButtonListener(MouseButtonStateListener.onLeftPressedInside(items(2).bounds) {
+		e => println(e.mousePosition); None })
+	items(2).addMouseWheelListener(MouseWheelListener.onWheelInsideArea(items(2).bounds) { e => println(e.wheelTurn); None })
 	
-	frame.addKeyStateListener(KeyStateListener(println))
+	frame.addKeyStateListener(KeyStateListener()(println))
 	
 	// Starts the program
 	val actorHandler = ActorHandler()
