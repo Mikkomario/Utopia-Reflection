@@ -63,7 +63,7 @@ object SearchFromFieldTest extends App
 	val frame = Frame.windowed(content, "Search Field Test", Program)
 	frame.setToCloseOnEsc()
 	
-	frame.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_P, _ => println(StackHierarchyManager.description)))
+	frame.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_P) { _ => println(StackHierarchyManager.description) })
 	
 	new SingleFrameSetup(actorHandler, frame).start()
 }

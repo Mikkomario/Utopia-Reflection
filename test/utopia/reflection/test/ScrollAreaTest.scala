@@ -68,7 +68,7 @@ object ScrollAreaTest extends App
 	frame.setToExitOnClose()
 	
 	// Adds additional action on END key
-	scrollArea.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_END, _ => scrollArea.scrollToBottom()))
+	scrollArea.addKeyStateListener(KeyStateListener.onKeyPressed(KeyEvent.VK_END) { _ => scrollArea.scrollToBottom() })
 	
 	actionLoop.registerToStopOnceJVMCloses()
 	actionLoop.startAsync()
